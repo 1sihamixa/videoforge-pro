@@ -1,0 +1,27 @@
+# VideoForge Pro - Wav2Lip Talking Avatar
+# Core
+flask>=3.0.0
+gunicorn>=21.2.0
+python-dotenv>=1.0.0
+
+# Wav2Lip (Local)
+opencv-python>=4.8.0
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+
+# TTS (Text-to-Speech)
+edge-tts>=6.1.0
+
+# Cloud API
+requests>=2.31.0
+urllib3>=2.0.0
+
+# Image Processing
+Pillow>=10.0.0
+
+# Audio/Video
+moviepy>=1.0.3
+
+# Async
+aiohttp>=3.9.0

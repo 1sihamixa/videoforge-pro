@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═══ PRIMARY META ═══ -->
+<title>{% if lang == 'ar' %}VideoForge Pro - Wav2Lip | صانع فيديوهات ناطقة بالذكاء الاصطناعي{% else %}VideoForge Pro - Wav2Lip | AI Talking Avatar Generator{% endif %}</title>
+<meta name="description" content="{% if lang == 'ar' %}حوّل أي صورة ثابتة إلى فيديو ناطق بالذكاء الاصطناعي. تقنية Wav2Lip المتطورة تحرك الشفاه بتزامن تام مع الصوت. جرب مجاناً!{% else %}Turn any static photo into an AI talking video. Advanced Wav2Lip technology moves lips in perfect sync with audio. Try for free!{% endif %}">
+<meta name="keywords" content="{% if lang == 'ar' %}Wav2Lip, فيديو ناطق, ذكاء اصطناعي, تحريك الشفاه, Talking Avatar, AI video, lip sync, مولد فيديو بالذكاء الاصطناعي{% else %}Wav2Lip, AI talking avatar, lip sync generator, talking photo, AI video maker, lip sync technology, free Wav2Lip online{% endif %}">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="author" content="VideoForge Pro">
+<meta name="revisit-after" content="7 days">
+<link rel="canonical" href="{% if lang == 'en' %}https://videoforge-pro.com/en{% else %}https://videoforge-pro.com/{% endif %}">
+
+<!-- ═══ hreflang (بين العربي والإنجليزي) ═══ -->
+<link rel="alternate" hreflang="ar" href="https://videoforge-pro.com/">
+<link rel="alternate" hreflang="en" href="https://videoforge-pro.com/en">
+<link rel="alternate" hreflang="x-default" href="https://videoforge-pro.com/">
+
+<!-- ═══ OPEN GRAPH (فيسبوك، لينكد إن، واتساب) ═══ -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{% if lang == 'en' %}https://videoforge-pro.com/en{% else %}https://videoforge-pro.com/{% endif %}">
+<meta property="og:title" content="{% if lang == 'ar' %}VideoForge Pro - Wav2Lip | صانع فيديوهات ناطقة بالذكاء الاصطناعي{% else %}VideoForge Pro - Wav2Lip | AI Talking Avatar Generator{% endif %}">
+<meta property="og:description" content="{% if lang == 'ar' %}حوّل أي صورة ثابتة إلى فيديو ناطق بالذكاء الاصطناعي. تقنية Wav2Lip تحرك الشفاه بتزامن تام مع الصوت.{% else %}Turn any photo into an AI talking video. Wav2Lip technology for perfect lip-sync. Try for free!{% endif %}">
+<meta property="og:image" content="https://videoforge-pro.com/static/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="{% if lang == 'ar' %}ar_AR{% else %}en_US{% endif %}">
+<meta property="og:site_name" content="VideoForge Pro">
+
+<!-- ═══ TWITTER CARD ═══ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{% if lang == 'ar' %}VideoForge Pro - فيديوهات ناطقة بالذكاء الاصطناعي{% else %}VideoForge Pro - AI Talking Videos{% endif %}">
+<meta name="twitter:description" content="{% if lang == 'ar' %}Wav2Lip: حول صورتك لفيديو ناطق خلال ثوانٍ{% else %}Wav2Lip: Turn your photo into a talking video in seconds{% endif %}">
+<meta name="twitter:image" content="https://videoforge-pro.com/static/og-image.jpg">
+
+<!-- ═══ JSON-LD STRUCTURED DATA (Schema.org) ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "VideoForge Pro",
+  "url": "https://videoforge-pro.com/",
+  "description": "{% if lang == 'ar' %}تطبيق ويب لتحويل الصور الثابتة إلى فيديوهات ناطقة باستخدام تقنية Wav2Lip{% else %}Web application to convert static photos into talking videos using Wav2Lip technology{% endif %}",
+  "applicationCategory": "Multimedia",
+  "operatingSystem": "Web Browser",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "VideoForge Pro"
+  }
+}
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% if ga_tracking_id %}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_tracking_id }}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ ga_tracking_id }}');</script>
+{% endif %}
+<style>
+:root {
+  --bg: #0b0b1a; --bg2: #111128; --bg3: #1a1a3a;
+  --card: #13132e; --border: #1e1e44;
+  --accent: #6c5ce7; --accent2: #e63946; --accent3: #00c853;
+  --gold: #f0c040; --text: #e0e0f0; --text2: #8888aa;
+  --font: 'Cairo', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ─── Navbar ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(11,11,26,0.95); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 30px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+nav .logo { font-size: 22px; font-weight: 900; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+nav .logo span { color: var(--accent); }
+nav .logo small { font-size: 11px; color: var(--text2); font-weight: 400; }
+nav .nav-links { display: flex; gap: 8px; align-items: center; }
+nav .nav-links a {
+  padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
+  text-decoration: none; color: var(--text2); transition: all 0.3s;
+}
+nav .nav-links a:hover { color: #fff; background: var(--bg3); }
+nav .nav-links a.active { color: #fff; background: var(--accent); }
+
+/* ─── Language Switcher ─── */
+.lang-switch {
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  background: var(--bg3); border: 1px solid var(--border);
+  font-family: var(--font); font-size: 12px; font-weight: 700;
+  color: var(--text2); transition: all 0.3s;
+  text-decoration: none;
+}
+.lang-switch:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.lang-switch .flag { font-size: 16px; }
+
+/* ─── Ad Banner ─── */
+.ad-banner {
+  margin-top: 64px; text-align: center; padding: 8px;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  min-height: 60px; display: flex; align-items: center; justify-content: center;
+}
+.ad-banner .ad-placeholder { font-size: 12px; color: var(--text2); opacity: 0.4; }
+
+/* ─── Hero ─── */
+.hero {
+  padding: 60px 30px 50px;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 50%, #1a0a2e 100%);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -30%; {{ 'right' if dir=='rtl' else 'left' }}: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,92,231,0.12) 0%, transparent 70%);
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -20%; {{ 'left' if dir=='rtl' else 'right' }}: -10%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(230,57,70,0.08) 0%, transparent 70%);
+}
+.hero-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+.hero-badge {
+  display: inline-block; background: rgba(108,92,231,0.2); color: var(--accent);
+  padding: 6px 18px; border-radius: 30px; font-size: 13px; font-weight: 700; margin-bottom: 16px;
+  border: 1px solid rgba(108,92,231,0.3);
+}
+.hero h1 { font-size: 48px; font-weight: 900; line-height: 1.15; margin-bottom: 14px; }
+.hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { font-size: 17px; color: var(--text2); max-width: 600px; line-height: 1.7; margin-bottom: 24px; }
+.hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px;
+  border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: all 0.3s; border: none; font-family: var(--font); text-decoration: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #5a4bd1; transform: translateY(-2px); }
+.btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--border); color: #fff; transform: translateY(-2px); }
+.btn-danger { background: var(--accent2); color: #fff; }
+.btn-danger:hover { background: #c1121f; transform: translateY(-2px); }
+.btn-success { background: var(--accent3); color: #fff; }
+.btn-success:hover { background: #00a844; transform: translateY(-2px); }
+.btn-gold { background: var(--gold); color: #1a1a2e; }
+.btn-gold:hover { background: #d4a830; transform: translateY(-2px); }
+.btn-sm { padding: 10px 20px; font-size: 13px; }
+.btn-lg { padding: 18px 40px; font-size: 16px; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 30px; }
+.section { padding: 60px 0; }
+.section-header { text-align: center; margin-bottom: 40px; }
+.section-header h2 { font-size: 32px; font-weight: 800; }
+.section-header h2 span { color: var(--accent); }
+.section-header p { color: var(--text2); font-size: 15px; margin-top: 8px; }
+
+/* ─── How It Works ─── */
+.how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.how-step { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; text-align: center; position: relative; }
+.how-step .num { position: absolute; top: -12px; {{ 'right' if dir=='rtl' else 'left' }}: -12px; width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; }
+.how-step .icon { font-size: 36px; margin-bottom: 10px; display: block; }
+.how-step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.how-step p { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+/* ─── Features ─── */
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.feature-card {
+  background: var(--card); border-radius: 16px; padding: 28px;
+  border: 1px solid var(--border); transition: all 0.3s; text-align: center;
+}
+.feature-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(108,92,231,0.1); }
+.feature-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+.feature-card h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.feature-card p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+/* ─── Creator ─── */
+.creator-section { background: var(--bg2); }
+.creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.creator-card {
+  background: var(--card); border-radius: 16px; padding: 24px;
+  border: 1px solid var(--border);
+}
+.creator-card h3 {
+  font-size: 16px; font-weight: 700; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.creator-card h3 .icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.upload-zone {
+  position: relative; border: 2px dashed var(--border); border-radius: 12px;
+  padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.3s;
+}
+.upload-zone:hover { border-color: var(--accent); background: rgba(108,92,231,0.04); }
+.upload-zone input[type=file] {
+  position: absolute; top: 0; {{ 'left' if dir=='ltr' else 'right' }}: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+}
+.upload-zone .icon { font-size: 36px; margin-bottom: 8px; display: block; }
+.upload-zone .label { font-size: 14px; color: var(--text2); font-weight: 600; }
+.upload-zone .hint { font-size: 11px; color: var(--text2); margin-top: 4px; opacity: 0.6; }
+.preview-box {
+  position: relative; width: 100%; aspect-ratio: 16/9;
+  background: #000; border-radius: 10px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.preview-box img, .preview-box video { width: 100%; height: 100%; object-fit: contain; }
+.preview-box .placeholder { text-align: center; color: var(--text2); padding: 20px; }
+.preview-box .placeholder .icon { font-size: 48px; display: block; margin-bottom: 10px; }
+.preview-box .placeholder p { font-size: 13px; }
+.text-input {
+  width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; color: #fff; font-size: 13px; font-family: inherit;
+  resize: vertical; min-height: 80px; transition: 0.3s;
+}
+.text-input:focus { outline: none; border-color: var(--accent); }
+select.text-input { min-height: auto; height: auto; cursor: pointer; }
+.toggle-group { display: flex; gap: 8px; margin: 12px 0; }
+.toggle-btn {
+  flex: 1; padding: 10px; border: 1px solid var(--border); background: transparent;
+  color: var(--text2); border-radius: 10px; cursor: pointer; font-size: 13px;
+  font-weight: 600; font-family: inherit; transition: 0.3s;
+}
+.toggle-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.toggle-btn:hover:not(.active) { border-color: var(--border); color: #fff; background: var(--bg3); }
+.progress-bar { width: 100%; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; margin: 12px 0; }
+.progress-bar .fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px; width: 0%; transition: width 0.5s;
+}
+.status-text { text-align: center; font-size: 13px; color: var(--text2); margin: 8px 0; min-height: 20px; }
+.status-text.done { color: var(--accent3); }
+.status-text.error { color: var(--accent2); }
+.file-info {
+  font-size: 11px; color: var(--text2); padding: 8px 12px; background: var(--bg);
+  border-radius: 8px; margin-bottom: 8px; display: flex;
+  justify-content: space-between; align-items: center;
+}
+.file-info .name { color: var(--text); max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-info .remove { color: var(--accent2); cursor: pointer; font-size: 16px; line-height: 1; }
+.file-info .remove:hover { color: #ff6b6b; }
+.hidden { display: none !important; }
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Gallery ─── */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.gallery-card {
+  background: var(--card); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border); transition: all 0.3s;
+}
+.gallery-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(108,92,231,0.1); }
+.gallery-card video { width: 100%; display: block; background: #000; }
+.gallery-info { padding: 14px; }
+.gallery-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.gallery-info p { font-size: 12px; color: var(--text2); }
+.gallery-actions { display: flex; gap: 8px; margin-top: 10px; }
+.gallery-actions .btn { flex: 1; padding: 8px; font-size: 12px; justify-content: center; }
+
+/* ─── Stats ─── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+.stat-box {
+  background: var(--card); border-radius: 14px; padding: 24px; text-align: center;
+  border: 1px solid var(--border);
+}
+.stat-box .num { font-size: 34px; font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.stat-box .lbl { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+/* ─── Ad Sections ─── */
+.ad-in-article { text-align: center; padding: 16px; margin: 20px 0; background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); min-height: 90px; display: flex; align-items: center; justify-content: center; }
+.ad-in-article .ad-placeholder { font-size: 12px; color: var(--text2); opacity: 0.4; }
+.ad-sidebar { text-align: center; padding: 12px; margin-bottom: 16px; background: var(--bg2); border-radius: 12px; border: 1px solid var(--border); min-height: 200px; display: flex; align-items: center; justify-content: center; }
+.ad-sidebar .ad-placeholder { font-size: 12px; color: var(--text2); opacity: 0.4; }
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed; bottom: 30px; {{ 'left' if dir=='ltr' else 'right' }}: 50%; transform: translateX({{ '50%' if dir=='ltr' else '-50%' }});
+  padding: 14px 28px; border-radius: 12px; font-size: 14px; font-weight: 700;
+  z-index: 9999; max-width: 90%; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: var(--accent2); color: #fff; }
+.toast.success { background: var(--accent3); color: #fff; }
+.toast.info { background: var(--accent); color: #fff; }
+
+/* ─── CTA ─── */
+.cta-section {
+  background: linear-gradient(135deg, var(--bg2), #1a0a2e);
+  padding: 70px 0; text-align: center;
+}
+.cta-section h2 { font-size: 34px; font-weight: 800; margin-bottom: 12px; }
+.cta-section h2 span { color: var(--accent); }
+.cta-section p { color: var(--text2); font-size: 16px; margin-bottom: 28px; }
+
+/* ─── Footer ─── */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 30px; text-align: center; font-size: 13px; color: var(--text2);
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .social-links { display: flex; gap: 12px; justify-content: center; margin-bottom: 12px; }
+footer .social-links a { width: 36px; height: 36px; border-radius: 50%; background: var(--bg3); display: flex; align-items: center; justify-content: center; color: var(--text2); font-size: 16px; transition: 0.3s; }
+footer .social-links a:hover { background: var(--accent); color: #fff; }
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .hero h1 { font-size: 30px; }
+  .creator-grid, .features-grid, .how-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .how-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  nav { padding: 0 12px; }
+  nav .nav-links a { padding: 6px 10px; font-size: 11px; }
+  .hero { padding: 50px 16px 30px; }
+  .container { padding: 0 16px; }
+  .stats-row { grid-template-columns: 1fr; }
+  .how-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Video<span>Forge</span> <small>{{ t("nav_home") }}</small></a>
+  <div class="nav-links">
+    <a href="#how">{{ t("nav_how") }}</a>
+    <a href="#creator">{{ t("nav_create") }}</a>
+    <a href="#gallery">{{ t("nav_gallery") }}</a>
+    <a href="/admin" target="_blank">{{ t("nav_admin") }}</a>
+    <a href="/switch-language/{% if lang == 'ar' %}en{% else %}ar{% endif %}" class="lang-switch">
+      <span class="flag">{{ '🇬🇧' if lang == 'ar' else '🇸🇦' }}</span>
+      {{ t("lang_switch") }}
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ AD BANNER ═══ -->
+<div class="ad-banner">
+  {% if adsense_slot_top %}
+  <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_top }}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  {% elif not adsense_client %}
+  <div class="ad-placeholder">{{ t("ad_top") }}</div>
+  {% endif %}
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">{{ t("hero_badge") }}</div>
+    <h1>{{ t("hero_title_1") }} <span>{{ t("hero_title_2") }}</span></h1>
+    <p>{{ t("hero_subtitle") }}</p>
+    <div class="hero-buttons">
+      <a href="#creator" class="btn btn-primary btn-lg">{{ t("hero_btn_start") }}</a>
+      <a href="#how" class="btn btn-secondary btn-lg">{{ t("hero_btn_how") }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-header">
+      <h2>💡 <span>{{ t("how_title") }}</span></h2>
+      <p>{{ t("how_subtitle") }}</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span><span class="icon">🖼️</span><h4>{{ t("how_step1_title") }}</h4><p>{{ t("how_step1_desc") }}</p></div>
+      <div class="how-step"><span class="num">2</span><span class="icon">🎤</span><h4>{{ t("how_step2_title") }}</h4><p>{{ t("how_step2_desc") }}</p></div>
+      <div class="how-step"><span class="num">3</span><span class="icon">⚡</span><h4>{{ t("how_step3_title") }}</h4><p>{{ t("how_step3_desc") }}</p></div>
+      <div class="how-step"><span class="num">4</span><span class="icon">🎬</span><h4>{{ t("how_step4_title") }}</h4><p>{{ t("how_step4_desc") }}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="section" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header">
+      <h2>⚡ <span>{{ t("features_title") }}</span></h2>
+      <p>{{ t("features_subtitle") }}</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card"><span class="feature-icon">🎭</span><h4>{{ t("feature1_title") }}</h4><p>{{ t("feature1_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">🎤</span><h4>{{ t("feature2_title") }}</h4><p>{{ t("feature2_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">⚡</span><h4>{{ t("feature3_title") }}</h4><p>{{ t("feature3_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">🖼️</span><h4>{{ t("feature4_title") }}</h4><p>{{ t("feature4_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">📱</span><h4>{{ t("feature5_title") }}</h4><p>{{ t("feature5_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">🔊</span><h4>{{ t("feature6_title") }}</h4><p>{{ t("feature6_desc") }}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AD IN-ARTICLE ═══ -->
+<div class="container">
+  <div class="ad-in-article">
+    {% if adsense_slot_in_article %}
+    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_in_article }}" data-ad-format="auto"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    {% elif not adsense_client %}
+    <div class="ad-placeholder">{{ t("ad_in_article") }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══ CREATOR ═══ -->
+<section class="creator-section section" id="creator">
+  <div class="container">
+    <div class="section-header">
+      <h2>🎬 <span>{{ t("creator_title") }}</span></h2>
+      <p>{{ t("creator_subtitle") }}</p>
+    </div>
+    <div class="creator-grid">
+      <!-- Left: Inputs -->
+      <div>
+        <div class="creator-card">
+          <h3><span class="icon" style="background:rgba(108,92,231,0.15);color:var(--accent)">🖼️</span> {{ t("creator_image_label") }}</h3>
+          <div class="upload-zone" id="imageZone">
+            <input type="file" id="imageInput" accept="image/*">
+            <span class="icon">📁</span>
+            <div class="label">{{ t("upload_image_zone") }}</div>
+            <div class="hint">{{ t("upload_image_hint") }}</div>
+          </div>
+          <div id="imagePreview" class="hidden">
+            <div class="file-info"><span class="name" id="imageName"></span><span class="remove" onclick="removeImage()">✕</span></div>
+            <div class="preview-box"><img id="imagePreviewImg" src="" alt="preview"></div>
+          </div>
+        </div>
+
+        <div class="creator-card">
+          <h3><span class="icon" style="background:rgba(0,200,83,0.15);color:var(--accent3)">🎤</span> {{ t("creator_audio_label") }}</h3>
+          <div class="toggle-group" id="audioToggle">
+            <button class="toggle-btn active" data-mode="upload">{{ t("creator_audio_upload") }}</button>
+            <button class="toggle-btn" data-mode="text">{{ t("creator_audio_text") }}</button>
+          </div>
+          <div id="audioUploadMode">
+            <div class="upload-zone" id="audioZone">
+              <input type="file" id="audioInput" accept="audio/*">
+              <span class="icon">🎵</span>
+              <div class="label">{{ t("upload_audio_zone") }}</div>
+              <div class="hint">{{ t("upload_audio_hint") }}</div>
+            </div>
+            <div id="audioPreview" class="hidden">
+              <div class="file-info"><span class="name" id="audioName"></span><span class="remove" onclick="removeAudio()">✕</span></div>
+              <audio id="audioPlayer" controls style="width:100%;border-radius:8px;margin-bottom:8px"></audio>
+            </div>
+          </div>
+          <div id="audioTextMode" class="hidden">
+            <textarea class="text-input" id="textInput" placeholder="{{ t('creator_text_placeholder') }}"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <select id="ttsLang" class="text-input" style="min-height:auto;height:auto;flex:1">
+                <option value="auto">{{ t("creator_auto") }}</option>
+                <option value="ar">{{ t("creator_arabic") }}</option>
+                <option value="en">{{ t("creator_english") }}</option>
+              </select>
+              <span id="charCount" style="font-size:12px;color:var(--text2)">0 {{ t("creator_chars") }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="creator-card">
+          <h3><span class="icon" style="background:rgba(240,192,64,0.15);color:var(--gold)">⚡</span> {{ t("creator_method_label") }}</h3>
+          <div class="toggle-group" id="modeToggle">
+            <button class="toggle-btn active" data-mode="local">{{ t("creator_local") }}</button>
+            <button class="toggle-btn" data-mode="cloud">{{ t("creator_cloud") }}</button>
+          </div>
+          <div id="cloudSettings" class="hidden" style="margin-top:12px">
+            <input type="text" id="apiKeyInput" class="text-input" style="min-height:auto;height:42px" placeholder="{{ t('creator_api_key') }}" autocomplete="off">
+            <div style="font-size:11px;color:var(--text2);margin-top:4px">{{ t("creator_api_hint") }} <a href="https://sync.so" target="_blank" style="color:var(--accent)">sync.so</a></div>
+          </div>
+          <div id="modelNotice" style="margin-top:8px;padding:8px 12px;background:rgba(255,214,0,0.05);border:1px solid rgba(255,214,0,0.2);border-radius:8px;font-size:12px;display:none">
+            ⚠️ {{ t("creator_model_notice") }} <a href="https://huggingface.co/Nekochu/Wav2Lip/resolve/main/wav2lip_gan.pth" target="_blank" style="color:var(--accent)">{{ t("creator_download_model") }}</a>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg" style="width:100%;margin-top:8px" id="generateBtn" disabled onclick="startGenerate()">
+          🚀 {{ t("creator_btn_generate") }}
+        </button>
+      </div>
+
+      <!-- Right: Preview & Result -->
+      <div>
+        {% if adsense_slot_sidebar %}
+        <div class="ad-sidebar">
+          <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_sidebar }}" data-ad-format="rectangle"></ins>
+          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        </div>
+        {% elif not adsense_client %}
+        <div class="ad-sidebar-placeholder">{{ t("ad_sidebar") }}</div>
+        {% endif %}
+        <div class="creator-card">
+          <h3><span class="icon" style="background:rgba(0,200,83,0.15);color:var(--accent3)">🎬</span> {{ t("preview_label") }}</h3>
+          <div class="preview-box" id="resultPreview">
+            <div class="placeholder">
+              <span class="icon">🎥</span>
+              <p>{{ t("preview_placeholder") }}</p>
+              <p style="font-size:12px;color:#444">{{ t("preview_placeholder_hint") }}</p>
+            </div>
+          </div>
+          <div id="resultActions" class="hidden">
+            <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+            <div class="status-text" id="statusText">{{ t("preview_processing") }}</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-success" style="flex:1" id="downloadBtn" onclick="downloadVideo()">{{ t("preview_download") }}</button>
+              <button class="btn btn-secondary" onclick="resetAll()">{{ t("preview_reset") }}</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="creator-card">
+          <h3><span class="icon" style="background:rgba(240,192,64,0.15);color:var(--gold)">💡</span> {{ t("tips_title") }}</h3>
+          <div style="font-size:13px;color:var(--text2);line-height:2">
+            <ul style="padding-{{ 'right' if dir=='rtl' else 'left' }}:20px">
+              <li><strong style="color:var(--text)">{{ t("tips_1") }}</strong></li>
+              <li><strong style="color:var(--text)">{{ t("tips_2") }}</strong></li>
+              <li><strong style="color:var(--text)">{{ t("tips_3") }}</strong></li>
+              <li><strong style="color:var(--text)">{{ t("tips_4") }}</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AD BANNER ═══ -->
+<div class="container">
+  <div class="ad-in-article">
+    {% if adsense_slot_video %}
+    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_video }}" data-ad-format="auto"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    {% elif not adsense_client %}
+    <div class="ad-placeholder">{{ t("ad_in_article") }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══ GALLERY ═══ -->
+<section class="section" id="gallery">
+  <div class="container">
+    <div class="section-header">
+      <h2>📹 <span>{{ t("gallery_title") }}</span></h2>
+      <p>{{ t("gallery_subtitle") }}</p>
+    </div>
+    <div id="galleryGrid" class="gallery-grid">
+      <div style="text-align:center;color:var(--text2);padding:40px;grid-column:1/-1">
+        {{ t("gallery_loading") }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<section class="section" style="background:var(--bg2);padding:40px 0">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-box"><div class="num" id="statTotal">-</div><div class="lbl">{{ t("stat_total") }}</div></div>
+      <div class="stat-box"><div class="num" id="statToday">-</div><div class="lbl">{{ t("stat_today") }}</div></div>
+      <div class="stat-box"><div class="num" id="statStatus">✓</div><div class="lbl">{{ t("stat_status") }}</div></div>
+      <div class="stat-box"><div class="num" id="statModel">-</div><div class="lbl">{{ t("stat_model") }}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta-section">
+  <div class="container">
+    <h2>{{ t("cta_title_1") }} <span>{{ t("cta_title_2") }}</span></h2>
+    <p>{{ t("cta_subtitle") }}</p>
+    <a href="#creator" class="btn btn-primary btn-lg">{{ t("cta_btn") }}</a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="social-links">
+    <a href="#" title="YouTube">▶</a>
+    <a href="#" title="TikTok">♪</a>
+    <a href="#" title="Instagram">☐</a>
+    <a href="#" title="Twitter">✕</a>
+  </div>
+  <p>VideoForge Pro © 2026 - {{ t("footer_rights") }}</p>
+  <p style="font-size:11px;color:#555;margin-top:8px">
+    <a href="/privacy">{{ t("footer_privacy") }}</a> |
+    <a href="/terms">{{ t("footer_terms") }}</a> |
+    <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a> |
+    <a href="/admin" target="_blank">{{ t("nav_admin") }}</a> |
+    {{ t("footer_contact_email") }}
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+{% if adsense_client %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client }}" crossorigin="anonymous"></script>
+{% endif %}
+
+<script>
+// ════════════════════════════════════════════
+// 🔤 Bilingual Translations (Client-side)
+// ════════════════════════════════════════════
+const LANG = '{{ lang }}';
+
+const TRANS = {
+  "nav_how": { "ar": "كيف يعمل", "en": "How It Works" },
+  "nav_create": { "ar": "إنشاء فيديو", "en": "Create Video" },
+  "nav_gallery": { "ar": "المعرض", "en": "Gallery" },
+  "nav_admin": { "ar": "لوحة التحكم", "en": "Dashboard" },
+  "gallery_loading": { "ar": "جاري تحميل الفيديوهات...", "en": "Loading videos..." },
+  "gallery_empty": { "ar": "📭 لا توجد فيديوهات بعد. ابدأ بإنشاء أول فيديو!", "en": "📭 No videos yet. Create your first one!" },
+  "gallery_error": { "ar": "⚠️ فشل تحميل المعرض", "en": "⚠️ Failed to load gallery" },
+  "gallery_play": { "ar": "▶️ تشغيل", "en": "▶️ Play" },
+  "gallery_download": { "ar": "⬇ تحميل", "en": "⬇ Download" },
+  "stat_total": { "ar": "إجمالي الفيديوهات", "en": "Total Videos" },
+  "stat_today": { "ar": "فيديو اليوم", "en": "Today's Videos" },
+  "stat_status": { "ar": "حالة الخادم", "en": "Server Status" },
+  "stat_model": { "ar": "النموذج المحلي", "en": "Local Model" },
+  "stat_model_ready": { "ar": "✅ جاهز", "en": "✅ Ready" },
+  "stat_model_missing": { "ar": "❌ غير موجود", "en": "❌ Not Found" },
+  "preview_placeholder": { "ar": "سينتج الفيديو هنا بعد الإنشاء", "en": "Your video will appear here" },
+  "preview_placeholder_hint": { "ar": "يمكنك معاينة وتحميل الفيديو النهائي", "en": "Preview and download your final video" },
+  "preview_processing": { "ar": "⏳ جاري معالجة الفيديو...", "en": "⏳ Processing video..." },
+  "preview_done": { "ar": "✅ تم إنشاء الفيديو بنجاح!", "en": "✅ Video created successfully!" },
+  "preview_download": { "ar": "⬇ تحميل الفيديو", "en": "⬇ Download Video" },
+  "preview_reset": { "ar": "🔄 جديد", "en": "🔄 Reset" },
+  "btn_generate": { "ar": "🚀 بدء إنشاء الفيديو", "en": "🚀 Generate Video" },
+  "btn_generating": { "ar": "جاري الإنشاء...", "en": "Generating..." },
+  "toast_created": { "ar": "✅ تم إنشاء الفيديو!", "en": "✅ Video created!" },
+  "toast_upload_error": { "ar": "خطأ في رفع الملف", "en": "Upload error" },
+  "toast_connection_error": { "ar": "خطأ في الاتصال بالخادم", "en": "Connection error" },
+  "toast_general_error": { "ar": "خطأ", "en": "Error" },
+};
+
+function __(key) {
+  const entry = TRANS[key];
+  if (!entry) return key;
+  return entry[LANG] || entry['ar'] || key;
+}
+
+// ════════════════════════════════════════════
+//  App State
+// ════════════════════════════════════════════
+const BASE = '';
+let state = { image: null, audio: null, jobId: null, pollTimer: null };
+
+function $(id) { return document.getElementById(id); }
+
+function showToast(msg, type) {
+  const t = $('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  clearTimeout(t._hide); t._hide = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ─── File Uploads ───
+$('imageInput').onchange = e => uploadFile(e.target.files[0], 'image');
+$('audioInput').onchange = e => uploadFile(e.target.files[0], 'audio');
+
+async function uploadFile(file, type) {
+  if (!file) return;
+  const fd = new FormData(); fd.append('file', file);
+  try {
+    const r = await fetch(`/api/wav2lip/upload`, { method: 'POST', body: fd });
+    const d = await r.json();
+    if (d.error) { showToast(d.error, 'error'); return; }
+    if (type === 'image') {
+      state.image = d.path;
+      $('imageZone').classList.add('hidden');
+      $('imagePreview').classList.remove('hidden');
+      $('imageName').textContent = file.name;
+      $('imagePreviewImg').src = d.path;
+    } else {
+      state.audio = d.path;
+      $('audioZone').classList.add('hidden');
+      $('audioPreview').classList.remove('hidden');
+      $('audioName').textContent = file.name;
+      $('audioPlayer').src = d.path;
+    }
+    updateGenerateBtn();
+  } catch(e) { showToast( __('toast_upload_error'), 'error'); }
+}
+
+function removeImage() {
+  state.image = null;
+  $('imageZone').classList.remove('hidden');
+  $('imagePreview').classList.add('hidden');
+  updateGenerateBtn();
+}
+
+function removeAudio() {
+  state.audio = null;
+  $('audioZone').classList.remove('hidden');
+  $('audioPreview').classList.add('hidden');
+  $('audioPlayer').src = '';
+  updateGenerateBtn();
+}
+
+// ─── Audio Toggle ───
+document.querySelectorAll('#audioToggle .toggle-btn').forEach(btn => {
+  btn.onclick = function() {
+    document.querySelectorAll('#audioToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const mode = this.dataset.mode;
+    $('audioUploadMode').classList.toggle('hidden', mode !== 'upload');
+    $('audioTextMode').classList.toggle('hidden', mode !== 'text');
+    if (mode === 'text') removeAudio();
+    updateGenerateBtn();
+  };
+});
+
+// ─── Mode Toggle ───
+document.querySelectorAll('#modeToggle .toggle-btn').forEach(btn => {
+  btn.onclick = function() {
+    document.querySelectorAll('#modeToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    $('cloudSettings').classList.toggle('hidden', this.dataset.mode !== 'cloud');
+    updateGenerateBtn();
+  };
+});
+
+// ─── Char Count ───
+$('textInput').oninput = function() {
+  const suffix = LANG === 'ar' ? ' حرف' : ' chars';
+  $('charCount').textContent = this.value.length + suffix;
+  updateGenerateBtn();
+};
+$('apiKeyInput').oninput = updateGenerateBtn;
+
+function updateGenerateBtn() {
+  const btn = $('generateBtn');
+  const hasImage = state.image !== null;
+  const audioMode = document.querySelector('#audioToggle .toggle-btn.active').dataset.mode;
+  const hasAudio = audioMode === 'upload' ? state.audio !== null : $('textInput').value.trim().length > 0;
+  const genMode = document.querySelector('#modeToggle .toggle-btn.active').dataset.mode;
+  const hasApiKey = genMode !== 'cloud' || $('apiKeyInput').value.trim().length > 0;
+  btn.disabled = !(hasImage && hasAudio && hasApiKey);
+}
+
+// ─── Generate ───
+async function startGenerate() {
+  const btn = $('generateBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> ' + __('btn_generating');
+
+  const audioMode = document.querySelector('#audioToggle .toggle-btn.active').dataset.mode;
+  const genMode = document.querySelector('#modeToggle .toggle-btn.active').dataset.mode;
+
+  const body = {
+    image: state.image,
+    audio: audioMode === 'upload' ? state.audio : null,
+    text: audioMode === 'text' ? $('textInput').value : null,
+    mode: genMode,
+    api_key: genMode === 'cloud' ? $('apiKeyInput').value.trim() : '',
+  };
+
+  try {
+    const r = await fetch(`/api/wav2lip/generate`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const d = await r.json();
+    if (d.error) { showToast(d.error, 'error'); btn.disabled = false; btn.innerHTML = __('btn_generate'); return; }
+    state.jobId = d.job_id;
+    $('resultActions').classList.remove('hidden');
+    $('downloadBtn').classList.add('hidden');
+    $('progressFill').style.width = '10%';
+    $('statusText').textContent = __('preview_processing');
+    $('statusText').className = 'status-text';
+    pollJob(d.job_id);
+  } catch(e) { showToast(__('toast_connection_error'), 'error'); btn.disabled = false; btn.innerHTML = __('btn_generate'); }
+}
+
+function pollJob(jobId) {
+  state.pollTimer = setInterval(async () => {
+    try {
+      const r = await fetch(`/api/wav2lip/job/${jobId}`);
+      const d = await r.json();
+      if (d.error) { clearInterval(state.pollTimer); showToast(d.error, 'error'); resetGenBtn(); return; }
+      if (d.status === 'processing') {
+        $('statusText').textContent = __('preview_processing');
+        $('progressFill').style.width = '60%';
+      } else if (d.status === 'done') {
+        clearInterval(state.pollTimer);
+        $('progressFill').style.width = '100%';
+        $('statusText').textContent = __('preview_done');
+        $('statusText').className = 'status-text done';
+        $('downloadBtn').classList.remove('hidden');
+        $('downloadBtn').dataset.path = d.output;
+        const preview = $('resultPreview');
+        preview.innerHTML = '<video id="videoPreview" controls style="width:100%;height:100%;object-fit:contain;background:#000"><source src="' + d.output + '" type="video/mp4"></video>';
+        showToast(__('toast_created'), 'success');
+        resetGenBtn();
+        loadGallery();
+        loadStats();
+      } else if (d.status === 'error') {
+        clearInterval(state.pollTimer);
+        $('statusText').textContent = '❌ ' + (d.error || __('toast_general_error'));
+        $('statusText').className = 'status-text error';
+        $('progressFill').style.width = '0%';
+        showToast(d.error || __('toast_general_error'), 'error');
+        resetGenBtn();
+      }
+    } catch(e) { clearInterval(state.pollTimer); showToast(__('toast_connection_error'), 'error'); resetGenBtn(); }
+  }, 2000);
+}
+
+function resetGenBtn() {
+  const btn = $('generateBtn');
+  btn.innerHTML = __('btn_generate');
+  btn.disabled = false;
+}
+
+function downloadVideo() {
+  const path = $('downloadBtn').dataset.path;
+  if (path) window.open(path, '_blank');
+}
+
+function resetAll() {
+  if (state.pollTimer) clearInterval(state.pollTimer);
+  state = { image: null, audio: null, jobId: null, pollTimer: null };
+  $('imageZone').classList.remove('hidden');
+  $('imagePreview').classList.add('hidden');
+  $('audioZone').classList.remove('hidden');
+  $('audioPreview').classList.add('hidden');
+  $('resultActions').classList.add('hidden');
+  $('resultPreview').innerHTML = '<div class="placeholder"><span class="icon">🎥</span><p>' + __('preview_placeholder') + '</p><p style="font-size:12px;color:#444">' + __('preview_placeholder_hint') + '</p></div>';
+  $('generateBtn').disabled = true;
+  $('textInput').value = '';
+  $('charCount').textContent = '0 ' + (LANG === 'ar' ? 'حرف' : 'chars');
+  updateGenerateBtn();
+}
+
+// ─── Gallery ───
+async function loadGallery() {
+  try {
+    const r = await fetch(`${BASE}/api/gallery`);
+    const videos = await r.json();
+    const grid = $('galleryGrid');
+    if (!videos || !videos.length) {
+      grid.innerHTML = '<div style="text-align:center;color:var(--text2);padding:40px;grid-column:1/-1">' + __('gallery_empty') + '</div>';
+      return;
+    }
+    grid.innerHTML = videos.map(v => `
+      <div class="gallery-card">
+        <video class="gallery-video" src="${v.path}" controls preload="metadata"></video>
+        <div class="gallery-info">
+          <h4>${v.name || (LANG === 'ar' ? 'فيديو' : 'Video')}</h4>
+          <p>${v.date || ''}</p>
+          <div class="gallery-actions">
+            <a href="${v.path}" download class="btn btn-sm btn-secondary">${__('gallery_download')}</a>
+            <button class="btn btn-sm btn-primary" onclick="window.open('${v.path}','_blank')">${__('gallery_play')}</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    $('galleryGrid').innerHTML = '<div style="text-align:center;color:var(--text2);padding:40px;grid-column:1/-1">' + __('gallery_error') + '</div>';
+  }
+}
+
+// ─── Stats ───
+async function loadStats() {
+  try {
+    const r = await fetch(`${BASE}/api/stats`);
+    const d = await r.json();
+    $('statTotal').textContent = d.total_videos || 0;
+    $('statToday').textContent = d.today || 0;
+    $('statStatus').textContent = '✓';
+  } catch(e) {}
+  try {
+    const r = await fetch(`${BASE}/api/status`);
+    const d = await r.json();
+    $('statModel').textContent = d.model_ready ? __('stat_model_ready') : __('stat_model_missing');
+  } catch(e) {}
+}
+
+// ─── Smooth Scroll ───
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.onclick = function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+});
+
+// ─── Check Model Status ───
+async function checkModelStatus() {
+  try {
+    const r = await fetch(`${BASE}/api/status`);
+    const d = await r.json();
+    const notice = $('modelNotice');
+    if (notice) {
+      notice.style.display = d.model_ready ? 'none' : 'block';
+    }
+    $('statModel').textContent = d.model_ready ? __('stat_model_ready') : __('stat_model_missing');
+  } catch(e) {}
+}
+setInterval(checkModelStatus, 10000);
+checkModelStatus();
+
+// ─── Init ───
+loadGallery();
+loadStats();
+</script>
+</body>
+</html>

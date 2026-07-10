@@ -1,0 +1,121 @@
+# Environment & secrets
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+
+# Database
+*.db
+*.sqlite3
+
+# Output & temp
+output/*
+!output/.gitkeep
+temp/*
+!temp/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# Static generated files
+dashboard/static/videos/*
+!dashboard/static/videos/.gitkeep
+
+# User-uploaded persona assets (keep structure)
+content/persona_assets/*/
+!content/persona_assets/.gitkeep
+!content/persona_assets/**/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Old project files (kept but ignored)
+youtube_producer/
+cfpro/
+video_factory/
+Wav2Lip/
+wav2lip_avatar/
+image_generator/
+aya_parfum/
+avatar_images/
+avatar/
+instance/
+workspace/
+youtube_workspace/
+test_data/
+
+# Old Python files at root - kept for reference but not tracked
+app_wav2lip.py
+build_wav2lip*.py
+check_video.py
+create_video.py
+download_model.py
+download_wav2lip.py
+fix_subtitles.py
+generate_brochure.py
+image_generator.py
+image_server.py
+main.py.bak
+models.py
+rebuild_*.py
+researcher_pro.py
+run_dashboard.py
+run_scheduler.py
+run_server.py
+server.py
+start_bg.py
+talking_avatar.py
+test_*.py
+tts_wrapper.py
+video_generator.py
+wav2lip_engine.py
+tts_debug.log
+err.txt
+colab_notebook.ipynb
+_dl.py
+_download_temp.py
+youtube_producer.py
+
+# Old config files
+config.json
+config_multi.json
+workflow_*.json
+workflow_*.json
+niches.json
+platform_rules.json
+
+# Media files
+*.mp3
+*.wav
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Model files
+*.pth
+*.onnx
+*.bin
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Server logs
+server*.log
+wav2lip_server*.log
+_dl_log.txt
