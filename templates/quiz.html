@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% block title %}اختبار العطر المثالي - AYA PARFUM{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>اختبار العطر المثالي</h1>
+        <p>أجيب على 5 أسئلة ونحن نجد عطرك المثالي</p>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        <div class="quiz-container">
+            <form method="POST" action="{{ url_for('perfume_quiz') }}" id="quiz-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <!-- Question 1 -->
+                <div class="quiz-step active" data-step="1">
+                    <div class="quiz-progress"><span>1 / 5</span></div>
+                    <h2>👃 ما هي العائلة العطرية التي تفضلينها؟</h2>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="scent_family" value="oriental" required>
+                            <div class="option-content">
+                                <span class="option-icon">🌙</span>
+                                <span class="option-title">شرقية</span>
+                                <span class="option-desc">عود، عنبر، مسك — عطور دافئة وغامضة</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="scent_family" value="floral">
+                            <div class="option-content">
+                                <span class="option-icon">🌸</span>
+                                <span class="option-title">زهرية</span>
+                                <span class="option-desc">ورد، ياسمين، زهور — أنثوية ورقيقة</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="scent_family" value="fresh">
+                            <div class="option-content">
+                                <span class="option-icon">🌊</span>
+                                <span class="option-title">منعشة</span>
+                                <span class="option-desc">حمضيات، نعناع، بحر — انتعاش وحيوية</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="scent_family" value="woody">
+                            <div class="option-content">
+                                <span class="option-icon">🌲</span>
+                                <span class="option-title">خشبية</span>
+                                <span class="option-desc">أرز، جلد، تبغ — قوة ورجولة</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-step" data-step="2">
+                    <div class="quiz-progress"><span>2 / 5</span></div>
+                    <h2>📅 ما هي المناسبة؟</h2>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="occasion" value="daily" required>
+                            <div class="option-content">
+                                <span class="option-icon">☀️</span>
+                                <span class="option-title">يومي / للعمل</span>
+                                <span class="option-desc">عطر خفيف ومنعش للاستخدام اليومي</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="occasion" value="evening">
+                            <div class="option-content">
+                                <span class="option-icon">🌆</span>
+                                <span class="option-title">مسائي / سهرة</span>
+                                <span class="option-desc">عطر جريء للمناسبات المسائية</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="occasion" value="special">
+                            <div class="option-content">
+                                <span class="option-icon">🎉</span>
+                                <span class="option-title">مناسبات خاصة</span>
+                                <span class="option-desc">عطر فاخر للمناسبات الكبيرة</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="occasion" value="gift">
+                            <div class="option-content">
+                                <span class="option-icon">🎁</span>
+                                <span class="option-title">هدية</span>
+                                <span class="option-desc">باقة هدايا مميزة لشخص عزيز</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-step" data-step="3">
+                    <div class="quiz-progress"><span>3 / 5</span></div>
+                    <h2>💃 ما هو مزاجك اليوم؟</h2>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="mood" value="confident" required>
+                            <div class="option-content">
+                                <span class="option-icon">💪</span>
+                                <span class="option-title">واثق</span>
+                                <span class="option-desc">عطر قوي يلفت الانتباه</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="mood" value="romantic">
+                            <div class="option-content">
+                                <span class="option-icon">💕</span>
+                                <span class="option-title">رومانسي</span>
+                                <span class="option-desc">عطر ناعم وجذاب</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="mood" value="energetic">
+                            <div class="option-content">
+                                <span class="option-icon">⚡</span>
+                                <span class="option-title">حيوي</span>
+                                <span class="option-desc">عطر منعش يمنحك الطاقة</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="mood" value="calm">
+                            <div class="option-content">
+                                <span class="option-icon">🧘</span>
+                                <span class="option-title">هادئ</span>
+                                <span class="option-desc">عطر ناعم ومريح</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-step" data-step="4">
+                    <div class="quiz-progress"><span>4 / 5</span></div>
+                    <h2>💰 الميزانية المناسبة</h2>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="intensity" value="budget" required>
+                            <div class="option-content">
+                                <span class="option-icon">💵</span>
+                                <span class="option-title">اقتصادي</span>
+                                <span class="option-desc">أقل من 150 درهم</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="intensity" value="mid">
+                            <div class="option-content">
+                                <span class="option-icon">💰</span>
+                                <span class="option-title">متوسط</span>
+                                <span class="option-desc">100 - 250 درهم</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="intensity" value="premium">
+                            <div class="option-content">
+                                <span class="option-icon">💎</span>
+                                <span class="option-title">فاخر</span>
+                                <span class="option-desc">200 درهم فما فوق</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-step" data-step="5">
+                    <div class="quiz-progress"><span>5 / 5</span></div>
+                    <h2>👤 لمن تبحث عن عطر؟</h2>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="gender" value="female" required>
+                            <div class="option-content">
+                                <span class="option-icon">👩</span>
+                                <span class="option-title">نسائي</span>
+                                <span class="option-desc">عطور نسائية أنيقة</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="gender" value="male">
+                            <div class="option-content">
+                                <span class="option-icon">👨</span>
+                                <span class="option-title">رجالي</span>
+                                <span class="option-desc">عطور رجالية فاخرة</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="gender" value="unisex">
+                            <div class="option-content">
+                                <span class="option-icon">🤝</span>
+                                <span class="option-title">للجنسين</span>
+                                <span class="option-desc">عطور تناسب الجميع</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="quiz-nav">
+                    <button type="button" class="btn btn-outline" id="quiz-prev" style="display:none">السابق</button>
+                    <button type="button" class="btn btn-primary" id="quiz-next">التالي</button>
+                    <button type="submit" class="btn btn-primary" id="quiz-submit" style="display:none">اكتشفي عطرك المثالي ✨</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

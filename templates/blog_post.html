@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title_ar or post.title }} - AYA PARFUM{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="blog-post-layout">
+            <article class="blog-post-article">
+                <div class="blog-post-header">
+                    <div class="blog-post-meta">
+                        <span><i class="far fa-user"></i> {{ post.author }}</span>
+                        <span><i class="far fa-calendar-alt"></i> {{ post.created_at.strftime('%Y/%m/%d') }}</span>
+                    </div>
+                    <h1>{{ post.title_ar or post.title }}</h1>
+                </div>
+                <div class="blog-post-image">
+                    <img src="{{ url_for('static', filename='img/products/' + post.image) }}" alt="{{ post.title_ar or post.title }}">
+                </div>
+                <div class="blog-post-content">
+                    {{ (post.content_ar or post.content)|safe }}
+                </div>
+                <div class="blog-post-share">
+                    <span>شاركي المقال:</span>
+                    <a href="https://wa.me/{{ whatsapp_number }}?text={{ post.title_ar or post.title }}" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank"><i class="fab fa-facebook"></i></a>
+                </div>
+            </article>
+            <aside class="blog-sidebar">
+                <div class="sidebar-widget">
+                    <h3>آخر المقالات</h3>
+                    {% for r in recent %}
+                    <div class="sidebar-post">
+                        <a href="{{ url_for('blog_post', slug=r.slug) }}">{{ r.title_ar or r.title }}</a>
+                        <span>{{ r.created_at.strftime('%Y/%m/%d') }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="sidebar-widget">
+                    <h3>🔍 اكتشفي عطرك</h3>
+                    <p style="font-size:14px;color:var(--gray)">أجيبي على اختبارنا لنجد عطرك المثالي</p>
+                    <a href="{{ url_for('perfume_quiz') }}" class="btn btn-primary btn-block">ابدئي الاختبار</a>
+                </div>
+                <div class="sidebar-widget">
+                    <h3>✨ عطور الباقات</h3>
+                    <p style="font-size:14px;color:var(--gray)">اكتشفي باقاتنا الموفرة</p>
+                    <a href="{{ url_for('packs') }}" class="btn btn-outline btn-block">تصفح الباقات</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+{% endblock %}

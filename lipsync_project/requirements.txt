@@ -1,0 +1,31 @@
+# Core
+torch>=1.9.0
+torchvision>=0.10.0
+numpy>=1.19.0
+opencv-python>=4.5.0
+
+# Audio processing
+librosa>=0.8.0
+scipy>=1.5.0
+
+# Face detection (Wav2Lip uses face_detection module)
+git+https://github.com/elliottzheng/face_alignment.git@master
+facenet-pytorch>=2.5.0
+scipy>=1.7.0
+tqdm>=4.60.0
+
+# API server (optional)
+fastapi>=0.95.0
+uvicorn[standard]>=0.21.0
+python-multipart>=0.0.6
+
+# Config parsing
+pyyaml>=6.0
+
+# GFPGAN enhancement (optional)
+# gfpgan>=1.3.8
+# realesrgan>=0.3.0
+# basicsr>=1.4.2
+
+# Wav2Lip specific (these are shipped with the repo)
+# See Wav2Lip/ directory for original Wav2Lip code

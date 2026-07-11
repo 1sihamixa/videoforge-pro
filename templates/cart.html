@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}سلة المشتريات{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>سلة المشتريات</h1>
+    </div>
+</section>
+
+<section class="cart-section section">
+    <div class="container">
+        {% if items %}
+        <div class="free-shipping-bar">
+            {% if total >= 200 %}
+            <div class="shipping-progress full">
+                <span>🎉 تهانينا! طلبك مؤهل للتوصيل المجاني!</span>
+            </div>
+            {% else %}
+            <div class="shipping-progress">
+                <div class="progress-text">أضف {{ 200 - total }} درهم إضافية للحصول على توصيل مجاني 🚚</div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: {{ (total / 200 * 100)|round|int }}%"></div>
+                </div>
+                <span class="progress-label">{{ total }} / 200 درهم</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="cart-layout">
+            <div class="cart-items">
+                {% for item in items %}
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="{{ url_for('static', filename='img/products/' + item.product.image) }}" alt="{{ item.product.name_ar or item.product.name }}">
+                    </div>
+                    <div class="cart-item-info">
+                        <h3><a href="{{ url_for('product_detail', id=item.product.id) }}">{{ item.product.name_ar or item.product.name }}</a></h3>
+                        <p class="cart-item-price">{{ item.product.price }} درهم × {{ item.quantity }}</p>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <form action="{{ url_for('update_cart', id=item.id) }}" method="POST" class="quantity-form">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <button type="button" class="qty-btn minus" onclick="this.nextElementSibling.stepDown(); this.closest('form').submit();">-</button>
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" onchange="this.closest('form').submit();">
+                            <button type="button" class="qty-btn plus" onclick="this.previousElementSibling.stepUp(); this.closest('form').submit();">+</button>
+                        </form>
+                    </div>
+                    <div class="cart-item-total">
+                        <span>{{ item.product.price * item.quantity }} درهم</span>
+                    </div>
+                    <div class="cart-item-remove">
+                        <a href="{{ url_for('remove_from_cart', id=item.id) }}" class="btn-remove" onclick="return confirm('هل أنت متأكد من حذف المنتج؟')"><i class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="cart-summary">
+                <h3>ملخص الطلب</h3>
+                <div class="summary-row">
+                    <span>عدد المنتجات</span>
+                    <span>{{ items|sum(attribute='quantity') }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>المجموع الفرعي</span>
+                    <span>{{ total }} درهم</span>
+                </div>
+                <div class="summary-row">
+                    <span>التوصيل</span>
+                    <span>مجاني</span>
+                </div>
+                <div class="summary-row total">
+                    <span>الإجمالي</span>
+                    <span>{{ total }} درهم</span>
+                </div>
+                <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block">إتمام الطلب</a>
+                <a href="{{ url_for('products') }}" class="btn btn-outline btn-block">متابعة التسوق</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>سلتك فارغة</h3>
+            <p>أضف بعض المنتجات الرائعة إلى سلتك</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary">تسوق الآن</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

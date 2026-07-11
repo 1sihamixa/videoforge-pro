@@ -1,0 +1,44 @@
+{% extends 'admin/layout.html' %}
+{% block title %}إدارة التصنيفات{% endblock %}
+{% block content %}
+<div class="admin-toolbar">
+    <h2>التصنيفات</h2>
+</div>
+<form method="POST" action="{{ url_for('admin_add_category') }}" class="admin-form inline-form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="form-row">
+        <div class="form-group">
+            <label>اسم التصنيف (عربي)</label>
+            <input type="text" name="name_ar" required>
+        </div>
+        <div class="form-group">
+            <label>اسم التصنيف (إنجليزي)</label>
+            <input type="text" name="name">
+        </div>
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة</button>
+        </div>
+    </div>
+</form>
+<table>
+    <thead>
+        <tr>
+            <th>عربي</th>
+            <th>إنجليزي</th>
+            <th>عدد المنتجات</th>
+            <th>إجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cat in categories %}
+        <tr>
+            <td>{{ cat.name_ar or '-' }}</td>
+            <td>{{ cat.name }}</td>
+            <td>{{ cat.products|length }}</td>
+            <td><a href="{{ url_for('admin_delete_category', id=cat.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد؟')"><i class="fas fa-trash"></i></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

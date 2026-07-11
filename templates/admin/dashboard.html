@@ -1,0 +1,318 @@
+{% extends 'admin/layout.html' %}
+{% block title %}لوحة تحكم AYA PARFUM{% endblock %}
+{% block content %}
+
+<!-- Stats Cards Row -->
+<div class="stats-grid-modern">
+    <div class="stat-card-modern stat-primary">
+        <div class="stat-icon"><i class="fas fa-box"></i></div>
+        <div class="stat-info">
+            <h3>{{ total_products }}</h3>
+            <p>إجمالي المنتجات</p>
+        </div>
+        <div class="stat-trend up"><i class="fas fa-arrow-up"></i></div>
+    </div>
+    <div class="stat-card-modern stat-success">
+        <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+        <div class="stat-info">
+            <h3>{{ total_orders }}</h3>
+            <p>إجمالي الطلبات</p>
+        </div>
+        <div class="stat-trend up"><i class="fas fa-arrow-up"></i></div>
+    </div>
+    <div class="stat-card-modern stat-warning">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-info">
+            <h3>{{ pending_orders }}</h3>
+            <p>طلبات معلقة</p>
+        </div>
+        {% if pending_orders > 0 %}
+        <div class="stat-badge pulse">جديد</div>
+        {% endif %}
+    </div>
+    <div class="stat-card-modern stat-info">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-info">
+            <h3>{{ total_users }}</h3>
+            <p>المستخدمين</p>
+        </div>
+    </div>
+    <div class="stat-card-modern stat-danger">
+        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="stat-info">
+            <h3>{{ low_stock }}</h3>
+            <p>مخزون منخفض</p>
+        </div>
+        {% if low_stock > 0 %}
+        <div class="stat-badge danger">تحذير</div>
+        {% endif %}
+    </div>
+    <div class="stat-card-modern stat-gold">
+        <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+        <div class="stat-info">
+            <h3>{{ total_revenue|int }} <small>درهم</small></h3>
+            <p>إجمالي الإيرادات</p>
+        </div>
+    </div>
+</div>
+
+<!-- Today + Quick Stats Row -->
+<div class="quick-stats-row">
+    <div class="quick-stat-box">
+        <div class="qs-icon"><i class="fas fa-calendar-day"></i></div>
+        <div>
+            <span class="qs-value">{{ orders_today }}</span>
+            <span class="qs-label">طلبات اليوم</span>
+        </div>
+    </div>
+    <div class="quick-stat-box">
+        <div class="qs-icon"><i class="fas fa-coins"></i></div>
+        <div>
+            <span class="qs-value">{{ revenue_today|int }} <small>درهم</small></span>
+            <span class="qs-label">إيرادات اليوم</span>
+        </div>
+    </div>
+    <div class="quick-stat-box">
+        <div class="qs-icon"><i class="fas fa-chart-line"></i></div>
+        <div>
+            <span class="qs-value">{{ monthly_revenue|int }} <small>درهم</small></span>
+            <span class="qs-label">الشهر الحالي</span>
+        </div>
+    </div>
+    <div class="quick-stat-box">
+        <div class="qs-icon"><i class="fas fa-receipt"></i></div>
+        <div>
+            <span class="qs-value">{{ avg_order|int }} <small>درهم</small></span>
+            <span class="qs-label">متوسط الطلب</span>
+        </div>
+    </div>
+    <div class="quick-stat-box">
+        <div class="qs-icon"><i class="fas fa-truck"></i></div>
+        <div>
+            <span class="qs-value">{{ orders_by_status.get('shipped', 0) }}</span>
+            <span class="qs-label">تم الشحن</span>
+        </div>
+    </div>
+    <div class="quick-stat-box">
+        <div class="qs-icon"><i class="fas fa-check-circle"></i></div>
+        <div>
+            <span class="qs-value">{{ orders_by_status.get('delivered', 0) }}</span>
+            <span class="qs-label">تم التوصيل</span>
+        </div>
+    </div>
+</div>
+
+<!-- Main Dashboard Grid -->
+<div class="admin-dashboard-grid-modern">
+
+    <!-- Revenue Chart -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-chart-bar"></i> إيرادات آخر 7 أيام</h3>
+            <span class="dash-badge">{{ weekly_revenue|int }} درهم</span>
+        </div>
+        <div class="chart-container">
+            {% set max_rev = daily_revenue|map(attribute='revenue')|max or 1 %}
+            <div class="bar-chart">
+                {% for day in daily_revenue %}
+                <div class="bar-item">
+                    <div class="bar-tooltip">{{ day.revenue|int }} درهم<br><small>{{ day.orders }} طلب</small></div>
+                    <div class="bar" style="height:{{ (day.revenue / max_rev * 180)|int if max_rev > 0 else 0 }}px">
+                    </div>
+                    <span class="bar-label">{{ day.date[:2] }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Status -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-chart-pie"></i> الطلبات حسب الحالة</h3>
+            <span class="dash-badge">{{ total_orders }} إجمالي</span>
+        </div>
+        {% set status_names = {'pending':'قيد المراجعة','confirmed':'مؤكد','shipped':'تم الشحن','delivered':'تم التوصيل','cancelled':'ملغي'} %}
+        {% set status_colors = {'pending':'#f59e0b','confirmed':'#3b82f6','shipped':'#8b5cf6','delivered':'#10b981','cancelled':'#ef4444'} %}
+        <div class="status-chart-modern">
+            {% for status, count in orders_by_status.items() %}
+            <div class="status-row">
+                <div class="status-row-header">
+                    <span class="status-dot" style="background:{{ status_colors.get(status, '#ccc') }}"></span>
+                    <span class="status-row-label">{{ status_names.get(status, status) }}</span>
+                    <span class="status-row-value">{{ count }}</span>
+                </div>
+                <div class="status-track">
+                    <div class="status-fill" style="width:{{ (count / total_orders * 100)|round if total_orders > 0 else 0 }}%;background:{{ status_colors.get(status, '#ccc') }}"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="dash-card dash-card-wide">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-clock"></i> آخر الطلبات</h3>
+            <a href="{{ url_for('admin_orders') }}" class="dash-link">عرض الكل <i class="fas fa-arrow-left"></i></a>
+        </div>
+        <div class="table-wrap">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>العميل</th>
+                        <th>الإجمالي</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td class="td-id">#{{ order.id }}</td>
+                        <td>{{ order.user.username }}</td>
+                        <td class="td-price">{{ order.total }} درهم</td>
+                        <td><span class="status-badge {{ order.status }}">{% if order.status == 'pending' %}قيد المراجعة{% elif order.status == 'confirmed' %}مؤكد{% elif order.status == 'shipped' %}تم الشحن{% elif order.status == 'delivered' %}تم التوصيل{% elif order.status == 'cancelled' %}ملغي{% endif %}</span></td>
+                        <td class="td-date">{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="td-empty">لا توجد طلبات بعد</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Selling Products -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-fire"></i> الأكثر مبيعاً</h3>
+        </div>
+        <div class="top-products-list">
+            {% for p in top_products %}
+            <div class="top-product-item">
+                <div class="tp-rank">#{{ loop.index }}</div>
+                <div class="tp-info">
+                    <strong>{{ p.name_ar or p.name }}</strong>
+                    <span>{{ p.sales_count }} مبيعات · {{ p.price }} درهم</span>
+                </div>
+                <div class="tp-bar">
+                    <div class="tp-fill" style="width:{{ (p.sales_count / top_products[0].sales_count * 100)|int if top_products and top_products[0].sales_count > 0 else 0 }}%"></div>
+                </div>
+            </div>
+            {% else %}
+            <p class="no-data">لا توجد منتجات</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Low Stock Alerts -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-exclamation-circle"></i> مخزون منخفض</h3>
+            {% if low_stock > 0 %}
+            <span class="dash-badge danger">{{ low_stock }}</span>
+            {% endif %}
+        </div>
+        <div class="low-stock-list">
+            {% for p in low_stock_products %}
+            <div class="ls-item">
+                <div class="ls-info">
+                    <strong>{{ p.name_ar or p.name }}</strong>
+                    <span>المتبقي: <span class="ls-count {% if p.stock == 0 %}out{% endif %}">{{ p.stock }}</span></span>
+                </div>
+                <a href="{{ url_for('admin_edit_product', id=p.id) }}" class="ls-btn"><i class="fas fa-edit"></i></a>
+            </div>
+            {% else %}
+            <p class="no-data">جميع المنتجات متوفرة بمخزون كافٍ</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Users -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-user-plus"></i> أحدث المستخدمين</h3>
+            <a href="{{ url_for('admin_users') }}" class="dash-link">عرض الكل <i class="fas fa-arrow-left"></i></a>
+        </div>
+        <div class="recent-users-list">
+            {% for u in recent_users %}
+            <div class="ru-item">
+                <div class="ru-avatar">{{ u.username[:2]|upper }}</div>
+                <div class="ru-info">
+                    <strong>{{ u.username }}</strong>
+                    {% if u.is_admin %}<span class="ru-badge">مدير</span>{% endif %}
+                    <span>{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '—' }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p class="no-data">لا يوجد مستخدمون بعد</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-bolt"></i> إجراءات سريعة</h3>
+        </div>
+        <div class="quick-actions-grid">
+            <a href="{{ url_for('admin_add_product') }}" class="qa-btn">
+                <i class="fas fa-plus-circle"></i>
+                <span>إضافة منتج</span>
+            </a>
+            <a href="{{ url_for('admin_add_blog') }}" class="qa-btn">
+                <i class="fas fa-newspaper"></i>
+                <span>مقال جديد</span>
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="qa-btn">
+                <i class="fas fa-truck"></i>
+                <span>إدارة الطلبات</span>
+            </a>
+            <a href="{{ url_for('admin_raffle') }}" class="qa-btn">
+                <i class="fas fa-trophy"></i>
+                <span>سحب أسبوعي</span>
+            </a>
+            <a href="{{ url_for('admin_inquiries') }}" class="qa-btn">
+                <i class="fas fa-building"></i>
+                <span>الطلبات المؤسسية</span>
+            </a>
+            <a href="{{ url_for('index') }}" class="qa-btn">
+                <i class="fas fa-store"></i>
+                <span>المتجر</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Weekly Summary -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <h3><i class="fas fa-calendar-week"></i> ملخص الأسبوع</h3>
+        </div>
+        <div class="weekly-summary">
+            <div class="ws-row">
+                <span>إجمالي الإيرادات</span>
+                <strong>{{ weekly_revenue|int }} درهم</strong>
+            </div>
+            <div class="ws-row">
+                <span>طلبات جديدة</span>
+                <strong>{{ orders_by_status.get('pending', 0) + orders_by_status.get('confirmed', 0) }}</strong>
+            </div>
+            <div class="ws-row">
+                <span>طلبات مكتملة</span>
+                <strong>{{ orders_by_status.get('delivered', 0) }}</strong>
+            </div>
+            <div class="ws-row">
+                <span>متوسط قيمة الطلب</span>
+                <strong>{{ avg_order|int }} درهم</strong>
+            </div>
+            <div class="ws-row ws-total">
+                <span>إجمالي المستثمر</span>
+                <strong>{{ total_revenue|int }} درهم</strong>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

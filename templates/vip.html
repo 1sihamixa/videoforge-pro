@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}نادي AYA VIP{% endblock %}
+{% block content %}
+<section class="page-header vip-header">
+    <div class="container">
+        <i class="fas fa-crown" style="font-size:48px;color:var(--gold);margin-bottom:15px"></i>
+        <h1>نادي AYA VIP</h1>
+        <p>برنامج الولاء الحصري - كل ما تشترين تكسبين نقاطاً تستردينها كخصم</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="vip-card">
+            <div class="vip-tier {% if current_user.vip_tier == 'بلاتينيوم' %}platinum{% elif current_user.vip_tier == 'ذهبي' %}gold{% elif current_user.vip_tier == 'فضي' %}silver{% else %}classic{% endif %}">
+                <i class="fas fa-star"></i>
+                <h3>شريحتك الحالية</h3>
+                <span class="tier-name">{{ current_user.vip_tier }}</span>
+            </div>
+            <div class="vip-stats">
+                <div class="vip-stat">
+                    <span class="stat-number">{{ current_user.points }}</span>
+                    <span class="stat-label">نقطة ولاء</span>
+                    <span class="stat-sub">= {{ current_user.points_as_money }} درهم خصم</span>
+                </div>
+                <div class="vip-stat">
+                    <span class="stat-number">{{ current_user.total_spent|round|int }}</span>
+                    <span class="stat-label">درهم إجمالي المشتريات</span>
+                </div>
+                <div class="vip-stat">
+                    <span class="stat-number">{{ current_user.orders|length }}</span>
+                    <span class="stat-label">عدد الطلبات</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vip-benefits">
+            <h2>مزايا نادي AYA VIP</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <i class="fas fa-coins"></i>
+                    <h4>نقاط ولاء 10%</h4>
+                    <p>كل 100 درهم تشترينها = 10 درهم رصيد ولاء تستردينه كخصم على أي طلب</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-gift"></i>
+                    <h4>رصيد هدية</h4>
+                    <p>10 درهم رصيد مع كل طلب + تغليف هدايا فاخر</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-truck"></i>
+                    <h4>توصيل مجاني</h4>
+                    <p>توصيل مجاني لجميع مدن المغرب للطلبات فوق 200 درهم</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h4>سحب أسبوعي 500 درهم</h4>
+                    <p>كل طلب يدخل السحب الأسبوعي تلقائياً - الفائز يعلن كل جمعة</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="vip-tiers">
+            <h2>الشــرائح والمزايا</h2>
+            <div class="tiers-grid">
+                <div class="tier-card classic">
+                    <h3>كلاسيك</h3>
+                    <p class="tier-amount">0 - 499 درهم</p>
+                    <ul>
+                        <li>✅ نقاط ولاء 10%</li>
+                        <li>✅ هدية مع كل طلب</li>
+                        <li>✅ السحب الأسبوعي</li>
+                    </ul>
+                </div>
+                <div class="tier-card silver">
+                    <h3>فضي</h3>
+                    <p class="tier-amount">500 - 1,999 درهم</p>
+                    <ul>
+                        <li>✅ كل مزايا كلاسيك</li>
+                        <li>✅ خصم 5% إضافي</li>
+                        <li>✅ بطاقة هدايا 50 درهم</li>
+                    </ul>
+                </div>
+                <div class="tier-card gold">
+                    <h3>ذهبي</h3>
+                    <p class="tier-amount">2,000 - 4,999 درهم</p>
+                    <ul>
+                        <li>✅ كل مزايا فضي</li>
+                        <li>✅ خصم 10% إضافي</li>
+                        <li>✅ عطر 12ml هدية مع كل طلب</li>
+                        <li>✅ أولوية في الشحن</li>
+                    </ul>
+                </div>
+                <div class="tier-card platinum">
+                    <h3>بلاتينيوم</h3>
+                    <p class="tier-amount">5,000+ درهم</p>
+                    <ul>
+                        <li>✅ كل مزايا ذهبي</li>
+                        <li>✅ خصم 15% إضافي</li>
+                        <li>✅ هدية 500 درهم بعيد ميلادك</li>
+                        <li>✅ مدير خدمة عملاء خاص</li>
+                        <li>✅ دعوات حصرية للإطلاقات الجديدة</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="vip-history">
+            <h2>سجل النقاط</h2>
+            {% if points_log %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>النقاط</th>
+                        <th>السبب</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in points_log %}
+                    <tr>
+                        <td>{{ log.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td style="color:var(--gold);font-weight:700">+{{ log.points }}</td>
+                        <td>نقاط من طلب #{{ log.order_id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="text-align:center;color:var(--gray);padding:30px">لا يوجد سجل نقاط بعد - ابدئي الطلب لتراكم النقاط ✨</p>
+            {% endif %}
+        </div>
+
+        {% if last_winner %}
+        <div class="vip-winner">
+            <h2>🏆 آخر فائز بالسحب الأسبوعي</h2>
+            <div class="winner-card">
+                <i class="fas fa-trophy"></i>
+                <p>الفائز: <strong>{{ last_winner.user.username }}</strong></p>
+                <p>الطلب: #{{ last_winner.order_id }}</p>
+                <p>الجائزة: {{ last_winner.prize_amount|int }} درهم نقداً</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div style="text-align:center;margin:40px 0">
+            <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg">تسوق واجمع النقاط الآن</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

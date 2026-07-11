@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Factory Pro - لوحة التحكم</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,'Segoe UI',Tahoma,Arial,sans-serif;background:#0a0a1a;color:#e0e0e0;min-height:100vh}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#1a1a2e}
+::-webkit-scrollbar-thumb{background:#e63946;border-radius:3px}
+.sidebar{position:fixed;right:0;top:0;width:220px;height:100vh;background:#12122a;border-left:1px solid #1e1e3a;padding:20px;z-index:100}
+.sidebar .logo{font-size:20px;font-weight:800;color:#e63946;margin-bottom:25px;text-align:center}
+.sidebar .logo span{color:#fff}
+.sidebar nav{display:flex;flex-direction:column;gap:4px}
+.sidebar nav a{color:#8888aa;text-decoration:none;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;transition:.3s;display:flex;align-items:center;gap:10px;cursor:pointer}
+.sidebar nav a:hover,.sidebar nav a.active{background:#e63946;color:#fff}
+.main{margin-right:220px;padding:20px 25px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1e1e3a;margin-bottom:20px}
+.topbar h1{font-size:22px;font-weight:700}
+.topbar h1 span{color:#e63946}
+.topbar .status{display:flex;align-items:center;gap:8px;font-size:12px;color:#888}
+.topbar .status .dot{width:8px;height:8px;border-radius:50%;background:#00c853;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:#12122a;border-radius:12px;padding:18px;border:1px solid #1e1e3a;transition:.3s}
+.stat-card:hover{border-color:#e63946;transform:translateY(-2px)}
+.stat-card .label{color:#8888aa;font-size:12px;margin-bottom:4px}
+.stat-card .value{font-size:26px;font-weight:800;color:#fff}
+.stat-card .sub{font-size:11px;color:#666;margin-top:4px}
+.card{background:#12122a;border-radius:12px;padding:20px;border:1px solid #1e1e3a;margin-bottom:18px}
+.card h3{font-size:15px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;color:#8888aa;margin-bottom:4px;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;background:#0a0a1a;border:1px solid #1e1e3a;border-radius:8px;color:#fff;font-size:13px;font-family:inherit;transition:.3s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#e63946}
+.form-group select option{background:#12122a;color:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:.3s;font-family:inherit}
+.btn-primary{background:#e63946;color:#fff}
+.btn-primary:hover{background:#c1121f;transform:translateY(-1px)}
+.btn-secondary{background:#1e1e3a;color:#8888aa;border:1px solid #2a2a4a}
+.btn-secondary:hover{background:#2a2a4a;color:#fff}
+.btn-success{background:#00c853;color:#fff}
+.btn-success:hover{background:#00a844;transform:translateY(-1px)}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.channel-card{background:#0a0a1a;border-radius:10px;padding:12px 15px;border:1px solid #1e1e3a;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.channel-card .info h4{font-size:14px;font-weight:700;color:#fff}
+.channel-card .info p{font-size:11px;color:#888;margin-top:2px}
+.channel-card .badge{background:#e63946;color:#fff;padding:3px 10px;border-radius:15px;font-size:10px;font-weight:700}
+.channel-card .badge.inactive{background:#333;color:#888}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.result-card{background:#0a0a1a;border-radius:10px;padding:15px;border:1px solid #1e1e3a}
+.result-card h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:6px}
+.result-card .metrics{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.result-card .metric{background:#12122a;padding:4px 10px;border-radius:6px;font-size:11px;color:#888}
+.result-card .metric strong{color:#fff}
+.result-card .score{display:inline-block;padding:3px 10px;border-radius:15px;font-size:11px;font-weight:700}
+.score-high{background:#00c85320;color:#00c853;border:1px solid #00c853}
+.score-medium{background:#ffc10720;color:#ffc107;border:1px solid #ffc107}
+.score-low{background:#e6394620;color:#e63946;border:1px solid #e63946}
+.video-list{max-height:350px;overflow-y:auto}
+.video-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1e1e3a;font-size:12px}
+.video-item:last-child{border-bottom:none}
+.video-item .title{color:#fff;font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.video-item .meta{color:#888;font-size:11px}
+.video-item .status-badge{padding:2px 8px;border-radius:12px;font-size:10px;background:#00c85320;color:#00c853}
+.loader{display:none;text-align:center;padding:30px}
+.loader.active{display:block}
+.loader .spinner{width:36px;height:36px;border:3px solid #1e1e3a;border-top-color:#e63946;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{color:#888;font-size:13px}
+.notification{position:fixed;bottom:20px;left:20px;padding:12px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:1000;transform:translateY(100px);opacity:0;transition:.5s;max-width:350px}
+.notification.show{transform:translateY(0);opacity:1}
+.notification.success{background:#00c853;color:#fff}
+.notification.error{background:#e63946;color:#fff}
+.notification.info{background:#2196f3;color:#fff}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:200;justify-content:center;align-items:center}
+.modal-overlay.active{display:flex}
+.modal{background:#12122a;border-radius:15px;padding:25px;width:90%;max-width:500px;border:1px solid #2a2a4a;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:15px}
+@media(max-width:768px){
+.sidebar{width:55px;padding:10px}
+.sidebar .logo{font-size:12px}
+.sidebar .logo span,.sidebar nav a span:not(.icon){display:none}
+.sidebar nav a{padding:8px;justify-content:center}
+.main{margin-right:55px;padding:12px}
+.form-row{grid-template-columns:1fr}
+.stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="logo">CF<span>Pro</span></div>
+  <nav>
+    <a class="active" data-tab="dashboard"><span>📊</span><span>لوحة التحكم</span></a>
+    <a data-tab="channels"><span>📺</span><span>القنوات</span></a>
+    <a data-tab="research"><span>🔍</span><span>بحث مواضيع</span></a>
+    <a data-tab="produce"><span>🎬</span><span>إنتاج فيديو</span></a>
+    <a data-tab="videos"><span>📹</span><span>الفيديوهات</span></a>
+    <a data-tab="live"><span>📡</span><span>بث مباشر</span></a>
+    <a data-tab="shorts"><span>📱</span><span>فيدوهات قصيرة</span></a>
+    <a data-tab="posts"><span>📝</span><span>منشورات</span></a>
+    <a data-tab="engagement"><span>💬</span><span>تفاعل</span></a>
+    <a data-tab="social"><span>🔗</span><span>منصات التواصل</span></a>
+    <a data-tab="settings"><span>⚙️</span><span>الإعدادات</span></a>
+  </nav>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <h1>Content <span>Factory</span> Pro</h1>
+    <div class="status">
+      <span class="dot"></span>
+      <span id="statusText">النظام يعمل</span>
+      <span id="clock" style="color:#666;font-size:11px;margin-right:12px"></span>
+    </div>
+  </div>
+
+  <div id="tab-dashboard" class="tab-content" style="display:block">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">إجمالي الفيديوهات</div>
+        <div class="value" id="totalVideos">0</div>
+        <div class="sub">جميع القنوات</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">القنوات النشطة</div>
+        <div class="value" id="activeChannels">0</div>
+        <div class="sub">من <span id="totalChannels">0</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">حالة النظام</div>
+        <div class="value" id="systemStatus" style="font-size:16px">جاري التحميل...</div>
+        <div class="sub" id="systemDetail">FFmpeg: جاري التحقق</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">واتساب</div>
+        <div class="value" id="whatsappStatus" style="font-size:14px">غير مفعل</div>
+        <div class="sub">إشعارات الإنتاج</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📺 القنوات النشطة</h3>
+      <div id="channelList"><p style="color:#666;font-size:13px;padding:10px">جاري التحميل...</p></div>
+    </div>
+    <div class="card">
+      <h3>📹 آخر الفيديوهات</h3>
+      <div class="video-list" id="recentVideos"><p style="color:#666;font-size:13px;padding:15px;text-align:center">لم يتم إنتاج فيديوهات بعد</p></div>
+    </div>
+  </div>
+
+  <div id="tab-channels" class="tab-content">
+    <div class="card">
+      <h3>📺 إدارة القنوات</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">القنوات المتاحة. يمكنك إضافة قناة جديدة أو تعديل config_multi.json مباشرة.</p>
+      <div id="channelsContainer"><p style="color:#666;padding:15px">جاري التحميل...</p></div>
+      <button class="btn btn-success btn-sm" style="margin-top:12px" onclick="showAddChannel()">➕ إضافة قناة جديدة</button>
+    </div>
+  </div>
+
+  <div id="tab-research" class="tab-content">
+    <div class="card">
+      <h3>🔬 1. تحليل المجالات (لقناة جديدة)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">يقارن بين المجالات لاختيار الأنسب لإنشاء قناة رابحة - طلب عالي، منافسة قليلة، أرباح إعلانية جيدة.</p>
+      <button class="btn btn-danger" id="nicheAnalysisBtn">🔬 تحليل كل المجالات</button>
+      <div class="loader" id="nicheLoader">
+        <div class="spinner"></div>
+        <p>جاري تحليل المجالات ومقارنتها...</p>
+      </div>
+      <div id="nicheResults" class="results-grid"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>🔍 2. بحث مواضيع (حسب القناة)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">أدخل وصفاً لمضمون قناتك والبرنامج يبحث في يوتيوب بعمق ويستخرج أفضل أفكار الفيديوهات.</p>
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>مضمون القناة (مثال: AI tools for business)</label>
+          <input type="text" id="channelNicheInput" placeholder="أدخل وصف القناة بالانجليزي">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>اسم القناة (اختياري)</label>
+          <input type="text" id="channelNameInput" placeholder="اسم القناة">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="channelIdeasBtn">🔍 بحث عميق واستخراج أفكار</button>
+      <div class="loader" id="channelIdeasLoader">
+        <div class="spinner"></div>
+        <p>جاري البحث في يوتيوب وتحليل المنافسة...</p>
+      </div>
+      <div id="channelIdeasResults" class="results-grid"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>🔍 3. بحث مواضيع (يدوي)</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>مجال القناة</label>
+          <select id="researchNiche">
+            <option value="tech_software_biz">تكنولوجيا وبرمجيات</option>
+            <option value="finance_invest">مال وتمويل واستثمار</option>
+            <option value="insurance_law_consulting">تأمين وقانون واستشارات</option>
+            <option value="real_estate">عقارات</option>
+            <option value="digital_marketing">تسويق رقمي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>موضوع محدد (اختياري)</label>
+          <input type="text" id="researchTopic" placeholder="مثال: AI tools for business">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="researchBtn">🔍 بحث وتحليل</button>
+      <div class="loader" id="researchLoader">
+        <div class="spinner"></div>
+        <p>جاري البحث والتحليل في أمريكا وبريطانيا وكندا...</p>
+      </div>
+      <div id="researchResults" class="results-grid"></div>
+    </div>
+  </div>
+
+  <div id="tab-produce" class="tab-content">
+    <div class="card">
+      <h3>🎬 إنتاج فيديو واحد</h3>
+      <div class="form-group">
+        <label>القناة المستهدفة</label>
+        <select id="produceChannel" required></select>
+      </div>
+      <div class="form-row">
+    <div class="form-group">
+      <label>المجال</label>
+      <select id="produceNiche">
+        <option value="tech_software_biz">تكنولوجيا وبرمجيات</option>
+        <option value="finance_invest">مال وتمويل واستثمار</option>
+        <option value="insurance_law_consulting">تأمين وقانون واستشارات</option>
+        <option value="real_estate">عقارات</option>
+        <option value="digital_marketing">تسويق رقمي</option>
+      </select>
+    </div>
+        <div class="form-group">
+          <label>موضوع يدوي (اتركه فارغاً للبحث التلقائي)</label>
+          <input type="text" id="produceTopic" placeholder="اختياري - اكتب موضوعاً...">
+        </div>
+      </div>
+      <div style="margin:8px 0;display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="produceAutoUpload" style="width:18px;height:18px">
+        <label for="produceAutoUpload" style="display:inline;font-size:13px">رفع إلى يوتيوب تلقائياً بعد الإنتاج</label>
+      </div>
+      <button class="btn btn-success" id="produceBtn">🎬 بدء الإنتاج لقناة واحدة</button>
+      <div class="loader" id="produceLoader">
+        <div class="spinner"></div>
+        <p id="produceStatus">جاري الإنتاج...</p>
+      </div>
+      <div id="produceResult" class="card" style="display:none;margin-top:12px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>🏭 إنتاج لكل القنوات (بالترتيب)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">يقوم بالمرور على كل القنوات النشطة بالتوالي: يبحث عن أفضل موضوع → ينتج فيديو → ينشر على يوتيوب (إذا كان متصلاً).</p>
+      <div style="margin:8px 0;display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="batchAutoUpload" style="width:18px;height:18px" checked>
+        <label for="batchAutoUpload" style="display:inline;font-size:13px">رفع إلى يوتيوب تلقائياً</label>
+      </div>
+      <button class="btn btn-primary" id="batchProduceBtn">🏭 تشغيل الإنتاج لكل القنوات</button>
+      <div id="batchProgress" style="margin-top:12px;display:none">
+        <div class="loader" id="batchLoader" style="display:none">
+          <div class="spinner"></div>
+          <p id="batchStatusText">جاري...</p>
+        </div>
+        <div id="batchLog" style="max-height:300px;overflow-y:auto;background:#0d1117;padding:10px;border-radius:6px;font-size:12px;margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-videos" class="tab-content">
+    <div class="card">
+      <h3>📹 جميع الفيديوهات</h3>
+      <div class="form-group">
+        <label>تصفية بالقناة</label>
+        <select id="videosChannelFilter" onchange="loadVideos()">
+          <option value="all">جميع القنوات</option>
+        </select>
+      </div>
+      <div class="video-list" id="allVideosList"><p style="color:#666;text-align:center;padding:20px">لم يتم إنتاج فيديوهات بعد</p></div>
+    </div>
+  </div>
+
+  <div id="tab-live" class="tab-content">
+    <div class="card">
+      <h3>📡 بث مباشر - تشغيل فيديو على المنصات</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">حدد القناة والفيديو والمنصات التي تريد البث عليها مباشرة.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>القناة</label>
+          <select id="liveChannel"></select>
+        </div>
+        <div class="form-group">
+          <label>الفيديو</label>
+          <select id="liveVideo">
+            <option value="">-- اختر فيديو --</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>منصات البث</label>
+        <div id="livePlatforms" style="display:flex;flex-wrap:wrap;gap:10px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="youtube" checked style="width:16px;height:16px"> YouTube</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="facebook" style="width:16px;height:16px"> Facebook</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="instagram" style="width:16px;height:16px"> Instagram</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="twitter" style="width:16px;height:16px"> Twitter/X</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="tiktok" style="width:16px;height:16px"> TikTok</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="twitch" style="width:16px;height:16px"> Twitch</label>
+        </div>
+      </div>
+      <button class="btn btn-danger" id="liveStartBtn">▶️ بدء البث المباشر</button>
+      <button class="btn btn-secondary" id="liveRefreshVideos" style="margin-right:8px">🔄 تحديث قائمة الفيديوهات</button>
+      <div class="loader" id="liveLoader">
+        <div class="spinner"></div>
+        <p>جاري بدء البث المباشر...</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ إعدادات مفاتيح البث لكل قناة</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">احفظ مفاتيح البث (Stream Keys) لكل منصة ولكل قناة. يمكن ترك حقل الرابط فارغاً لاستخدام الرابط الافتراضي.</p>
+      <div class="form-group">
+        <label>القناة</label>
+        <select id="liveConfigChannel"></select>
+      </div>
+      <div class="form-group">
+        <label>المنصة</label>
+        <select id="liveConfigPlatform">
+          <option value="youtube">YouTube</option>
+          <option value="facebook">Facebook</option>
+          <option value="instagram">Instagram</option>
+          <option value="twitter">Twitter/X</option>
+          <option value="tiktok">TikTok</option>
+          <option value="twitch">Twitch</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Stream Key</label>
+          <input type="text" id="liveConfigKey" placeholder="أدخل مفتاح البث">
+        </div>
+        <div class="form-group">
+          <label>رابط RTMP مخصص (اختياري)</label>
+          <input type="text" id="liveConfigUrl" placeholder="rtmp://..." value="">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="liveConfigSave">💾 حفظ إعدادات البث</button>
+      <div id="liveConfigStatus" style="margin-top:8px;font-size:12px;color:#888;padding:8px;background:#0a0a1a;border-radius:6px"></div>
+    </div>
+
+    <div class="card">
+      <h3>📊 البث المباشر النشط</h3>
+      <div id="liveActiveStatus" style="font-size:13px;color:#888">لا توجد بثوث نشطة</div>
+    </div>
+
+    <div class="card">
+      <h3>📋 سجل البثوث السابقة</h3>
+      <div id="livePastList" style="font-size:12px;color:#888;max-height:200px;overflow-y:auto">جاري التحميل...</div>
+    </div>
+  </div>
+
+  <div id="tab-shorts" class="tab-content">
+    <div class="card">
+      <h3>📱 فيديوهات قصيرة (Shorts / Reels / TikTok)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">إنتاج فيديوهات عمودية 9:16 قصيرة (30-60 ثانية) للأجهزة المحمولة ومنصات Shorts و Reels و TikTok.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>القناة</label>
+          <select id="shortsChannel"></select>
+        </div>
+        <div class="form-group">
+          <label>موضوع يدوي (اختياري)</label>
+          <input type="text" id="shortsTopic" placeholder="اترك فارغاً للبحث التلقائي">
+        </div>
+      </div>
+      <button class="btn btn-danger" id="shortsProduceBtn">🎬 إنتاج فيديو قصير</button>
+      <div class="loader" id="shortsLoader"><p>جاري إنتاج الفيديو القصير...</p></div>
+      <div id="shortsResult" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom:10px">📋 قائمة الفيديوهات القصيرة</h4>
+      <div class="form-group">
+        <select id="shortsFilter"><option value="">كل القنوات</option></select>
+      </div>
+      <div id="shortsList" style="font-size:12px;color:#888">جاري التحميل...</div>
+    </div>
+  </div>
+
+  <div id="tab-posts" class="tab-content">
+    <div class="card">
+      <h3>📝 منشورات (Twitter / Facebook / LinkedIn / Instagram / Telegram)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">توليد منشورات نصية مع صور خلفية لجميع المنصات بنقرة واحدة.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>القناة</label>
+          <select id="postsChannel"></select>
+        </div>
+        <div class="form-group">
+          <label>موضوع يدوي (اختياري)</label>
+          <input type="text" id="postsTopic" placeholder="اترك فارغاً للبحث التلقائي">
+        </div>
+      </div>
+      <button class="btn btn-danger" id="postsProduceBtn">📝 إنتاج منشورات</button>
+      <div class="loader" id="postsLoader"><p>جاري إنتاج المنشورات...</p></div>
+      <div id="postsResult" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom:10px">📋 قائمة المنشورات السابقة</h4>
+      <div class="form-group">
+        <select id="postsFilter"><option value="">كل القنوات</option></select>
+      </div>
+      <div id="postsList" style="font-size:12px;color:#888">جاري التحميل...</div>
+    </div>
+  </div>
+
+  <div id="tab-engagement" class="tab-content">
+    <div class="card">
+      <h3>💬 التفاعل التلقائي (إعجابات وردود على التعليقات)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">يقرأ تعليقات المشاهدين على فيديوهات يوتيوب المنشورة، ويضع إعجاباً على كل تعليق جديد، ويرد بردود ذكية بنفس لغة التعليق (عربي/إنجليزي).</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>القناة</label>
+          <select id="engagementChannel"><option value="">🚀 كل القنوات النشطة</option></select>
+        </div>
+      </div>
+      <button class="btn btn-danger" id="engagementRunBtn">💬 تشغيل التفاعل الآن</button>
+      <div class="loader" id="engagementLoader"><p>جاري التفاعل مع التعليقات...</p></div>
+      <div id="engagementResult" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h4 style="margin-bottom:10px">📋 سجل التفاعل</h4>
+      <div id="engagementLog" style="font-size:11px;max-height:300px;overflow-y:auto;color:#888;background:#12122a;padding:10px;border-radius:6px">جاري التحميل...</div>
+    </div>
+  </div>
+
+  <div id="tab-social" class="tab-content">
+    <div class="card">
+      <h3>🔗 ربط منصات التواصل (للنشر التلقائي)</h3>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">أدخل مفاتيح API لكل منصة ليتم النشر التلقائي عند إنتاج المنشورات. جميع الحقول اختيارية - اترك فارغاً للمنصات التي لا تريد استخدامها.</p>
+      <div class="form-group">
+        <label>القناة</label>
+        <select id="socialChannel"></select>
+      </div>
+      <div style="margin-top:15px"></div>
+
+      <div style="background:#1a1a2e;border-radius:8px;padding:15px;margin-bottom:12px">
+        <h4 style="color:#1DA1F2;margin-bottom:8px">🐦 Twitter / X</h4>
+        <div class="form-row">
+          <div class="form-group"><label>API Key</label><input type="text" id="twApiKey" placeholder="Consumer Key"></div>
+          <div class="form-group"><label>API Secret</label><input type="text" id="twApiSecret" placeholder="Consumer Secret"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Access Token</label><input type="text" id="twAccessToken" placeholder="Access Token"></div>
+          <div class="form-group"><label>Access Secret</label><input type="text" id="twAccessSecret" placeholder="Access Token Secret"></div>
+        </div>
+      </div>
+
+      <div style="background:#1a1a2e;border-radius:8px;padding:15px;margin-bottom:12px">
+        <h4 style="color:#1877F2;margin-bottom:8px">📘 Facebook</h4>
+        <div class="form-row">
+          <div class="form-group"><label>Page ID</label><input type="text" id="fbPageId" placeholder="رقم الصفحة"></div>
+          <div class="form-group"><label>Page Access Token</label><input type="text" id="fbPageToken" placeholder="Page Token (طويل الأمد)"></div>
+        </div>
+      </div>
+
+      <div style="background:#1a1a2e;border-radius:8px;padding:15px;margin-bottom:12px">
+        <h4 style="color:#0A66C2;margin-bottom:8px">💼 LinkedIn</h4>
+        <div class="form-row">
+          <div class="form-group"><label>Access Token</label><input type="text" id="liToken" placeholder="Access Token"></div>
+          <div class="form-group"><label>Author URN</label><input type="text" id="liAuthor" placeholder="مثال: urn:li:person:abc123"></div>
+        </div>
+      </div>
+
+      <div style="background:#1a1a2e;border-radius:8px;padding:15px;margin-bottom:12px">
+        <h4 style="color:#E4405F;margin-bottom:8px">📸 Instagram (عبر صفحة Facebook)</h4>
+        <p style="color:#888;font-size:11px;margin-bottom:8px">يستخدم نفس Page Access Token من فيسبوك إذا كانت الصفحة مرتبطة بحساب إنستغرام Business/Creator.</p>
+        <div class="form-group"><label>Instagram Business Account ID</label><input type="text" id="igUserId" placeholder="اختياري - اتركه فارغاً لاستخدام Facebook Page ID"></div>
+      </div>
+
+      <div style="background:#1a1a2e;border-radius:8px;padding:15px;margin-bottom:12px">
+        <h4 style="color:#0088cc;margin-bottom:8px">✈️ Telegram</h4>
+        <div class="form-row">
+          <div class="form-group"><label>Bot Token</label><input type="text" id="tgBotToken" placeholder="مثال: 123456:ABC-DEF..."></div>
+          <div class="form-group"><label>Chat ID</label><input type="text" id="tgChatId" placeholder="مثال: -1001234567890"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-success" id="socialSaveBtn">💾 حفظ إعدادات المنصات</button>
+      <div id="socialStatus" style="margin-top:8px;font-size:12px;color:#888"></div>
+      <hr style="border-color:#1e1e3a;margin:15px 0">
+      <h4 style="margin-bottom:8px">📤 نشر منشور موجود</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>المنشور</label>
+          <select id="socialPublishPost"></select>
+        </div>
+      </div>
+      <button class="btn btn-danger" id="socialPublishBtn">📤 نشر الآن</button>
+      <div class="loader" id="socialPublishLoader"><p>جاري النشر...</p></div>
+      <div id="socialPublishResult" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <div id="tab-settings" class="tab-content">
+    <div class="card">
+      <h3>⚙️ الإعدادات</h3>
+      <div class="form-group">
+        <label>رقم واتساب (مع مفتاح الدولة)</label>
+        <input type="text" id="waPhone" placeholder="مثال: +212779101109">
+      </div>
+      <div class="form-group">
+        <label>مفتاح API واتساب (CallMeBot)</label>
+        <input type="text" id="waApiKey" placeholder="أدخل المفتاح">
+      </div>
+      <div class="form-group">
+        <label>تفعيل واتساب</label>
+        <select id="waEnabled"><option value="false">معطل</option><option value="true">مفعل</option></select>
+      </div>
+      <hr style="border-color:#1e1e3a;margin:15px 0">
+      <h4 style="color:#e63946;margin:10px 0">🔴 ربط قناة يوتيوب (للنشر التلقائي)</h4>
+      <div style="font-size:11px;background:#1e1e3a;padding:8px;border-radius:4px;margin-bottom:8px;color:#ffcc00">
+        ⚠️ تأكد من إضافة هذا الرابط بالضبط في Google Cloud Console → APIs & Services → Credentials → <strong>Authorized redirect URIs</strong>:<br>
+        <code style="color:#00c853;font-size:12px">http://localhost:5000/api/youtube/callback</code>
+      </div>
+      <div class="form-group">
+        <label>Client ID (من Google Cloud Console)</label>
+        <input type="text" id="ytClientId" placeholder="مثال: 1234567890-xxxxx.apps.googleusercontent.com">
+      </div>
+      <div class="form-group">
+        <label>Client Secret</label>
+        <input type="text" id="ytClientSecret" placeholder="GOCSPX-xxxxxxxxxxxx">
+      </div>
+      <div id="ytStatus" style="margin:8px 0;padding:10px;border-radius:6px;background:#1e1e3a;font-size:13px">
+        ⏳ جاري التحقق من حالة الاتصال...
+      </div>
+      <button class="btn btn-danger" id="ytConnectBtn" style="display:none">🔗 ربط قناة يوتيوب</button>
+      <button class="btn btn-secondary" id="ytSaveCredBtn" style="display:none">💾 حفظ بيانات API</button>
+      <hr style="border-color:#1e1e3a;margin:15px 0">
+      <div class="form-row">
+        <div class="form-group">
+          <label>الحد الأدنى لعدد الكلمات</label>
+          <input type="number" id="minWords" value="1200">
+        </div>
+        <div class="form-group">
+          <label>الحد الأدنى لمدة الفيديو (ثواني)</label>
+          <input type="number" id="minDuration" value="300">
+        </div>
+      </div>
+      <hr style="border-color:#1e1e3a;margin:15px 0">
+      <h4 style="color:#e63946;margin:10px 0">⏰ المجدول اليومي التلقائي (فيديوهات)</h4>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">البرنامج يبحث وينتج وينشر تلقائياً في الوقت المحدد كل يوم.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>تفعيل</label>
+          <select id="schedEnabled"><option value="true">مفعل</option><option value="false">معطل</option></select>
+        </div>
+        <div class="form-group">
+          <label>وقت التشغيل</label>
+          <input type="time" id="schedTime" value="08:00">
+        </div>
+        <div class="form-group">
+          <label>بث مباشر بعد الإنتاج</label>
+          <select id="schedAutoLive"><option value="true">مفعل</option><option value="false" selected>معطل</option></select>
+          <span style="color:#666;font-size:11px">يتطلب مفاتيح بث في تبويب البث المباشر</span>
+        </div>
+      </div>
+      <div id="schedLog" style="margin:10px 0;padding:10px;background:#12122a;border-radius:6px;font-size:11px;max-height:150px;overflow-y:auto;color:#888"></div>
+
+      <h4 style="color:#e63946;margin:20px 0 10px">📡 المجدول اليومي للبث المباشر</h4>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">يبحث عن موضوع ناجح لكل قناة، ينتج فيديو، ويبثه مباشراً على المنصات في الوقت المحدد يومياً. يتطلب مفاتيح بث في تبويب البث المباشر.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>تفعيل البث المباشر التلقائي</label>
+          <select id="liveSchedEnabled"><option value="true">مفعل</option><option value="false" selected>معطل</option></select>
+        </div>
+        <div class="form-group">
+          <label>وقت البث اليومي</label>
+          <input type="time" id="liveSchedTime" value="12:00">
+        </div>
+      </div>
+      <div id="liveSchedLog" style="margin:10px 0;padding:10px;background:#12122a;border-radius:6px;font-size:11px;max-height:150px;overflow-y:auto;color:#888"></div>
+
+      <h4 style="color:#e63946;margin:20px 0 10px">📱 المجدول اليومي للفيديوهات القصيرة</h4>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">ينتج فيديوهات عمودية قصيرة (Shorts/Reels/TikTok) لكل قناة في الوقت المحدد يومياً.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>تفعيل</label>
+          <select id="shortsSchedEnabled"><option value="true">مفعل</option><option value="false" selected>معطل</option></select>
+        </div>
+        <div class="form-group">
+          <label>وقت الإنتاج</label>
+          <input type="time" id="shortsSchedTime" value="14:00">
+        </div>
+      </div>
+      <div id="shortsSchedLog" style="margin:10px 0;padding:10px;background:#12122a;border-radius:6px;font-size:11px;max-height:150px;overflow-y:auto;color:#888"></div>
+
+      <h4 style="color:#e63946;margin:20px 0 10px">📝 المجدول اليومي للمنشورات</h4>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">يولد منشورات نصية مع صور لجميع المنصات لكل قناة في الوقت المحدد يومياً.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>تفعيل</label>
+          <select id="postsSchedEnabled"><option value="true">مفعل</option><option value="false" selected>معطل</option></select>
+        </div>
+        <div class="form-group">
+          <label>وقت الإنتاج</label>
+          <input type="time" id="postsSchedTime" value="16:00">
+        </div>
+      </div>
+      <div id="postsSchedLog" style="margin:10px 0;padding:10px;background:#12122a;border-radius:6px;font-size:11px;max-height:150px;overflow-y:auto;color:#888"></div>
+
+      <h4 style="color:#e63946;margin:20px 0 10px">💬 المجدول اليومي للتفاعل (إعجابات وردود)</h4>
+      <p style="color:#888;font-size:12px;margin-bottom:10px">يجلب تعليقات جديدة من فيديوهات يوتيوب المنشورة ويضع إعجابات ويرد عليها تلقائياً كل يوم في الوقت المحدد.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>تفعيل</label>
+          <select id="engagementSchedEnabled"><option value="true">مفعل</option><option value="false" selected>معطل</option></select>
+        </div>
+        <div class="form-group">
+          <label>وقت التفاعل</label>
+          <input type="time" id="engagementSchedTime" value="18:00">
+        </div>
+      </div>
+      <div id="engagementSchedLog" style="margin:10px 0;padding:10px;background:#12122a;border-radius:6px;font-size:11px;max-height:150px;overflow-y:auto;color:#888"></div>
+
+      <button class="btn btn-primary" id="settingsBtn">💾 حفظ الإعدادات</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="videoPlayerOverlay">
+  <div style="background:#0d1117;padding:20px;border-radius:12px;max-width:800px;width:90%;margin:auto">
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+      <h3 style="margin:0">🎬 تشغيل الفيديو</h3>
+      <button onclick="$('videoPlayerOverlay').classList.remove('active')" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div id="videoPlayer"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addChannelModal">
+  <div class="modal">
+    <h3>➕ ربط قناة يوتيوب جديدة</h3>
+    <div id="ytConnectSection">
+      <div style="font-size:11px;background:#1e1e3a;padding:8px;border-radius:4px;margin-bottom:8px;color:#ffcc00">
+        ⚠️ تأكد من إضافة هذا الرابط بالضبط في Google Cloud Console:<br>
+        <code style="color:#00c853;font-size:12px">http://localhost:5000/api/youtube/callback</code>
+      </div>
+      <p style="color:#888;font-size:13px;margin-bottom:15px">اربط قناتك الحقيقية على يوتيوب عبر Google. يجب أن تكون قد أضفت Client ID و Client Secret في الإعدادات أولاً.</p>
+      <button class="btn btn-danger" id="modalYtConnectBtn" style="width:100%;padding:14px;font-size:15px">🔗 ربط عبر Google</button>
+      <p style="color:#666;font-size:11px;margin-top:10px;text-align:center">ستفتح نافذة جديدة لتسجيل الدخول إلى Google</p>
+    </div>
+    <div id="ytConnectedSection" style="display:none">
+      <div style="background:#0a2e1a;padding:15px;border-radius:8px;margin-bottom:12px">
+        <p style="font-size:14px">✅ تم ربط القناة!</p>
+        <p id="modalYtName" style="font-size:13px;color:#00c853;margin:5px 0"></p>
+        <p id="modalYtId" style="font-size:11px;color:#888"></p>
+      </div>
+      <div class="form-group">
+        <label>المجال (للبحث والإنتاج)</label>
+        <select id="newChNiche">
+          <option value="tech_software_biz">تكنولوجيا وبرمجيات</option>
+          <option value="finance_invest">مال وتمويل واستثمار</option>
+          <option value="insurance_law_consulting">تأمين وقانون واستشارات</option>
+          <option value="real_estate">عقارات</option>
+          <option value="digital_marketing">تسويق رقمي</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:15px">
+        <button class="btn btn-primary" id="saveChannelBtn">💾 حفظ القناة</button>
+        <button class="btn btn-secondary" onclick="hideAddChannel()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+(function(){
+const API = '';
+let config = {channels:[], video_settings:{}, whatsapp:{}, server:{}};
+let isLoading = false;
+
+function $(id){return document.getElementById(id)}
+
+function notify(msg, type){
+  const n = $('notification');
+  n.textContent = msg;
+  n.className = 'notification ' + (type||'success') + ' show';
+  setTimeout(()=>n.classList.remove('show'), 4000);
+}
+
+async function apiFetch(url, opts){
+  try{
+    const controller = new AbortController();
+    const timeoutId = setTimeout(function(){ controller.abort(); }, 3600000);
+    const r = await fetch(API + url, {
+      headers: {'Content-Type':'application/json'},
+      method: (opts&&opts.method)||'GET',
+      body: (opts&&opts.body)||undefined,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    let data;
+    const ct = r.headers.get('content-type')||'';
+    if(ct.includes('application/json')){
+      data = await r.json();
+    } else {
+      const text = await r.text();
+      if(!r.ok) throw new Error('الخادم أعاد خطأ: '+(text.slice(0,200)));
+      try{ data = JSON.parse(text); }catch(e){ throw new Error('إجابة غير متوقعة من الخادم'); }
+    }
+    if(!r.ok && !data.success) throw new Error(data.error||'خطأ في الخادم (كود ' + r.status + ')');
+    return data;
+  }catch(e){
+    if(e.message!=='خطأ في الاتصال بالخادم') notify(e.message, 'error');
+    return {error: e.message};
+  }
+}
+
+function showAddChannel(){ $('addChannelModal').classList.add('active'); }
+function hideAddChannel(){ $('addChannelModal').classList.remove('active'); }
+async function loadConfig(){
+  const res = await apiFetch('/api/config');
+  if(!res.error){
+    config = res;
+    if(config.whatsapp){
+      $('waPhone').value = config.whatsapp.phone||'';
+      $('waApiKey').value = config.whatsapp.api_key||'';
+      $('waEnabled').value = config.whatsapp.enabled ? 'true' : 'false';
+    }
+    if(config.youtube){
+      $('ytClientId').value = config.youtube.client_id||'';
+      $('ytClientSecret').value = config.youtube.client_secret||'';
+    }
+    if(config.scheduler){
+      $('schedEnabled').value = config.scheduler.enabled !== false ? 'true' : 'false';
+      $('schedTime').value = config.scheduler.time||'08:00';
+      $('schedAutoLive').value = config.scheduler.autoLive === true ? 'true' : 'false';
+    }
+    if(config.live_scheduler){
+      $('liveSchedEnabled').value = config.live_scheduler.enabled === true ? 'true' : 'false';
+      $('liveSchedTime').value = config.live_scheduler.time||'12:00';
+    }
+    if(config.shorts_scheduler){
+      $('shortsSchedEnabled').value = config.shorts_scheduler.enabled === true ? 'true' : 'false';
+      $('shortsSchedTime').value = config.shorts_scheduler.time||'14:00';
+    }
+    if(config.posts_scheduler){
+      $('postsSchedEnabled').value = config.posts_scheduler.enabled === true ? 'true' : 'false';
+      $('postsSchedTime').value = config.posts_scheduler.time||'16:00';
+    }
+    if(config.engagement){
+      $('engagementSchedEnabled').value = config.engagement.enabled === true ? 'true' : 'false';
+      $('engagementSchedTime').value = config.engagement.time||'18:00';
+    }
+    if(config.video_settings){
+      $('minWords').value = config.video_settings.min_words||750;
+      $('minDuration').value = config.video_settings.min_duration||300;
+    }
+  }
+}
+
+async function loadStats(){
+  const stats = await apiFetch('/api/stats');
+  if(!stats.error){
+    $('totalVideos').textContent = stats.total_videos||0;
+    $('activeChannels').textContent = stats.active_channels||0;
+    $('totalChannels').textContent = ((stats.channels)||[]).length;
+    const html = ((stats.channels)||[]).map(ch =>
+      '<div class="channel-card"><div class="info"><h4>'+ch.name+'</h4><p>'+ch.niche+' | '+ch.total+' فيديو</p></div><span class="badge">نشط</span></div>'
+    ).join('')||'<p style="color:#666;font-size:13px;padding:10px">لا توجد قنوات نشطة</p>';
+    $('channelList').innerHTML = html;
+  }
+  const health = await apiFetch('/api/health');
+  if(!health.error){
+    $('systemStatus').textContent = health.ffmpeg ? 'نشط ✓' : 'FFmpeg غير مثبت';
+    $('systemDetail').textContent = health.ffmpeg ? 'FFmpeg: جاهز | Pexels: '+(health.pexels?'✓':'✗') : 'قم بتثبيت FFmpeg';
+    $('whatsappStatus').textContent = health.whatsapp ? 'مفعل ✓' : 'غير مفعل';
+  }
+}
+
+async function loadChannels(){
+  const channels = await apiFetch('/api/channels');
+  if(!Array.isArray(channels)) return;
+  const ytStatuses = await apiFetch('/api/youtube/channels/status');
+  var ytMap = {};
+  if(Array.isArray(ytStatuses)){
+    ytStatuses.forEach(function(s){ ytMap[s.channelId] = s; });
+  }
+  const html = channels.map(function(ch){
+    var activeBadge = ch.active!==false ? '<span class="badge">نشط</span>' : '<span class="badge" style="background:#555">متوقف</span>';
+    var pubToggle = ch.active!==false
+      ? '<button class="btn btn-sm btn-secondary" onclick="toggleChannelPub(\''+ch.channel_id+'\')" style="font-size:11px">⏸ إيقاف النشر</button>'
+      : '<button class="btn btn-sm btn-success" onclick="toggleChannelPub(\''+ch.channel_id+'\')" style="font-size:11px">▶️ تفعيل النشر</button>';
+    var ytCh = ytMap[ch.channel_id]||{};
+    var ytBadge = ytCh.connected
+      ? '<span class="status-badge" style="background:#00c853;font-size:10px;padding:2px 6px;border-radius:3px">✅ يوتيوب</span>'
+      : '<span class="status-badge" style="background:#666;font-size:10px;padding:2px 6px;border-radius:3px">❌ غير مرتبط</span>';
+    var ytBtn = ytCh.connected
+      ? ''
+      : '<button class="btn btn-sm btn-danger" onclick="connectChannelYt(\''+ch.channel_id+'\')" style="font-size:10px">🔗 ربط يوتيوب</button>';
+    return '<div class="channel-card"><div class="info"><h4>'+ch.name+'</h4><p>المجال: '+ch.niche+' | الجمهور: '+(ch.target_audience||['US','UK','CA']).join(', ')+'</p><p style="font-size:10px;color:#666">'+(ytCh.ytChannelName||'')+'</p></div><div style="display:flex;gap:6px;align-items:center">'+activeBadge+' '+ytBadge+'</div><div style="display:flex;gap:6px;margin-top:8px">'+pubToggle+' '+ytBtn+' <button class="btn btn-sm btn-primary" onclick="editChannel(\''+ch.channel_id+'\',\''+ch.name.replace(/'/g,"\\'")+'\',\''+ch.niche+'\')" style="font-size:11px">✏️ تعديل</button> <button class="btn btn-sm btn-danger" onclick="deleteChannel(\''+ch.channel_id+'\')" style="font-size:11px">🗑 حذف</button></div></div>';
+  }).join('')||'<p style="color:#666;padding:15px">لا توجد قنوات. أضف قناة جديدة!</p>';
+  $('channelsContainer').innerHTML = html;
+
+  const sel = $('produceChannel');
+  const filter = $('videosChannelFilter');
+  sel.innerHTML = '<option value="">-- اختر قناة --</option>';
+  filter.innerHTML = '<option value="all">جميع القنوات</option>';
+  channels.forEach(function(ch){
+    sel.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+    filter.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+  });
+}
+
+function renderVideos(videos){
+  const recent = $('recentVideos');
+  const all = $('allVideosList');
+  const recentVids = videos.slice(0,8);
+
+  if(recentVids.length===0){
+    recent.innerHTML = '<p style="color:#666;text-align:center;padding:15px;font-size:13px">لم يتم إنتاج فيديوهات بعد</p>';
+  }else{
+    recent.innerHTML = recentVids.map(function(v){
+      var d = v.duration||'-';
+      var n = v.channelName ? v.channelName+' | ' : '';
+      return '<div class="video-item"><div><div class="title">'+(v.topic||'')+'</div><div class="meta">'+n+d+' دقيقة | '+new Date(v.createdAt).toLocaleDateString('ar')+'</div></div><span class="status-badge">'+(v.status||'مكتمل')+'</span></div>';
+    }).join('');
+  }
+
+  if(videos.length===0){
+    all.innerHTML = '<p style="color:#666;text-align:center;padding:20px">لم يتم إنتاج فيديوهات بعد</p>';
+  }else{
+    all.innerHTML = videos.map(function(v){
+      var d = v.duration||'-';
+      var n = v.channelName ? v.channelName+' | ' : '';
+      var ytBadge = v.youtubeUrl ? '<span class="status-badge" style="background:#00c853">📺 منشور</span>' : '<span class="status-badge">'+(v.status||'مكتمل')+'</span>';
+
+      // Buttons
+      var btns = [];
+
+      // YouTube link if published
+      if(v.youtubeUrl){
+        btns.push('<a href="'+v.youtubeUrl+'" target="_blank" class="btn btn-sm" style="background:#00c853;color:#fff;text-decoration:none;font-size:11px;padding:4px 10px;border-radius:4px">▶️ يوتيوب</a>');
+      }
+
+      // Publish button if not yet published
+      if(!v.youtubeUrl){
+        btns.push('<button class="btn btn-sm btn-danger" onclick="publishVideo(\''+v.id+'\',\''+v.channel_id+'\')" style="font-size:11px;padding:4px 10px">📤 نشر</button>');
+      }
+
+      // Download / Play local video
+      if(v.videoPath){
+        var fname = v.videoPath.split(/[\\/]/).pop();
+        btns.push('<a href="/api/download/'+fname+'" class="btn btn-sm" style="background:#1a1a3e;color:#fff;text-decoration:none;font-size:11px;padding:4px 10px;border-radius:4px">⬇️ تحميل</a>');
+        btns.push('<button class="btn btn-sm" onclick="playLocalVideo(\''+fname+'\',\''+v.topic.replace(/'/g,"\\'")+'\')" style="background:#1a1a2e;color:#fff;font-size:11px;padding:4px 10px;border-radius:4px">▶️ تشغيل</button>');
+        btns.push('<button class="btn btn-sm" onclick="liveStreamVideo(\''+v.id+'\',\''+v.channel_id+'\')" style="background:#e67e22;color:#fff;font-size:11px;padding:4px 10px;border-radius:4px">📡 بث</button>');
+        btns.push('<button class="btn btn-sm" onclick="deleteVideo(\''+v.id+'\',\''+v.channel_id+'\')" style="background:#6b0000;color:#fff;font-size:11px;padding:4px 10px;border-radius:4px">🗑️ حذف</button>');
+      }
+
+      return '<div class="video-item"><div><div class="title">'+(v.topic||'')+'</div><div class="meta">'+n+(v.scriptWords||0)+' كلمة | '+d+' دقيقة | '+new Date(v.createdAt).toLocaleDateString('ar')+'</div></div><div style="display:flex;gap:6px;align-items:center">'+ytBadge+' '+btns.join('')+'</div></div>';
+    }).join('');
+  }
+}
+
+window.playLocalVideo = function(filename, topic){
+  var player = $('videoPlayer');
+  var overlay = $('videoPlayerOverlay');
+  var src = '/api/download/' + encodeURIComponent(filename);
+  player.innerHTML = '<video controls autoplay style="width:100%;max-height:70vh;border-radius:8px"><source src="'+src+'" type="video/mp4">المتصفح لا يدعم تشغيل الفيديو</video><p style="color:#aaa;margin-top:8px;font-size:13px">'+topic+'</p>';
+  overlay.classList.add('active');
+};
+$('videoPlayerOverlay').addEventListener('click', function(e){
+  if(e.target === this){
+    this.classList.remove('active');
+    $('videoPlayer').innerHTML = '';
+  }
+});
+window.deleteVideo = async function(videoId, channelId){
+  if(!confirm('هل أنت متأكد من حذف هذا الفيديو؟')) return;
+  var r = await apiFetch('/api/video/delete', {method:'POST', body:JSON.stringify({videoId:videoId, channelId:channelId})});
+  if(r.success){ notify('✅ تم حذف الفيديو', 'success'); loadVideos(); loadStats(); }
+  else notify('❌ فشل الحذف: '+(r.error||''), 'error');
+};
+window.liveStreamVideo = function(videoId, channelId){
+  document.querySelectorAll('.sidebar nav a').forEach(function(a){
+    a.classList.remove('active');
+    if(a.getAttribute('data-tab')==='live') a.classList.add('active');
+  });
+  document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('tab-live').classList.add('active');
+  setTimeout(function(){
+    var chSel = document.getElementById('liveChannel');
+    var vidSel = document.getElementById('liveVideo');
+    if(chSel) chSel.value = channelId;
+    loadLiveVideos();
+    setTimeout(function(){
+      if(vidSel) vidSel.value = videoId;
+    }, 500);
+  }, 100);
+};
+window.publishVideo = async function(videoId, channelId){
+  var r = await apiFetch('/api/youtube/upload', {method:'POST', body:JSON.stringify({videoId:videoId, channelId:channelId})});
+  if(r.success){ notify('✅ تم النشر على يوتيوب: '+r.url, 'success'); loadVideos(); }
+  else notify('❌ فشل النشر: '+(r.error||''), 'error');
+};
+
+async function loadVideos(){
+  var filter = $('videosChannelFilter');
+  if(!filter) return;
+  var val = filter.value;
+  var all = [];
+  var stats = await apiFetch('/api/stats');
+  if(!stats.error){
+    for(var ci=0; ci<(stats.channels||[]).length; ci++){
+      var ch = stats.channels[ci];
+      var s = await apiFetch('/api/channel/'+ch.channel_id+'/stats');
+      if(!s.error && s.videos){
+        for(var vi=0; vi<s.videos.length; vi++){ s.videos[vi].channelName=ch.name; s.videos[vi].channel_id=ch.channel_id; }
+        all = all.concat(s.videos);
+      }
+    }
+  }
+  all.sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt)});
+  renderVideos(all);
+}
+// ── Social Accounts Functions ──
+async function loadSocialChannels(){
+  try{
+    var r = await fetch('/api/channels');
+    var chs = await r.json();
+    var sel = $('socialChannel');
+    sel.innerHTML = chs.filter(c=>c.active).map(c=>'<option value="'+c.channel_id+'">'+c.name+'</option>').join('');
+    if(chs.length>0) await loadSocialConfig(chs[0].channel_id);
+  }catch(e){}
+}
+async function loadSocialConfig(channelId){
+  try{
+    var r = await fetch('/api/social/config/'+channelId);
+    var cfg = await r.json();
+    $('twApiKey').value = (cfg.twitter||{}).api_key||'';
+    $('twApiSecret').value = (cfg.twitter||{}).api_secret||'';
+    $('twAccessToken').value = (cfg.twitter||{}).access_token||'';
+    $('twAccessSecret').value = (cfg.twitter||{}).access_secret||'';
+    $('fbPageId').value = (cfg.facebook||{}).page_id||'';
+    $('fbPageToken').value = (cfg.facebook||{}).page_token||'';
+    $('liToken').value = (cfg.linkedin||{}).access_token||'';
+    $('liAuthor').value = (cfg.linkedin||{}).author_urn||'';
+    $('igUserId').value = (cfg.instagram||{}).ig_user_id||'';
+    $('tgBotToken').value = (cfg.telegram||{}).bot_token||'';
+    $('tgChatId').value = (cfg.telegram||{}).chat_id||'';
+    await loadSocialPublishPosts(channelId);
+  }catch(e){}
+}
+async function loadSocialPublishPosts(channelId){
+  try{
+    var r = await fetch('/api/posts/list/'+channelId);
+    var posts = await r.json();
+    var sel = $('socialPublishPost');
+    sel.innerHTML = '<option value="">اختر منشوراً...</option>';
+    for(var p of posts){
+      sel.innerHTML += '<option value="'+p.id+'">'+(p.topic||'بدون موضوع').slice(0,50)+' - '+new Date(p.createdAt).toLocaleDateString()+'</option>';
+    }
+  }catch(e){}
+}
+$('socialChannel').addEventListener('change', function(){
+  loadSocialConfig(this.value);
+});
+$('socialSaveBtn').addEventListener('click', async function(){
+  var cid = $('socialChannel').value;
+  if(!cid){ notify('اختر قناة أولاً','error'); return; }
+  $('socialStatus').textContent = 'جاري الحفظ...';
+  var platforms = {
+    twitter: {api_key: $('twApiKey').value, api_secret: $('twApiSecret').value, access_token: $('twAccessToken').value, access_secret: $('twAccessSecret').value},
+    facebook: {page_id: $('fbPageId').value, page_token: $('fbPageToken').value},
+    linkedin: {access_token: $('liToken').value, author_urn: $('liAuthor').value},
+    instagram: {ig_user_id: $('igUserId').value},
+    telegram: {bot_token: $('tgBotToken').value, chat_id: $('tgChatId').value},
+  };
+  for(var p of Object.keys(platforms)){
+    var creds = platforms[p];
+    // Only save if at least one field filled
+    if(Object.values(creds).some(v=>v)){
+      await fetch('/api/social/config/'+cid, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({platform:p, credentials:creds})});
+    }
+  }
+  $('socialStatus').textContent = '✅ تم حفظ الإعدادات';
+  notify('تم حفظ إعدادات المنصات','success');
+});
+$('socialPublishBtn').addEventListener('click', async function(){
+  var cid = $('socialChannel').value;
+  var pid = $('socialPublishPost').value;
+  if(!cid||!pid){ notify('اختر قناة ومنشوراً أولاً','error'); return; }
+  $('socialPublishLoader').classList.add('active');
+  $('socialPublishResult').innerHTML = '';
+  try{
+    var r = await fetch('/api/posts/publish', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({channelId:cid, postId:pid})});
+    var ct = r.headers.get('content-type')||'';
+    var res;
+    if(ct.includes('application/json')){ res = await r.json(); }
+    else { var txt = await r.text(); throw new Error('الخادم أعاد خطأ: '+(txt.slice(0,200))); }
+    var html = '<div style="font-size:12px">';
+    for(var r2 of (res.results||[])){
+      html += '<div style="padding:4px 0;color:'+(r2.success?'#00c853':'#e63946')+'">'+(r2.success?'✅':'❌')+' '+r2.platform+': '+(r2.success?'تم النشر':r2.error||'فشل')+'</div>';
+    }
+    html += '</div>';
+    $('socialPublishResult').innerHTML = html;
+  }catch(e){
+    $('socialPublishResult').innerHTML = '<span style="color:#e63946">خطأ: '+e.message+'</span>';
+  }
+  $('socialPublishLoader').classList.remove('active');
+});
+// Tab switching
+document.querySelectorAll('.sidebar nav a').forEach(function(a){
+  a.addEventListener('click', function(e){
+    document.querySelectorAll('.sidebar nav a').forEach(function(x){x.classList.remove('active')});
+    a.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(function(t){t.style.display='none'});
+    var tab = $('tab-'+a.getAttribute('data-tab'));
+    if(tab) tab.style.display='block';
+    if(a.getAttribute('data-tab')==='videos') loadVideos();
+    if(a.getAttribute('data-tab')==='live'){ loadLiveChannels(); loadLiveStatus(); loadLivePast(); }
+    if(a.getAttribute('data-tab')==='shorts'){ loadShortsChannels(); loadShortsList(); }
+    if(a.getAttribute('data-tab')==='posts'){ loadPostsChannels(); loadPostsList(); }
+    if(a.getAttribute('data-tab')==='engagement'){ loadEngagementChannels(); loadEngagementLog(); }
+    if(a.getAttribute('data-tab')==='social'){ loadSocialChannels(); }
+  });
+});
+
+// Research button
+// Channel-specific deep research
+$('channelIdeasBtn').addEventListener('click', async function(){
+  if(isLoading) return;
+  var niche = $('channelNicheInput').value.trim();
+  if(!niche){ notify('الرجاء إدخال مضمون القناة', 'error'); return; }
+  isLoading = true;
+  this.disabled = true;
+  var loader = $('channelIdeasLoader');
+  var results = $('channelIdeasResults');
+  loader.classList.add('active');
+  results.innerHTML = '';
+
+  var resp = await apiFetch('/api/research/channel-ideas', {method:'POST', body:JSON.stringify({niche: niche, channelName: $('channelNameInput').value.trim()})});
+
+  loader.classList.remove('active');
+  isLoading = false;
+  this.disabled = false;
+
+  if(resp.error){
+    results.innerHTML = '<p style="color:#e63946;text-align:center;padding:15px">'+resp.error+'</p>';
+    return;
+  }
+
+  if(resp.ideas && resp.ideas.length>0){
+    var html = '<p style="color:#888;font-size:12px;margin-bottom:8px">تم البحث في يوتيوب: '+resp.totalSearches+' كلمة مفتاحية | الزمن: '+resp.elapsed+' ثانية</p>';
+    html += '<p style="color:#aaa;font-size:11px;margin-bottom:10px">عنوان مقترح آمن: <strong>'+resp.safeTitle+'</strong></p>';
+    html += '<div style="display:grid;gap:6px">'+(resp.ideas||[]).map(function(m){
+      var cls = m.finalScore>=60?'score-high':(m.finalScore>=30?'score-medium':'score-low');
+      return '<div class="result-card" style="padding:10px">' +
+        '<div style="display:flex;justify-content:space-between;flex-wrap:wrap">' +
+        '<strong style="font-size:13px">'+m.idea+'</strong>' +
+        '<span class="score '+cls+'">'+m.finalScore+'</span></div>' +
+        '<div class="metrics" style="margin-top:4px">' +
+        '<span class="metric" style="font-size:11px">👁 '+(m.totalViews||0).toLocaleString()+'</span>' +
+        '<span class="metric" style="font-size:11px">📹 '+m.totalVideos+' فيديو</span>' +
+        '<span class="metric" style="font-size:11px">📈 طلب: '+m.demandScore+'</span>' +
+        '<span class="metric" style="font-size:11px">⚔️ منافسة: '+m.compScore+'</span></div></div>';
+    }).join('')+'</div>';
+    results.innerHTML = html;
+    notify('✅ تم استخراج '+resp.ideas.length+' فكرة', 'success');
+  } else {
+    results.innerHTML = '<p style="color:#888;text-align:center;padding:15px">لم يتم العثور على نتائج. جرب وصفاً أوسع.</p>';
+  }
+});
+
+$('researchBtn').addEventListener('click', async function(){
+  if(isLoading) return;
+  isLoading = true;
+  this.disabled = true;
+  var niche = $('researchNiche').value;
+  var topic = $('researchTopic').value.trim();
+  var loader = $('researchLoader');
+  var results = $('researchResults');
+
+  loader.classList.add('active');
+  results.innerHTML = '';
+
+  var resp = await apiFetch('/api/research', {method:'POST', body:JSON.stringify({niche:niche, topic:topic})});
+
+  loader.classList.remove('active');
+  isLoading = false;
+  this.disabled = false;
+
+  if(resp.error){
+    results.innerHTML = '<p style="color:#e63946;text-align:center;padding:15px">خطأ: '+resp.error+'</p>';
+    return;
+  }
+
+  if(resp.topics && resp.topics.length>0){
+    results.innerHTML = resp.topics.map(function(t){
+      var f = t.finalScore||0;
+      var cls = f>=60?'score-high':(f>=30?'score-medium':'score-low');
+      var d = t.demandScore||0;
+      var c = t.competitionScore||0;
+      return '<div class="result-card"><h4>'+(t.topic||t.topic||'')+'</h4><div class="metrics"><span class="metric">المشاهدات: <strong>'+(t.totalViews||t.searchVolume||0).toLocaleString()+'</strong></span><span class="metric">فيديوهات: <strong>'+(t.totalVideos||t.videoCount||0)+'</strong></span><span class="metric">متوسط: <strong>'+(t.avgViews||0).toLocaleString()+'</strong></span></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="score '+cls+'">النتيجة: '+f+'</span><span class="score '+(d>=50?'score-high':'score-medium')+'">الطلب: '+d+'</span><span class="score '+(c<=50?'score-high':'score-medium')+'">المنافسة: '+c+'</span></div>'+(t.recommendedTitle?'<p style="color:#e63946;font-size:12px;margin-top:6px">🏆 العنوان: '+t.recommendedTitle+'</p>':'')+'</div>';
+    }).join('');
+    notify('تم العثور على نتائج', 'success');
+  }else{
+    results.innerHTML = '<p style="color:#888;text-align:center;padding:15px">لم يتم العثور على نتائج. جرب مجالاً آخر.</p>';
+    notify('لا توجد نتائج', 'info');
+  }
+});
+
+// Niche analysis button
+$('nicheAnalysisBtn').addEventListener('click', async function(){
+  if(isLoading) return;
+  isLoading = true;
+  this.disabled = true;
+  var loader = $('nicheLoader');
+  var results = $('nicheResults');
+  loader.classList.add('active');
+  results.innerHTML = '';
+
+  var resp = await apiFetch('/api/research/niches');
+
+  loader.classList.remove('active');
+  isLoading = false;
+  this.disabled = false;
+
+  if(resp.error){
+    results.innerHTML = '<p style="color:#e63946;text-align:center;padding:15px">خطأ: '+resp.error+'</p>';
+    return;
+  }
+
+  if(resp.categories && resp.categories.length>0){
+    var cpmColors = {'high':'#00c853','medium':'#ffc107','low':'#e63946'};
+    var cpmLabel = {'high':'عالي جداً','medium':'متوسط','low':'منخفض'};
+
+    // Category summary section
+    var html = '<div style="margin-bottom:16px">';
+    html += '<h4 style="margin-bottom:10px;font-size:14px">📊 ملخص المجالات</h4>';
+    resp.categories.map(function(c){
+      var cc = cpmColors[c.cpm]||'#888';
+      var cl = cpmLabel[c.cpm];
+      html += '<div class="result-card" style="padding:10px;margin-bottom:8px;border-right:4px solid '+cc+'">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">';
+      html += '<h4 style="margin:0;font-size:14px">'+c.name+'</h4>';
+      html += '<span class="score score-high">'+c.avgScore+'</span>';
+      html += '</div>';
+      html += '<div class="metrics" style="margin-top:6px">';
+      html += '<span class="metric" style="font-size:12px">أفضل ميكرو-نيتش: <strong>'+c.bestTopic+'</strong></span>';
+      html += '<span class="metric" style="font-size:12px">مشاهدات: <strong>'+c.bestViews.toLocaleString()+'</strong></span>';
+      html += '<span class="metric" style="font-size:12px">CPM: <strong style="color:'+cc+'">'+cl+'</strong></span>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+
+    // Micro-niches section
+    html += '<h4 style="margin-bottom:10px;font-size:14px;margin-top:16px">🏆 أفضل المايكرو-نيتشات (مرتبة)</h4>';
+    html += '<p style="color:#888;font-size:12px;margin-bottom:8px">المواضيع الدقيقة الأكثر طلباً والأقل منافسة:</p>';
+    html += (resp.microNiches||[]).map(function(m){
+      var score = m.finalScore||0;
+      var cls = score>=60?'score-high':(score>=30?'score-medium':'score-low');
+      var cc = cpmColors[m.cpm]||'#888';
+      return '<div class="result-card" style="padding:10px;margin-bottom:6px">' +
+        '<div style="display:flex;justify-content:space-between;flex-wrap:wrap">' +
+        '<div><strong style="font-size:13px">'+m.topic+'</strong>' +
+        '<span style="font-size:11px;color:#888;margin-right:6px">| '+m.category+'</span></div>' +
+        '<span class="score '+cls+'">'+score+'</span>' +
+        '</div>' +
+        '<div class="metrics" style="margin-top:4px">' +
+        '<span class="metric" style="font-size:11px">👁 '+m.totalViews.toLocaleString()+'</span>' +
+        '<span class="metric" style="font-size:11px">📹 '+m.totalVideos+' فيديو</span>' +
+        '<span class="metric" style="font-size:11px">📈 طلب: '+m.demandScore+'</span>' +
+        '<span class="metric" style="font-size:11px">⚔️ منافسة: '+m.competitionScore+'</span>' +
+        '<span class="metric" style="font-size:11px;color:'+cc+'">💰 '+cpmLabel[m.cpm]+'</span>' +
+        '</div></div>';
+    }).join('');
+
+    results.innerHTML = html;
+    notify('✅ تم تحليل المجالات', 'success');
+  } else {
+    results.innerHTML = '<p style="color:#888;text-align:center;padding:15px">تعذر تحليل المجالات. تحقق من الاتصال بالإنترنت.</p>';
+  }
+});
+
+// Produce button
+$('produceBtn').addEventListener('click', async function(){
+  if(isLoading) return;
+  var channelId = $('produceChannel').value;
+  if(!channelId){ notify('اختر قناة أولاً', 'error'); return; }
+
+  isLoading = true;
+  this.disabled = true;
+  var niche = $('produceNiche').value;
+  var manualTopic = $('produceTopic').value.trim();
+  var loader = $('produceLoader');
+  var result = $('produceResult');
+
+  loader.classList.add('active');
+  result.style.display = 'none';
+  $('produceStatus').textContent = manualTopic ? 'جاري إنتاج الفيديو...' : 'جاري البحث عن أفضل موضوع وإنتاج الفيديو...';
+
+  var autoUpload = $('produceAutoUpload').checked;
+  var body = {channelId:channelId, niche:niche, manualTopic:manualTopic};
+  if(autoUpload) body.autoUpload = true;
+  var resp = await apiFetch('/api/produce', {method:'POST', body:JSON.stringify(body)});
+
+  loader.classList.remove('active');
+  isLoading = false;
+  this.disabled = false;
+
+  if(resp.error){
+    notify('فشل: '+resp.error, 'error');
+    return;
+  }
+
+  result.style.display = 'block';
+  var ytLink = '';
+  if(resp.youtube && resp.youtube.url) ytLink = '<span style="background:#12122a;padding:6px 14px;border-radius:6px;font-size:12px"><a href="'+resp.youtube.url+'" target="_blank" style="color:#00c853">▶️ يوتيوب: '+resp.youtube.video_id+'</a></span>';
+  result.innerHTML = '<div style="color:#00c853;font-size:15px;font-weight:700;margin-bottom:10px">✅ تم إنتاج الفيديو بنجاح!</div><div style="display:flex;gap:12px;flex-wrap:wrap"><span style="background:#12122a;padding:6px 14px;border-radius:6px;font-size:12px">القناة: <strong>'+(resp.channel||'')+'</strong></span><span style="background:#12122a;padding:6px 14px;border-radius:6px;font-size:12px">الموضوع: <strong>'+(resp.topic||'')+'</strong></span><span style="background:#12122a;padding:6px 14px;border-radius:6px;font-size:12px">الكلمات: <strong>'+(resp.scriptWords||0)+'</strong></span><span style="background:#12122a;padding:6px 14px;border-radius:6px;font-size:12px">المدة: <strong>'+(resp.duration||0)+' دقيقة</strong></span><span style="background:#12122a;padding:6px 14px;border-radius:6px;font-size:12px">إجمالي القناة: <strong>'+(resp.totalVideos||0)+' فيديو</strong></span>'+ytLink+'</div>';
+  notify('✅ تم إنتاج الفيديو بنجاح', 'success');
+  loadStats();
+  loadVideos();
+});
+
+// Batch production button
+$('batchProduceBtn').addEventListener('click', async function(){
+  if(this.disabled) return;
+  this.disabled = true;
+  var progress = $('batchProgress');
+  var log = $('batchLog');
+  var loader = $('batchLoader');
+  var statusText = $('batchStatusText');
+  progress.style.display = 'block';
+  loader.style.display = 'block';
+  log.innerHTML = '<p style="color:#888">جاري بدء الإنتاج لتسلسل القنوات...</p>';
+  statusText.textContent = 'جاري بدء الإنتاج...';
+
+  var body = {autoUpload: $('batchAutoUpload').checked};
+  var resp = await apiFetch('/api/produce/batch', {method:'POST', body:JSON.stringify(body)});
+
+  if(resp.error){
+    log.innerHTML = '<p style="color:#e63946">خطأ: '+resp.error+'</p>';
+    this.disabled = false;
+    loader.style.display = 'none';
+    return;
+  }
+
+  notify('بدأ الإنتاج لـ '+resp.total+' قناة', 'success');
+  statusText.textContent = 'جاري الإنتاج...';
+
+  // Poll for status every 5 seconds
+  var pollTimer = setInterval(async function(){
+    var st = await apiFetch('/api/produce/batch-status');
+    if(!st.running){
+      clearInterval(pollTimer);
+      loader.style.display = 'none';
+      statusText.textContent = 'اكتمل! ✅';
+      log.innerHTML += '<p style="color:#00c853;font-weight:700;margin-top:8px">✅ اكتمل إنتاج جميع القنوات!</p>';
+      log.scrollTop = log.scrollHeight;
+      batchProduceBtn.disabled = false;
+      loadStats();
+      loadVideos();
+      return;
+    }
+    statusText.textContent = st.current || 'جاري...';
+    if(st.progress && st.progress.length>0){
+      log.innerHTML = st.progress.map(function(p){
+        var statusIcon = p.status==='done'?'✅':(p.status==='error'?'❌':'⏳');
+        var extra = '';
+        if(p.yt_url) extra = ' <a href="'+p.yt_url+'" target="_blank" style="color:#00c853;font-size:11px">▶️ يوتيوب</a>';
+        if(p.error) extra = ' <span style="color:#e63946;font-size:11px">'+p.error+'</span>';
+        return '<div style="padding:4px 0;border-bottom:1px solid #1a1a2e">'+statusIcon+' <strong>'+p.channel+'</strong> '+(p.topic?'— '+p.topic:'')+extra+'</div>';
+      }).reverse().join('');
+      log.innerHTML += '<p style="color:#888;font-size:11px;margin-top:6px">اكتمل: '+st.done+'/'+st.total+'</p>';
+      log.scrollTop = log.scrollHeight;
+    }
+  }, 5000);
+});
+
+// Settings button
+$('settingsBtn').addEventListener('click', async function(){
+  if(isLoading) return;
+  isLoading = true;
+  this.disabled = true;
+
+  config.whatsapp = {
+    phone: $('waPhone').value,
+    api_key: $('waApiKey').value,
+    enabled: $('waEnabled').value === 'true'
+  };
+  config.youtube = config.youtube||{};
+  config.youtube.client_id = $('ytClientId').value;
+  config.youtube.client_secret = $('ytClientSecret').value;
+  config.scheduler = config.scheduler||{};
+  config.scheduler.enabled = $('schedEnabled').value === 'true';
+  config.scheduler.time = $('schedTime').value;
+  config.scheduler.autoLive = $('schedAutoLive').value === 'true';
+  config.live_scheduler = config.live_scheduler||{};
+  config.live_scheduler.enabled = $('liveSchedEnabled').value === 'true';
+  config.live_scheduler.time = $('liveSchedTime').value;
+  config.shorts_scheduler = config.shorts_scheduler||{};
+  config.shorts_scheduler.enabled = $('shortsSchedEnabled').value === 'true';
+  config.shorts_scheduler.time = $('shortsSchedTime').value;
+  config.posts_scheduler = config.posts_scheduler||{};
+  config.posts_scheduler.enabled = $('postsSchedEnabled').value === 'true';
+  config.posts_scheduler.time = $('postsSchedTime').value;
+  config.engagement = config.engagement||{};
+  config.engagement.enabled = $('engagementSchedEnabled').value === 'true';
+  config.engagement.time = $('engagementSchedTime').value;
+  config.video_settings = config.video_settings||{};
+  config.video_settings.min_words = parseInt($('minWords').value)||750;
+  config.video_settings.min_duration = parseInt($('minDuration').value)||300;
+
+  var resp = await apiFetch('/api/config', {method:'POST', body:JSON.stringify(config)});
+  isLoading = false;
+  this.disabled = false;
+
+  if(resp.success){ notify('✅ تم حفظ الإعدادات', 'success'); loadStats(); loadYTStatus(); }
+  else notify('فشل الحفظ', 'error');
+});
+
+// Show add channel with YouTube connection check
+var oldShowAdd = showAddChannel;
+showAddChannel = function(){
+  $('addChannelModal').classList.add('active');
+  $('ytConnectSection').style.display = 'block';
+  $('ytConnectedSection').style.display = 'none';
+  // Check if already connected
+  apiFetch('/api/youtube/status').then(function(r){
+    if(r.connected){
+      $('ytConnectSection').querySelector('p').textContent = '✅ القناة مرتبطة حالياً. يمكنك إضافتها للإعدادات.';
+      $('modalYtName').textContent = r.channel_name||'';
+      $('modalYtId').textContent = r.channel_id||'';
+    }
+  });
+};
+
+// Modal YouTube connect button
+$('modalYtConnectBtn').addEventListener('click', async function(){
+  var r = await apiFetch('/api/youtube/auth-url');
+  if(r.error){ notify(r.error, 'error'); return; }
+  var w = window.open(r.url, 'ytAuth', 'width=600,height=700');
+  var checkTimer = setInterval(function(){
+    if(w.closed){
+      clearInterval(checkTimer);
+      // Check if connected now
+      apiFetch('/api/youtube/status').then(function(r2){
+        if(r2.connected){
+          $('ytConnectSection').style.display = 'none';
+          $('ytConnectedSection').style.display = 'block';
+          $('modalYtName').textContent = r2.channel_name||'';
+          $('modalYtId').textContent = r2.channel_id||'';
+          notify('✅ تم ربط القناة: '+r2.channel_name, 'success');
+        } else {
+          notify('لم يتم الربط. حاول مرة أخرى.', 'info');
+        }
+      });
+    }
+  }, 500);
+});
+
+// Save channel button (from YouTube connection)
+$('saveChannelBtn').addEventListener('click', async function(){
+  if(isLoading) return;
+
+  var ytStatus = await apiFetch('/api/youtube/status');
+  if(!ytStatus.connected || !ytStatus.channel_id){
+    notify('يجب ربط قناة يوتيوب أولاً', 'error');
+    return;
+  }
+
+  var niche = $('newChNiche').value;
+
+  // Check if channel already exists in config
+  var existing = (config.channels||[]).find(function(c){ return c.channel_id === ytStatus.channel_id; });
+  if(existing){
+    notify('هذه القناة موجودة مسبقاً', 'info');
+    hideAddChannel();
+    return;
+  }
+
+  isLoading = true;
+  this.disabled = true;
+
+  var newCh = {
+    name: ytStatus.channel_name,
+    channel_id: ytStatus.channel_id,
+    youtube_url: 'https://youtube.com/channel/'+ytStatus.channel_id,
+    niche: niche,
+    language: 'en',
+    video_language: 'en',
+    target_audience: ['US','UK','CA'],
+    min_video_duration: 300,
+    upload_schedule: {frequency:'daily', best_time:'18:00'},
+    social_accounts: {},
+    active: true
+  };
+
+  config.channels = config.channels||[];
+  config.channels.push(newCh);
+
+  var resp = await apiFetch('/api/config', {method:'POST', body:JSON.stringify(config)});
+  isLoading = false;
+  this.disabled = false;
+
+  if(resp.success){
+    notify('✅ تمت إضافة القناة: '+newCh.name, 'success');
+    hideAddChannel();
+    loadStats();
+    loadChannels();
+  }else{
+    notify('فشل إضافة القناة', 'error');
+  }
+});
+
+// Clock
+function updateClock(){ $('clock').textContent = new Date().toLocaleString('ar-EG'); }
+setInterval(updateClock, 1000);
+
+// YouTube status
+async function loadYTStatus(){
+  var st = $('ytStatus');
+  var btn = $('ytConnectBtn');
+  var saveBtn = $('ytSaveCredBtn');
+  if(!st) return;
+  var cid = $('ytClientId').value.trim();
+  var cs = $('ytClientSecret').value.trim();
+  if(!cid || !cs){
+    st.innerHTML = '⚠️ أدخل Client ID و Client Secret من Google Cloud Console ثم احفظ الإعدادات';
+    st.style.background = '#2d1b1b';
+    btn.style.display = 'none';
+    saveBtn.style.display = 'none';
+    return;
+  }
+  var r = await apiFetch('/api/youtube/status');
+  if(r.error){ st.innerHTML = '❌ '+r.error; st.style.background='#2d1b1b'; btn.style.display='none'; return; }
+  if(r.connected){
+    st.innerHTML = '✅ <strong>مرتبط بالقناة:</strong> '+(r.channel_name||'')+' ('+(r.channel_id||'')+')';
+    st.style.background = '#0a2e1a';
+    btn.textContent = '🔄 إعادة ربط يوتيوب';
+    btn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+  }else{
+    st.innerHTML = '🔴 <strong>غير مرتبط.</strong> انقر "ربط قناة يوتيوب" للاتصال';
+    st.style.background = '#2d1b1b';
+    btn.textContent = '🔗 ربط قناة يوتيوب';
+    btn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+  }
+}
+
+// YouTube connect
+$('ytConnectBtn').addEventListener('click', async function(){
+  var r = await apiFetch('/api/youtube/auth-url');
+  if(r.error){ notify(r.error, 'error'); return; }
+  window.open(r.url, 'ytAuth', 'width=600,height=700');
+});
+
+// Scheduler log
+async function loadSchedLog(){
+  var el = $('schedLog');
+  if(!el) return;
+  var r = await apiFetch('/api/scheduler/log');
+  if(!r.error && r.log && r.log.length){
+    el.innerHTML = r.log.slice(-20).map(function(l){
+      var t = l.time ? l.time.slice(11,19) : '';
+      return '<div style="padding:2px 0">['+t+'] '+l.msg+'</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '<div style="color:#666">لا يوجد سجل بعد. المجدول ينتظر وقت التشغيل.</div>';
+  }
+}
+setInterval(loadSchedLog, 10000);
+
+// Live scheduler log
+async function loadLiveSchedLog(){
+  var el = $('liveSchedLog');
+  if(!el) return;
+  var r = await apiFetch('/api/live/scheduler/log');
+  if(!r.error && r.log && r.log.length){
+    el.innerHTML = r.log.slice(-20).map(function(l){
+      var t = l.time ? l.time.slice(11,19) : '';
+      return '<div style="padding:2px 0">['+t+'] '+l.msg+'</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '<div style="color:#666">لا يوجد سجل بعد. مجدول البث ينتظر وقت التشغيل.</div>';
+  }
+}
+setInterval(loadLiveSchedLog, 10000);
+
+async function loadShortsSchedLog(){
+  var el = $('shortsSchedLog');
+  if(!el) return;
+  var r = await apiFetch('/api/shorts/scheduler/log');
+  if(!r.error && r.log && r.log.length){
+    el.innerHTML = r.log.slice(-20).map(function(l){
+      var t = l.time ? l.time.slice(11,19) : '';
+      return '<div style="padding:2px 0">['+t+'] '+l.msg+'</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '<div style="color:#666">لا يوجد سجل بعد. مجدول الفيديوهات القصيرة ينتظر وقت التشغيل.</div>';
+  }
+}
+setInterval(loadShortsSchedLog, 10000);
+
+async function loadPostsSchedLog(){
+  var el = $('postsSchedLog');
+  if(!el) return;
+  var r = await apiFetch('/api/posts/scheduler/log');
+  if(!r.error && r.log && r.log.length){
+    el.innerHTML = r.log.slice(-20).map(function(l){
+      var t = l.time ? l.time.slice(11,19) : '';
+      return '<div style="padding:2px 0">['+t+'] '+l.msg+'</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '<div style="color:#666">لا يوجد سجل بعد. مجدول المنشورات ينتظر وقت التشغيل.</div>';
+  }
+}
+setInterval(loadPostsSchedLog, 10000);
+
+async function loadEngagementSchedLog(){
+  var el = $('engagementSchedLog');
+  if(!el) return;
+  var r = await apiFetch('/api/engagement/log');
+  if(!r.error && r.log && r.log.length){
+    el.innerHTML = r.log.slice(-20).map(function(l){
+      var t = l.time ? l.time.slice(11,19) : '';
+      return '<div style="padding:2px 0">['+t+'] '+l.msg+'</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '<div style="color:#666">لا يوجد سجل بعد. مجدول التفاعل ينتظر وقت التشغيل.</div>';
+  }
+}
+setInterval(loadEngagementSchedLog, 10000);
+
+// ── Engagement ──
+
+function loadEngagementChannels(){
+  apiFetch('/api/channels').then(function(channels){
+    if(!Array.isArray(channels)) return;
+    var sel = $('engagementChannel');
+    sel.innerHTML = '<option value="">🚀 كل القنوات النشطة</option>';
+    channels.forEach(function(ch){
+      sel.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+    });
+  });
+}
+
+async function loadEngagementLog(){
+  var el = $('engagementLog');
+  if(!el) return;
+  var r = await apiFetch('/api/engagement/log');
+  if(!r.error && r.log && r.log.length){
+    el.innerHTML = r.log.slice(-30).map(function(l){
+      var t = l.time ? l.time.slice(11,19) : '';
+      return '<div style="padding:3px 0;border-bottom:1px solid #1a1a3e">['+t+'] '+l.msg+'</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '<div style="color:#666">لا يوجد سجل تفاعل بعد.</div>';
+  }
+}
+setInterval(loadEngagementLog, 15000);
+
+$('engagementRunBtn').addEventListener('click', async function(){
+  var chId = $('engagementChannel').value;
+  $('engagementLoader').classList.add('active');
+  var r = await apiFetch('/api/engagement/run', {method:'POST', body:JSON.stringify({channelId:chId})});
+  $('engagementLoader').classList.remove('active');
+  if(r.success){
+    notify('✅ تم التفاعل!', 'success');
+    loadEngagementLog();
+    var res = r.result || r.results || {};
+    var html = '';
+    if(r.result){
+      html = '<div style="background:#0a2e1a;padding:12px;border-radius:6px;margin-top:8px;font-size:13px">✅ <strong>نتيجة التفاعل:</strong> '+r.result.liked+' إعجاب, '+r.result.replied+' ردود</div>';
+    } else if(r.results){
+      html = '<div style="background:#0a2e1a;padding:12px;border-radius:6px;margin-top:8px;font-size:13px">';
+      for(var cid in r.results){
+        html += '<div><strong>'+cid+':</strong> '+r.results[cid].liked+' إعجاب, '+r.results[cid].replied+' ردود</div>';
+      }
+      html += '</div>';
+    }
+    $('engagementResult').innerHTML = html;
+  } else {
+    notify('❌ فشل: '+(r.error||''), 'error');
+  }
+});
+
+// ── Shorts ──
+
+function loadShortsChannels(){
+  apiFetch('/api/channels').then(function(channels){
+    if(!Array.isArray(channels)) return;
+    var sel = $('shortsChannel');
+    var fil = $('shortsFilter');
+    sel.innerHTML = fil.innerHTML = '<option value="">-- اختر قناة --</option>';
+    channels.forEach(function(ch){
+      sel.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+      fil.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+    });
+  });
+}
+
+async function loadShortsList(){
+  var fil = $('shortsFilter');
+  if(!fil) return;
+  var val = fil.value;
+  var all = [];
+  var channels = await apiFetch('/api/channels');
+  if(!Array.isArray(channels)) return;
+  for(var ci=0; ci<channels.length; ci++){
+    var ch = channels[ci];
+    if(val && ch.channel_id !== val) continue;
+    var list = await apiFetch('/api/shorts/list/'+ch.channel_id);
+    if(Array.isArray(list)){
+      list.forEach(function(s){ s.channelName = ch.name; });
+      all = all.concat(list);
+    }
+  }
+  all.sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt)});
+  var el = $('shortsList');
+  if(all.length === 0){
+    el.innerHTML = '<div style="color:#666;padding:10px">لا توجد فيديوهات قصيرة بعد.</div>';
+    return;
+  }
+  el.innerHTML = all.map(function(s){
+    var fname = s.videoPath ? s.videoPath.split(/[\\/]/).pop() : '';
+    var btns = '';
+    if(fname) btns = '<a href="/api/download/'+fname+'" class="btn btn-sm" style="background:#1a1a3e;color:#fff;font-size:10px;padding:3px 8px;border-radius:3px">⬇️</a>';
+    btns += ' <button class="btn btn-sm" onclick="deleteShort(\''+s.id+'\',\''+s.channel_id+'\')" style="background:#6b0000;color:#fff;font-size:10px;padding:3px 8px;border-radius:3px">🗑️</button>';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #1a1a3e;font-size:12px"><span>'+(s.topic||'')+' <span style="color:#666;font-size:10px">| '+(s.channelName||'')+' | '+new Date(s.createdAt).toLocaleDateString('ar')+'</span></span><span>'+btns+'</span></div>';
+  }).join('');
+}
+
+window.deleteShort = async function(id, chId){
+  if(!confirm('حذف هذا الفيديو القصير؟')) return;
+  var r = await apiFetch('/api/shorts/delete', {method:'POST', body:JSON.stringify({channelId:chId, shortId:id})});
+  if(r.success) notify('✅ تم الحذف', 'success');
+  else notify('فشل الحذف', 'error');
+  loadShortsList();
+};
+
+$('shortsFilter').addEventListener('change', loadShortsList);
+$('shortsProduceBtn').addEventListener('click', async function(){
+  var chId = $('shortsChannel').value;
+  var topic = $('shortsTopic').value.trim();
+  if(!chId){ notify('اختر قناة أولاً', 'error'); return; }
+  $('shortsLoader').classList.add('active');
+  var r = await apiFetch('/api/shorts/produce', {method:'POST', body:JSON.stringify({channelId:chId, manualTopic:topic})});
+  $('shortsLoader').classList.remove('active');
+  if(r.success){
+    notify('✅ تم إنتاج الفيديو القصير!', 'success');
+    loadShortsList();
+    var fname = r.videoPath ? r.videoPath.split(/[\\/]/).pop() : '';
+    $('shortsResult').innerHTML = '<div style="background:#0a2e1a;padding:12px;border-radius:6px;margin-top:8px;font-size:13px">✅ <strong>'+r.topic+'</strong><br>'+(fname?'<a href="/api/download/'+fname+'" style="color:#00c853">⬇️ تحميل الفيديو</a>':'')+'</div>';
+  } else {
+    notify('❌ فشل: '+(r.error||''), 'error');
+  }
+});
+
+// ── Posts ──
+
+function loadPostsChannels(){
+  apiFetch('/api/channels').then(function(channels){
+    if(!Array.isArray(channels)) return;
+    var sel = $('postsChannel');
+    var fil = $('postsFilter');
+    sel.innerHTML = fil.innerHTML = '<option value="">-- اختر قناة --</option>';
+    channels.forEach(function(ch){
+      sel.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+      fil.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+    });
+  });
+}
+
+async function loadPostsList(){
+  var fil = $('postsFilter');
+  if(!fil) return;
+  var val = fil.value;
+  var all = [];
+  var channels = await apiFetch('/api/channels');
+  if(!Array.isArray(channels)) return;
+  for(var ci=0; ci<channels.length; ci++){
+    var ch = channels[ci];
+    if(val && ch.channel_id !== val) continue;
+    var list = await apiFetch('/api/posts/list/'+ch.channel_id);
+    if(Array.isArray(list)){
+      list.forEach(function(p){ p.channelName = ch.name; });
+      all = all.concat(list);
+    }
+  }
+  all.sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt)});
+  var el = $('postsList');
+  if(all.length === 0){
+    el.innerHTML = '<div style="color:#666;padding:10px">لا توجد منشورات بعد.</div>';
+    return;
+  }
+  el.innerHTML = all.map(function(batch){
+    var platforms = batch.posts ? batch.posts.map(function(p){
+      var icons = {twitter:'🐦', facebook:'📘', linkedin:'💼', instagram:'📸', telegram:'✈️'};
+      var icon = icons[p.platform]||'📝';
+      var imgHtml = p.imagePath ? ' <a href="/api/download/'+p.imagePath.split(/[\\/]/).pop()+'" style="color:#00c853;font-size:10px">🖼️</a>' : '';
+      return '<span style="margin:0 4px;font-size:11px">'+icon+' '+p.platform+imgHtml+'</span>';
+    }).join('') : '';
+    return '<div style="padding:8px;border-bottom:1px solid #1a1a3e;font-size:12px"><div><strong>'+(batch.topic||'')+'</strong> <span style="color:#666;font-size:10px">| '+(batch.channelName||'')+' | '+new Date(batch.createdAt).toLocaleDateString('ar')+'</span></div><div style="margin-top:4px">'+platforms+' <button class="btn btn-sm" onclick="deletePostBatch(\''+batch.id+'\',\''+batch.channel_id+'\')" style="background:#6b0000;color:#fff;font-size:10px;padding:2px 6px;border-radius:3px">🗑️</button></div></div>';
+  }).join('');
+}
+
+window.deletePostBatch = async function(id, chId){
+  if(!confirm('حذف هذه المنشورات؟')) return;
+  var r = await apiFetch('/api/posts/delete', {method:'POST', body:JSON.stringify({channelId:chId, postId:id})});
+  if(r.success) notify('✅ تم الحذف', 'success');
+  else notify('فشل الحذف', 'error');
+  loadPostsList();
+};
+
+$('postsFilter').addEventListener('change', loadPostsList);
+$('postsProduceBtn').addEventListener('click', async function(){
+  var chId = $('postsChannel').value;
+  var topic = $('postsTopic').value.trim();
+  if(!chId){ notify('اختر قناة أولاً', 'error'); return; }
+  $('postsLoader').classList.add('active');
+  var r = await apiFetch('/api/posts/produce', {method:'POST', body:JSON.stringify({channelId:chId, manualTopic:topic})});
+  $('postsLoader').classList.remove('active');
+  if(r.success){
+    notify('✅ تم إنتاج المنشورات!', 'success');
+    loadPostsList();
+    var html = '<div style="background:#0a2e1a;padding:12px;border-radius:6px;margin-top:8px;font-size:12px">✅ <strong>'+r.topic+'</strong><br>';
+    (r.posts||[]).forEach(function(p){
+      html += '<div style="margin:6px 0;padding:6px;background:#12122a;border-radius:4px"><strong>'+p.platform+'</strong>: '+p.text.slice(0,100)+'...<br>';
+      if(p.imagePath) html += '<a href="/api/download/'+p.imagePath.split(/[\\/]/).pop()+'" style="color:#00c853;font-size:11px">🖼️ تحميل الصورة</a>';
+      html += '</div>';
+    });
+    html += '</div>';
+    $('postsResult').innerHTML = html;
+  } else {
+    notify('❌ فشل: '+(r.error||''), 'error');
+  }
+});
+
+// ── Live Streaming ──
+
+async function loadLiveChannels(){
+  const channels = await apiFetch('/api/channels');
+  if(!Array.isArray(channels)) return;
+  const sel1 = $('liveChannel');
+  const sel2 = $('liveConfigChannel');
+  sel1.innerHTML = '<option value="">-- اختر قناة --</option>';
+  sel2.innerHTML = '<option value="">-- اختر قناة --</option>';
+  channels.forEach(function(ch){
+    sel1.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+    sel2.innerHTML += '<option value="'+ch.channel_id+'">'+ch.name+'</option>';
+  });
+}
+
+async function loadLiveVideos(){
+  const chId = $('liveChannel').value;
+  if(!chId) return;
+  const sel = $('liveVideo');
+  sel.innerHTML = '<option value="">جاري التحميل...</option>';
+  const stats = await apiFetch('/api/channel/'+chId+'/stats');
+  sel.innerHTML = '<option value="">-- اختر فيديو --</option>';
+  if(stats.videos){
+    stats.videos.forEach(function(v){
+      sel.innerHTML += '<option value="'+v.id+'">'+(v.topic||'untitled')+' - '+new Date(v.createdAt).toLocaleDateString('ar')+'</option>';
+    });
+  }
+}
+
+$('liveChannel').addEventListener('change', loadLiveVideos);
+$('liveRefreshVideos').addEventListener('click', loadLiveVideos);
+
+$('liveStartBtn').addEventListener('click', async function(){
+  if(this.disabled) return;
+  const chId = $('liveChannel').value;
+  const vidId = $('liveVideo').value;
+  if(!chId || !vidId){ notify('اختر قناة وفيديو', 'error'); return; }
+  const platforms = [];
+  document.querySelectorAll('#livePlatforms input:checked').forEach(function(cb){
+    platforms.push(cb.value);
+  });
+  if(platforms.length === 0){ notify('اختر منصة واحدة على الأقل', 'error'); return; }
+  this.disabled = true;
+  $('liveLoader').classList.add('active');
+  const r = await apiFetch('/api/live/start', {method:'POST', body:JSON.stringify({channelId:chId, videoId:vidId, platforms:platforms})});
+  $('liveLoader').classList.remove('active');
+  this.disabled = false;
+  if(r.success){
+    notify('✅ بدأ البث المباشر!', 'success');
+    loadLiveStatus();
+  } else {
+    notify('❌ فشل البث: '+(r.error||''), 'error');
+  }
+});
+
+$('liveConfigSave').addEventListener('click', async function(){
+  const chId = $('liveConfigChannel').value;
+  const platform = $('liveConfigPlatform').value;
+  const key = $('liveConfigKey').value.trim();
+  const url = $('liveConfigUrl').value.trim();
+  if(!chId || !platform){ notify('اختر قناة ومنصة', 'error'); return; }
+  const r = await apiFetch('/api/live/config', {method:'POST', body:JSON.stringify({channelId:chId, platform:platform, streamKey:key, rtmpUrl:url})});
+  if(r.success){
+    notify('✅ تم حفظ إعدادات البث', 'success');
+    const st = $('liveConfigStatus');
+    st.innerHTML = '<div style="color:#00c853">✅ حفظت إعدادات '+platform+' للقناة</div>';
+  } else {
+    notify('❌ فشل الحفظ: '+(r.error||''), 'error');
+  }
+});
+
+async function loadLiveStatus(){
+  const el = $('liveActiveStatus');
+  const r = await apiFetch('/api/live/status');
+  if(!r.error && r.count > 0){
+    let html = '';
+    Object.values(r.active).forEach(function(s){
+      html += '<div style="background:#0a2e1a;padding:10px;border-radius:8px;margin-bottom:8px;border:1px solid #00c853">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center">';
+      html += '<span><strong style="color:#00c853">🟢 نشط</strong> | <span style="color:#aaa">منذ '+new Date(s.started).toLocaleString('ar')+'</span></span>';
+      html += '<button class="btn btn-sm btn-danger" onclick="stopLiveStream(\''+s.streamId+'\')">⏹ إيقاف</button>';
+      html += '</div>';
+      html += '<div style="margin-top:4px;font-size:12px;color:#888">'+s.platforms.join(' | ')+'</div>';
+      html += '</div>';
+    });
+    el.innerHTML = html;
+  } else {
+    el.innerHTML = '<div style="color:#888;font-size:13px">لا توجد بثوث نشطة</div>';
+  }
+}
+
+window.stopLiveStream = async function(streamId){
+  if(!confirm('هل أنت متأكد من إيقاف البث؟')) return;
+  const r = await apiFetch('/api/live/stop', {method:'POST', body:JSON.stringify({streamId:streamId})});
+  if(r.success){
+    notify('✅ تم إيقاف البث', 'success');
+    loadLiveStatus();
+  } else {
+    notify('❌ فشل الإيقاف', 'error');
+  }
+};
+
+async function loadLivePast(){
+  const el = $('livePastList');
+  const r = await apiFetch('/api/live/streams');
+  if(!r.error && r.streams.length > 0){
+    el.innerHTML = r.streams.map(function(s){
+      return '<div style="padding:6px 0;border-bottom:1px solid #1e1e3a;display:flex;justify-content:space-between">'+
+        '<span>'+(s.topic||'')+'</span>'+
+        '<span style="color:#666">'+new Date(s.createdAt).toLocaleString('ar')+' | '+s.status+'</span>'+
+        '</div>';
+    }).join('')||'<div style="color:#888">لا توجد بثوث سابقة</div>';
+  } else {
+    el.innerHTML = '<div style="color:#888">لا توجد بثوث سابقة</div>';
+  }
+}
+
+setInterval(function(){
+  const tab = document.querySelector('.sidebar nav a.active');
+  if(tab && tab.getAttribute('data-tab') === 'live'){
+    loadLiveStatus();
+  }
+}, 10000);
+
+// Init
+async function init(){
+  await loadConfig();
+  await loadStats();
+  await loadChannels();
+  await loadVideos();
+  await loadYTStatus();
+  loadSchedLog();
+}
+init();
+
+// Expose to inline HTML handlers
+window.showAddChannel = showAddChannel;
+window.hideAddChannel = hideAddChannel;
+window.loadVideos = loadVideos;
+
+window.toggleChannelPub = async function(channelId){
+  var r = await apiFetch('/api/channels/'+channelId+'/toggle', {method:'POST'});
+  if(r.success){ notify(r.active?'✅ النشر مفعل':'⏸ النشر متوقف', 'success'); loadChannels(); }
+  else notify('فشل', 'error');
+};
+
+window.connectChannelYt = async function(chId){
+  var r = await apiFetch('/api/youtube/auth-url?channelId='+chId);
+  if(r.error){ notify(r.error, 'error'); return; }
+  var w = window.open(r.url, 'ytAuth_'+chId, 'width=600,height=700');
+  var timer = setInterval(function(){
+    if(w.closed){
+      clearInterval(timer);
+      loadChannels();
+      notify('✅ تم تحديث حالة الربط', 'success');
+    }
+  }, 500);
+};
+
+window.deleteChannel = async function(channelId){
+  if(!confirm('هل أنت متأكد من حذف هذه القناة؟')) return;
+  var r = await apiFetch('/api/channels/'+channelId, {method:'DELETE'});
+  if(r.success){ notify('✅ تم حذف القناة', 'success'); loadChannels(); loadStats(); }
+  else notify('فشل الحذف', 'error');
+};
+
+window.editChannel = function(channelId, name, niche){
+  var newName = prompt('اسم القناة الجديد:', name);
+  if(!newName) return;
+  var newNiche = prompt('المجال الجديد (technology/finance/health...):', niche);
+  if(!newNiche) return;
+  apiFetch('/api/channels/'+channelId, {method:'PUT', body:JSON.stringify({name:newName, niche:newNiche})}).then(function(r){
+    if(r.success){ notify('✅ تم التعديل', 'success'); loadChannels(); }
+    else notify('فشل التعديل', 'error');
+  });
+};
+
+})();
+</script>
+</body>
+</html>

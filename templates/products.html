@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}المنتجات{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>المنتجات</h1>
+        <p>تصفح مجموعتنا المتنوعة من العطور الفاخرة</p>
+    </div>
+</section>
+
+<section class="products-page section">
+    <div class="container">
+        <div class="products-layout">
+            <aside class="filter-sidebar">
+                <h3><i class="fas fa-filter"></i> تصفية</h3>
+                <div class="filter-section">
+                    <h4>التصنيفات</h4>
+                    <a href="{{ url_for('products', sort=active_sort, gender=active_gender, min_price=min_price, max_price=max_price) }}" class="filter-link {% if not active_category %}active{% endif %}">الكل</a>
+                    {% for cat in categories %}
+                    <a href="{{ url_for('products', category=cat.id, sort=active_sort, gender=active_gender, min_price=min_price, max_price=max_price) }}" class="filter-link {% if active_category|string == cat.id|string %}active{% endif %}">{{ cat.name_ar or cat.name }}</a>
+                    {% endfor %}
+                </div>
+                <div class="filter-section">
+                    <h4>الجنس</h4>
+                    <a href="{{ url_for('products', sort=active_sort, category=active_category, min_price=min_price, max_price=max_price) }}" class="filter-link {% if not active_gender %}active{% endif %}">الكل</a>
+                    <a href="{{ url_for('products', gender='male', sort=active_sort, category=active_category, min_price=min_price, max_price=max_price) }}" class="filter-link {% if active_gender == 'male' %}active{% endif %}">رجالي</a>
+                    <a href="{{ url_for('products', gender='female', sort=active_sort, category=active_category, min_price=min_price, max_price=max_price) }}" class="filter-link {% if active_gender == 'female' %}active{% endif %}">نسائي</a>
+                    <a href="{{ url_for('products', gender='unisex', sort=active_sort, category=active_category, min_price=min_price, max_price=max_price) }}" class="filter-link {% if active_gender == 'unisex' %}active{% endif %}">للجنسين</a>
+                </div>
+                <div class="filter-section">
+                    <h4>نطاق السعر</h4>
+                    <form method="GET" action="{{ url_for('products') }}" class="price-filter-form">
+                        <input type="hidden" name="category" value="{{ active_category or '' }}">
+                        <input type="hidden" name="gender" value="{{ active_gender or '' }}">
+                        <input type="hidden" name="sort" value="{{ active_sort or 'newest' }}">
+                        <div class="price-inputs">
+                            <input type="number" name="min_price" placeholder="من" value="{{ min_price or '' }}" min="0">
+                            <span>—</span>
+                            <input type="number" name="max_price" placeholder="إلى" value="{{ max_price or '' }}" min="0">
+                        </div>
+                        <button type="submit" class="btn-filter-go">تطبيق</button>
+                    </form>
+                    <div class="price-quick-links">
+                        <a href="{{ url_for('products', min_price=0, max_price=200, category=active_category, gender=active_gender, sort=active_sort) }}">أقل من 200</a>
+                        <a href="{{ url_for('products', min_price=200, max_price=400, category=active_category, gender=active_gender, sort=active_sort) }}">200 - 400</a>
+                        <a href="{{ url_for('products', min_price=400, max_price=10000, category=active_category, gender=active_gender, sort=active_sort) }}">400+</a>
+                    </div>
+                </div>
+                <div class="filter-section filter-reset">
+                    <a href="{{ url_for('products') }}" class="btn btn-secondary btn-block"><i class="fas fa-undo"></i> إعادة تعيين</a>
+                </div>
+            </aside>
+
+            <div class="products-content">
+                <div class="products-toolbar">
+                    <p>{{ products|length }} منتج</p>
+                    <div class="sort-options">
+                        <label>ترتيب:</label>
+                        <select onchange="window.location.href=this.value">
+                            <option value="{{ url_for('products', sort='newest', category=active_category, gender=active_gender, min_price=min_price, max_price=max_price) }}" {% if active_sort == 'newest' %}selected{% endif %}>الأحدث</option>
+                            <option value="{{ url_for('products', sort='price_asc', category=active_category, gender=active_gender, min_price=min_price, max_price=max_price) }}" {% if active_sort == 'price_asc' %}selected{% endif %}>السعر: من الأقل</option>
+                            <option value="{{ url_for('products', sort='price_desc', category=active_category, gender=active_gender, min_price=min_price, max_price=max_price) }}" {% if active_sort == 'price_desc' %}selected{% endif %}>السعر: من الأعلى</option>
+                            <option value="{{ url_for('products', sort='sales', category=active_category, gender=active_gender, min_price=min_price, max_price=max_price) }}" {% if active_sort == 'sales' %}selected{% endif %}>الأكثر مبيعاً</option>
+                            <option value="{{ url_for('products', sort='rating', category=active_category, gender=active_gender, min_price=min_price, max_price=max_price) }}" {% if active_sort == 'rating' %}selected{% endif %}>الأعلى تقييماً</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% if products %}
+                <div class="products-grid">
+                    {% for product in products %}
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt="{{ product.name_ar or product.name }}">
+                            {% if product.compare_price and product.compare_price > product.price %}
+                            <span class="discount-badge">-{{ ((product.compare_price - product.price) / product.compare_price * 100)|int }}%</span>
+                            {% endif %}
+                            {% if product.is_featured %}
+                            <span class="featured-badge">مميز</span>
+                            {% endif %}
+                            {% if product.stock <= 3 %}
+                            <span class="low-stock-badge">🔥 {{ product.stock }} متبقية</span>
+                            {% endif %}
+                            <div class="product-actions">
+                                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="add-to-cart-form">
+                                    <button type="submit" class="btn-add-cart"><i class="fas fa-shopping-cart"></i> أضف للسلة</button>
+                                </form>
+                                <a href="{{ url_for('product_detail', id=product.id) }}" class="btn-view"><i class="fas fa-eye"></i></a>
+                                {% if current_user.is_authenticated %}
+                                <button class="btn-view wishlist-toggle-sm {% if product.id in wishlist_ids %}in-wishlist{% endif %}" data-product-id="{{ product.id }}" title="قائمة الرغبات">
+                                    <i class="{% if product.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category">{{ product.category.name_ar or product.category.name }}</span>
+                            <h3><a href="{{ url_for('product_detail', id=product.id) }}">{{ product.name_ar or product.name }}</a></h3>
+                            <div class="product-card-rating">
+                                {% if product.review_count > 0 %}
+                                {% set avg = product.avg_rating %}
+                                {% for i in range(5) %}
+                                    {% if i < avg|int %}
+                                    <i class="fas fa-star"></i>
+                                    {% elif i == avg|int and (avg - avg|int) >= 0.5 %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                    <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span>({{ product.review_count }})</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-meta">
+                                <span><i class="fas fa-flask"></i> {{ product.volume }}</span>
+                                {% if product.gender == 'male' %}
+                                <span class="gender male">رجالي</span>
+                                {% elif product.gender == 'female' %}
+                                <span class="gender female">نسائي</span>
+                                {% else %}
+                                <span class="gender unisex">جنسين</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price">{{ product.price }} درهم</span>
+                                {% if product.compare_price and product.compare_price > product.price %}
+                                <span class="old-price">{{ product.compare_price }} درهم</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-sold">
+                                <span><i class="fas fa-fire"></i> {{ product.sales_count }} اشتروه مؤخراً</span>
+                                {% if product.stock <= 5 %}
+                                <span class="low-stock critical" data-count="{{ product.stock }}">🔥 {{ product.stock }} قطع متبقية</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h3>لا توجد منتجات</h3>
+                    <p>لم يتم العثور على منتجات مطابقة لمعايير البحث</p>
+                    <a href="{{ url_for('products') }}" class="btn btn-primary">عرض الكل</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

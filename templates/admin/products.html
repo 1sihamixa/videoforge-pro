@@ -1,0 +1,39 @@
+{% extends 'admin/layout.html' %}
+{% block title %}إدارة المنتجات{% endblock %}
+{% block content %}
+<div class="admin-toolbar">
+    <h2>المنتجات</h2>
+    <a href="{{ url_for('admin_add_product') }}" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة منتج</a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>الصورة</th>
+            <th>الاسم</th>
+            <th>السعر</th>
+            <th>المخزون</th>
+            <th>التصنيف</th>
+            <th>مميز</th>
+            <th>المبيعات</th>
+            <th>إجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td><img src="{{ url_for('static', filename='img/products/' + product.image) }}" class="admin-product-img"></td>
+            <td>{{ product.name_ar or product.name }}</td>
+            <td>{{ product.price }} درهم</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.category.name_ar or product.category.name }}</td>
+            <td>{% if product.is_featured %}<i class="fas fa-check" style="color:var(--gold)"></i>{% endif %}</td>
+            <td>{{ product.sales_count }}</td>
+            <td class="actions">
+                <a href="{{ url_for('admin_edit_product', id=product.id) }}" class="btn btn-sm"><i class="fas fa-edit"></i></a>
+                <a href="{{ url_for('admin_delete_product', id=product.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد؟')"><i class="fas fa-trash"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

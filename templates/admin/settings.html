@@ -1,0 +1,27 @@
+{% extends 'admin/layout.html' %}
+{% block title %}الإعدادات - AYA PARFUM{% endblock %}
+{% block content %}
+<h2><i class="fas fa-cog"></i> الإعدادات</h2>
+
+<div class="admin-form" style="max-width:500px">
+    <form method="POST" action="{{ url_for('admin_settings') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label><i class="fab fa-whatsapp"></i> رقم واتساب</label>
+            <input type="text" name="whatsapp_number" value="{{ whatsapp_number }}" class="form-control" dir="ltr" placeholder="2126XXXXXXXX" required>
+            <small style="color:var(--gray);display:block;margin-top:4px">أدخل الرقم بدون + أو مسافات. مثال: 212612345678</small>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ</button>
+    </form>
+</div>
+
+<div class="admin-form" style="max-width:500px;margin-top:20px">
+    <h3>معاينة الرابط</h3>
+    <p style="direction:ltr;text-align:left;font-size:14px;background:var(--light);padding:10px;border-radius:8px">
+        https://wa.me/{{ whatsapp_number }}
+    </p>
+    <a href="https://wa.me/{{ whatsapp_number }}" target="_blank" class="btn btn-success" style="display:inline-flex;align-items:center;gap:8px">
+        <i class="fab fa-whatsapp"></i> اختبار الرابط
+    </a>
+</div>
+{% endblock %}

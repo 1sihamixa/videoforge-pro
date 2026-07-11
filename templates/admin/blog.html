@@ -1,0 +1,31 @@
+{% extends 'admin/layout.html' %}
+{% block title %}المقالات{% endblock %}
+{% block header %}المقالات{% endblock %}
+{% block content %}
+<div class="admin-toolbar">
+    <a href="{{ url_for('admin_add_blog') }}" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة مقال</a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>العنوان</th>
+            <th>الرابط</th>
+            <th>التاريخ</th>
+            <th>إجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.title_ar or post.title }}</td>
+            <td>{{ post.slug }}</td>
+            <td>{{ post.created_at.strftime('%Y-%m-%d') }}</td>
+            <td>
+                <a href="{{ url_for('admin_edit_blog', id=post.id) }}" class="btn btn-sm btn-primary">تعديل</a>
+                <a href="{{ url_for('admin_delete_blog', id=post.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('تأكيد الحذف؟')">حذف</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

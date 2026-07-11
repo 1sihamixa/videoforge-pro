@@ -61,13 +61,9 @@ if os.path.exists(_cfg_path):
     except: pass
 
 # ─── Wav2Lip Model Check ───
-MODEL_PATH = os.path.join(BASE_DIR, "Wav2Lip", "checkpoints", "wav2lip_gan.pth")
-MODEL_READY = os.path.exists(MODEL_PATH) and os.path.getsize(MODEL_PATH) > 100_000_000
-
+# Removed: local Wav2Lip model check — cloud-only mode via sync.so
 def check_model():
-    global MODEL_READY
-    MODEL_READY = os.path.exists(MODEL_PATH) and os.path.getsize(MODEL_PATH) > 100_000_000
-    return MODEL_READY
+    return False
 
 # ─── Jobs Store ───
 jobs = {}
@@ -185,7 +181,7 @@ def index():
     return render_template("video_creator.html",
         lang=lang,
         dir="rtl" if lang == "ar" else "ltr",
-        model_ready=check_model(),
+        model_ready=False,
         sync_api_key=SYNC_API_KEY,
         models=SYNC_MODELS,
         adsense_client=ADSENSE_CLIENT,
@@ -270,16 +266,9 @@ def start_generate():
     else:
         return jsonify({"error": "يرجى رفع ملف صوتي أو كتابة نص"}), 400
 
-    if mode == "local" and not check_model():
-        return jsonify({
-            "error": "النموذج المحلي غير موجود. استخدم وضع API السحابي أو حمل النموذج من الرابط الموجود في الصفحة"
-        }), 400
-
-    if mode == "cloud":
-        if not api_key:
-            api_key = SYNC_API_KEY
-        if not api_key:
-            return jsonify({"error": "يرجى إدخال API Key من sync.so للتوليد السحابي"}), 400
+    # Force cloud-only: use env API key, ignore user input
+    if not SYNC_API_KEY:
+        return jsonify({"error": "مفتاح API السحابي غير مضبوط في الخادم"}), 400
 
     job_id = uuid.uuid4().hex
     out_fname = f"wav2lip_{job_id}.mp4"
@@ -287,12 +276,8 @@ def start_generate():
 
     jobs[job_id] = {"status": "queued", "output": None, "error": None, "progress": 0}
 
-    if mode == "cloud":
-        t = threading.Thread(target=run_cloud_generate,
-            args=(job_id, image_path, audio_path, output_path, api_key, model, model_mode))
-    else:
-        t = threading.Thread(target=run_local_generate,
-            args=(job_id, image_path, audio_path, output_path))
+    t = threading.Thread(target=run_cloud_generate,
+        args=(job_id, image_path, audio_path, output_path, SYNC_API_KEY, model, model_mode))
     t.daemon = True
     t.start()
 
@@ -402,7 +387,7 @@ def admin_panel():
       <div class="stat-card"><div class="num">{stats.get('total_videos',0)}</div><div class="lbl">{lbl_total}</div></div>
       <div class="stat-card"><div class="num">{stats.get('today',0)}</div><div class="lbl">{lbl_today}</div></div>
       <div class="stat-card"><div class="num">{len(gallery)}</div><div class="lbl">{lbl_gallery_count}</div></div>
-      <div class="stat-card"><div class="num">{'✅' if check_model() else '❌'}</div><div class="lbl">{lbl_model_status}</div></div>
+      <div class="stat-card"><div class="num">{'✅'}</div><div class="lbl">API Status</div></div>
       <div class="stat-card"><div class="num">{len(jobs)}</div><div class="lbl">{lbl_active_jobs}</div></div>
     </div>
     <h3 style="margin-bottom:12px;color:#8888aa">📹 {lbl_latest}</h3>
@@ -412,7 +397,7 @@ def admin_panel():
     </table>
     <div class="env-section">
       <h3>⚙️ {lbl_settings}</h3>
-      <code>SYNC_API_KEY={'✅ ' + lbl_configured if SYNC_API_KEY else '⚠️ ' + lbl_not_configured}\\nPEXELS_API_KEY={'✅ ' + lbl_configured if PEXELS_API_KEY else '⚠️ ' + lbl_not_configured}\\nADSENSE_CLIENT={ADSENSE_CLIENT or '⚠️ ' + lbl_not_configured}\\nGA_TRACKING_ID={GA_TRACKING_ID or '⚠️ ' + lbl_not_configured}\\n{lbl_model_status}: {'✅ ' + lbl_ready if check_model() else '❌ ' + lbl_not_found}\\n{lbl_files_uploaded}: {len(os.listdir(UPLOAD_FOLDER)) if os.path.exists(UPLOAD_FOLDER) else 0}\\n{lbl_files_produced}: {len(os.listdir(OUTPUT_FOLDER)) if os.path.exists(OUTPUT_FOLDER) else 0}</code>
+      <code>SYNC_API_KEY={'✅ ' + lbl_configured if SYNC_API_KEY else '⚠️ ' + lbl_not_configured}\\nPEXELS_API_KEY={'✅ ' + lbl_configured if PEXELS_API_KEY else '⚠️ ' + lbl_not_configured}\\nADSENSE_CLIENT={ADSENSE_CLIENT or '⚠️ ' + lbl_not_configured}\\nGA_TRACKING_ID={GA_TRACKING_ID or '⚠️ ' + lbl_not_configured}\\n{lbl_files_uploaded}: {len(os.listdir(UPLOAD_FOLDER)) if os.path.exists(UPLOAD_FOLDER) else 0}\\n{lbl_files_produced}: {len(os.listdir(OUTPUT_FOLDER)) if os.path.exists(OUTPUT_FOLDER) else 0}</code>
     </div>
     <div style="margin-top:20px;font-size:12px;color:#555;text-align:center">
       <a href="{link_prefix}" style="color:#6c5ce7;text-decoration:none;margin-left:12px">🔄 {lbl_switch_lang}</a>
@@ -611,8 +596,7 @@ if __name__ == "__main__":
     print("=" * 55)
     print(f"  الموقع: http://0.0.0.0:{port}")
     print(f"  لوحة التحكم: http://0.0.0.0:{port}/admin")
-    print(f"  النموذج المحلي: {'✅ جاهز' if check_model() else '❌ غير موجود'}")
-    print(f"  API سحابي: {'✅ مضبوط' if SYNC_API_KEY else '⚠️ غير مضبوط'}")
+    print(f"  API سحابي (sync.so): {'✅ مضبوط' if SYNC_API_KEY else '⚠️ غير مضبوط'}")
     print(f"  رفع الملفات: {UPLOAD_FOLDER}")
     print(f"  إنتاج الفيديو: {OUTPUT_FOLDER}")
     print("=" * 55)

@@ -1,0 +1,77 @@
+📌 دليل ربط قناة يوتيوب للبرنامج
+=====================================
+
+الهدف: تمكين البرنامج من رفع الفيديوهات تلقائياً إلى قناتك على يوتيوب.
+
+---
+
+
+الخطوة 1: إنشاء مشروع في Google Cloud
+-------------------------------------
+1. افتح الرابط: https://console.cloud.google.com/
+2. سجل الدخول بحساب جوجل الخاص بقناتك
+3. اضغط على "Select a project" > "New Project"
+4. اسم المشروع: Content Factory Pro (أو أي اسم)
+5. اضغط "Create"
+
+
+الخطوة 2: تفعيل YouTube Data API v3
+------------------------------------
+1. من القائمة الجانبية: APIs & Services > Library
+2. ابحث عن: YouTube Data API v3
+3. اضغط "Enable"
+
+
+الخطوة 3: إنشاء OAuth Consent Screen
+-------------------------------------
+1. من القائمة: APIs & Services > OAuth consent screen
+2. User Type: اختر "External" (ثم Create)
+3. App name: Content Factory Pro
+4. User support email: بريدك الإلكتروني
+5. Developer contact info: بريدك الإلكتروني
+6. اضغط Save and Continue
+7. في Scopes: اضغط "Add or Remove Scopes"
+8. ابحث عن: youtube.upload و youtube.readonly
+9. اخترهم ثم اضغط Update > Save and Continue
+10. Test users: أضف بريدك الإلكتروني
+11. اضغط Save and Continue
+
+
+الخطوة 4: إنشاء OAuth Credentials
+----------------------------------
+1. من القائمة: APIs & Services > Credentials
+2. اضغط "+ Create Credentials" > "OAuth client ID"
+3. Application type: "Desktop application" (مهم!)
+4. Name: Content Factory Pro Desktop
+5. اضغط Create
+6. ستظهر نافذة تحتوي على:
+   - Client ID: (مثال: 1234567890-xxxxx.apps.googleusercontent.com)
+   - Client Secret: (مثال: GOCSPX-xxxxxxxxxxxx)
+7. انسخ Client ID و Client Secret
+
+
+الخطوة 5: إضافة Redirect URI (للربط المحلي)
+--------------------------------------------
+1. في Credentials، اضغط على اسم الـ OAuth client الذي أنشأته
+2. تحت "Authorized redirect URIs" اضغط "+ Add URI"
+3. أضف: http://localhost:5000/api/youtube/callback
+4. اضغط Save
+
+
+الخطوة 6: إدخال البيانات في لوحة التحكم
+----------------------------------------
+1. شغّل البرنامج:双击 start_factory.bat
+2. افتح المتصفح على: http://localhost:5000
+3. اذهب إلى تبويب ⚙️ الإعدادات
+4. أدخل Client ID و Client Secret في الحقول المخصصة
+5. اضغط "💾 حفظ الإعدادات"
+6. سيظهر زر "🔗 ربط قناة يوتيوب" - اضغط عليه
+7. ستفتح نافذة جديدة لتسجيل الدخول إلى Google
+8. اختر حساب القناة وسمح بالصلاحيات
+9. ستغلق النافذة تلقائياً وتظهر القناة في القائمة
+
+
+
+الآن عند إنتاج فيديو:
+- اختر "رفع إلى يوتيوب تلقائياً" وسيرفع الفيديو مباشرة بعد الإنتاج
+- أو اذهب إلى "📹 الفيديوهات" واضغط "📤 نشر" على أي فيديو موجود

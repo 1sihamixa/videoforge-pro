@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AYA PARFUM - عطرك عنوانك{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪷</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="top-bar">
+            <div class="container">
+                <span>🔥 عطر Oud Royale الأكثر مبيعاً - 350 درهم فقط</span>
+                <span>|</span>
+                <span>🚚 توصيل مجاني للطلبات فوق 200 درهم</span>
+                <span>|</span>
+                <span>🏆 N°1 في العطور المغربية الفاخرة</span>
+            </div>
+        </div>
+
+        <nav class="navbar">
+            <div class="container">
+                <a href="{{ url_for('index') }}" class="logo">
+                    <i class="fas fa-spa"></i> AYA PARFUM
+                </a>
+                <div class="nav-links">
+                    <a href="{{ url_for('index') }}">الرئيسية</a>
+                    <div class="dropdown">
+                        <a href="#">الأقسام <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('women_section') }}"><i class="fas fa-female"></i> نسائية — اكتشفي توقيعك</a>
+                            <a href="{{ url_for('men_section') }}"><i class="fas fa-male"></i> رجالية — إكسير الرجولة</a>
+                            <div class="divider"></div>
+                            {% for cat in categories %}
+                            <a href="{{ url_for('products', category=cat.id) }}">{{ cat.name_ar or cat.name }}</a>
+                            {% endfor %}
+                            <div class="divider"></div>
+                            <a href="{{ url_for('products', gender='unisex') }}">🔄 للجنسين</a>
+                            <a href="{{ url_for('products') }}">📦 جميع المنتجات</a>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('packs') }}">العروض والباقات</a>
+                    <a href="{{ url_for('perfume_quiz') }}">اختبار العطر</a>
+                    <a href="{{ url_for('corporate') }}">هدايا مؤسسية</a>
+                    <a href="{{ url_for('blog') }}">مجلة العطر</a>
+                    <a href="{{ url_for('track_order') }}">تتبع طلبي</a>
+                    <a href="{{ url_for('contact') }}">اتصل بنا</a>
+                </div>
+                <div class="nav-icons">
+                    <a href="#" class="search-trigger" title="بحث"><i class="fas fa-search"></i></a>
+                    {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <a href="#"><i class="fas fa-user"></i> {{ current_user.username }} <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('profile') }}"><i class="fas fa-id-card"></i> ملفي الشخصي</a>
+                            <a href="{{ url_for('wishlist') }}"><i class="fas fa-heart"></i> قائمة الرغبات</a>
+                            <a href="{{ url_for('vip') }}"><i class="fas fa-crown"></i> نادي VIP</a>
+                            <a href="{{ url_for('orders') }}"><i class="fas fa-box"></i> طلباتي</a>
+                            {% if current_user.is_admin %}
+                            <div class="divider"></div>
+                            <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a>
+                            {% endif %}
+                            <div class="divider"></div>
+                            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل خروج</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> دخول</a>
+                    <a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> تسجيل</a>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('wishlist') }}" class="cart-icon" title="قائمة الرغبات">
+                        <i class="fas fa-heart"></i>
+                        {% if wishlist_count > 0 %}
+                        <span class="badge" style="background:var(--red)">{{ wishlist_count }}</span>
+                        {% endif %}
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('cart') }}" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        {% if cart_count > 0 %}
+                        <span class="badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+                <button class="mobile-toggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="flash-messages">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                <span>{{ message }}</span>
+                <button class="close-btn">&times;</button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>AYA PARFUM 🇲🇦</h4>
+                    <p>علامة مغربية فاخرة للعطور الشرقية والعالمية. نصنع لحظاتك الفريدة بعطور لا تُنسى. جودة عالمية بسعر في متناول الجميع.</p>
+                    <div class="social-links">
+                        <a href="https://wa.me/{{ whatsapp_number }}"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/ayaparfum.ma" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/ayaparfum.ma" target="_blank"><i class="fab fa-snapchat"></i></a>
+                        <a href="https://www.tiktok.com/@ayaparfum" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط سريعة</h4>
+                    <a href="{{ url_for('index') }}">الرئيسية</a>
+                    <a href="{{ url_for('products') }}">المنتجات</a>
+                    <a href="{{ url_for('women_section') }}">عطور نسائية</a>
+                    <a href="{{ url_for('men_section') }}">عطور رجالية</a>
+                    <a href="{{ url_for('packs') }}">العروض والباقات</a>
+                    <a href="{{ url_for('perfume_quiz') }}">اختبار العطر</a>
+                    <a href="{{ url_for('corporate') }}">هدايا مؤسسية</a>
+                    <a href="{{ url_for('blog') }}">مجلة العطر</a>
+                    <a href="{{ url_for('about') }}">من نحن</a>
+                    <a href="{{ url_for('track_order') }}">تتبع طلبي</a>
+                </div>
+                <div class="footer-col">
+                    <h4>الدعم</h4>
+                    <a href="#">سياسة الخصوصية</a>
+                    <a href="#">الشحن والتوصيل</a>
+                    <a href="#">الإرجاع والاستبدال</a>
+                    <a href="{{ url_for('contact') }}">اتصل بنا</a>
+                    <a href="#">الأسئلة الشائعة</a>
+                </div>
+                <div class="footer-col">
+                    <h4>تواصل معنا</h4>
+                    <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/{{ whatsapp_number }}" style="display:inline">واتساب</a></p>
+                    <p><i class="fas fa-envelope"></i> contact@ayaparfum.ma</p>
+                    <p><i class="fas fa-map-marker-alt"></i> الدار البيضاء، المغرب</p>
+                    <p><i class="fas fa-clock"></i> 9:00 - 21:00</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AYA PARFUM - جميع الحقوق محفوظة. صنع في المغرب 🇲🇦</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/{{ whatsapp_number }}?text=مرحباً%20AYA%20PARFUM!%20أريد%20معلومات%20عن%20العطور" class="whatsapp-float" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i>
+        <span>تواصل معنا</span>
+    </a>
+
+    <!-- Search Modal -->
+    <div class="search-overlay"></div>
+    <div class="search-modal">
+        <div class="search-modal-header">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="ابحث عن عطر... (Ctrl+K)" autocomplete="off">
+            <button class="close-search">&times;</button>
+        </div>
+        <div class="search-results"></div>
+    </div>
+
+    <div id="cart-popup">
+        <div class="popup-overlay"></div>
+        <div class="popup-content">
+            <button class="close-popup">&times;</button>
+            <div class="popup-icon">✅</div>
+            <h3>تمت الإضافة إلى سلة التسوق 🎉</h3>
+            <p style="margin-bottom:5px"><strong class="popup-product-name"></strong> - <span class="popup-product-price"></span> درهم</p>
+            <p style="font-size:14px;color:var(--gray);margin-bottom:15px">قد يعجبك أيضاً:</p>
+            <div class="suggestions-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px"></div>
+            <div style="display:flex;gap:10px;justify-content:center">
+                <a href="{{ url_for('cart') }}" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> عرض السلة</a>
+                <button class="btn btn-secondary close-popup">متابعة التسوق</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

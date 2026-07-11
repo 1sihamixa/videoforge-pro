@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}تفاصيل الطلب #{{ order.id }}{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>تفاصيل الطلب #{{ order.id }}</h1>
+    </div>
+</section>
+
+<section class="order-detail-section section">
+    <div class="container">
+        <div class="order-detail-card">
+            <div class="order-detail-header">
+                <div class="detail-info">
+                    <p><strong>تاريخ الطلب:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    <p><strong>حالة الطلب:</strong> <span class="order-status {{ order.status }}">
+                        {% if order.status == 'pending' %}قيد المراجعة
+                        {% elif order.status == 'confirmed' %}مؤكد
+                        {% elif order.status == 'shipped' %}تم الشحن
+                        {% elif order.status == 'delivered' %}تم التوصيل
+                        {% elif order.status == 'cancelled' %}ملغي
+                        {% else %}{{ order.status }}{% endif %}
+                    </span></p>
+                    <p><strong>طريقة الدفع:</strong> 
+                        {% if order.payment_method == 'cod' %}الدفع عند الاستلام
+                        {% elif order.payment_method == 'card' %}بطاقة ائتمان
+                        {% elif order.payment_method == 'transfer' %}تحويل بنكي
+                        {% else %}{{ order.payment_method }}{% endif %}
+                    </p>
+                    <p><strong>حالة الدفع:</strong> <span class="payment-status {{ order.payment_status }}">
+                        {% if order.payment_status == 'paid' %}مدفوع{% else %}غير مدفوع{% endif %}
+                    </span></p>
+                </div>
+            </div>
+            <div class="order-detail-items">
+                <h3>المنتجات</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>السعر</th>
+                            <th>الكمية</th>
+                            <th>المجموع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.price }} درهم</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.price * item.quantity }} درهم</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="order-detail-total">
+                <div class="total-row">
+                    <span>المجموع</span>
+                    <span>{{ order.total }} درهم</span>
+                </div>
+            </div>
+            {% if order.shipping_address %}
+            <div class="order-detail-address">
+                <h3>عنوان الشحن</h3>
+                <p>{{ order.shipping_address }}</p>
+            </div>
+            {% endif %}
+            {% if order.notes %}
+            <div class="order-detail-notes">
+                <h3>ملاحظات</h3>
+                <p>{{ order.notes }}</p>
+            </div>
+            {% endif %}
+            <div class="order-detail-actions">
+                <a href="{{ url_for('orders') }}" class="btn btn-outline">العودة للطلبات</a>
+                <a href="{{ url_for('products') }}" class="btn btn-primary">تسوق مرة أخرى</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

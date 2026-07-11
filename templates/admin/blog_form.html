@@ -1,0 +1,49 @@
+{% extends 'admin/layout.html' %}
+{% block title %}{% if post %}تعديل{% else %}إضافة{% endif %} مقال{% endblock %}
+{% block header %}{% if post %}تعديل مقال{% else %}إضافة مقال جديد{% endif %}{% endblock %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="form-row">
+        <div class="form-group">
+            <label>العنوان (عربي) <span class="required">*</span></label>
+            <input type="text" name="title_ar" value="{{ post.title_ar if post else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>العنوان (إنجليزي)</label>
+            <input type="text" name="title" value="{{ post.title if post else '' }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label>الرابط (slug) <span class="required">*</span></label>
+        <input type="text" name="slug" value="{{ post.slug if post else '' }}" placeholder="leave-empty-to-auto-generate">
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label>نبذة مختصرة (عربي)</label>
+            <textarea name="excerpt_ar" rows="3">{{ post.excerpt_ar if post else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>نبذة مختصرة (إنجليزي)</label>
+            <textarea name="excerpt" rows="3">{{ post.excerpt if post else '' }}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>المحتوى (عربي) <span class="required">*</span></label>
+        <textarea name="content_ar" rows="12" required>{{ post.content_ar if post else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>المحتوى (إنجليزي)</label>
+        <textarea name="content" rows="12">{{ post.content if post else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>الصورة</label>
+        <input type="file" name="image" accept="image/*">
+        {% if post and post.image %}
+        <p style="margin-top:5px;font-size:12px">الصورة الحالية: {{ post.image }}</p>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ</button>
+    <a href="{{ url_for('admin_blog') }}" class="btn btn-outline">إلغاء</a>
+</form>
+{% endblock %}

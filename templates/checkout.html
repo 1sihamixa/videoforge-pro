@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}إتمام الطلب{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>إتمام الطلب</h1>
+    </div>
+</section>
+
+<section class="checkout-section section">
+    <div class="container">
+        <div class="checkout-layout">
+            <div class="checkout-form">
+                <h3>معلومات الشحن</h3>
+                <form method="POST">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" value="{{ current_user.username }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" value="{{ current_user.email }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الجوال</label>
+                        <input type="text" value="{{ current_user.phone }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>عنوان الشحن <span class="required">*</span></label>
+                        <textarea name="address" required placeholder="المدينة - الحي - الشارع - رقم المبنى"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظات</label>
+                        <textarea name="notes" placeholder="ملاحظات إضافية للطلب"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>طريقة الدفع</label>
+                        <select name="payment_method">
+                            <option value="cod">الدفع عند الاستلام</option>
+                            <option value="card">بطاقة ائتمان</option>
+                            <option value="transfer">تحويل بنكي</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">تأكيد الطلب</button>
+                </form>
+            </div>
+            <div class="checkout-summary">
+                <h3>ملخص الطلب</h3>
+                {% for item in items %}
+                <div class="checkout-item">
+                    <div class="checkout-item-info">
+                        <span>{{ item.product.name_ar or item.product.name }}</span>
+                        <span>× {{ item.quantity }}</span>
+                    </div>
+                    <span>{{ item.product.price * item.quantity }} درهم</span>
+                </div>
+                {% endfor %}
+                <div class="coupon-section">
+                    <div class="coupon-banner">
+                        <span>🔥 <strong>كود خصم 30%:</strong> <span class="coupon-code">AYA30</span></span>
+                        <button class="btn-copy" onclick="navigator.clipboard.writeText('AYA30'); this.textContent='✅ تم النسخ'">انسخ الكود</button>
+                    </div>
+                    <p class="coupon-note">* الخصم يطبق عند التواصل معنا عبر واتساب لتأكيد الطلب</p>
+                </div>
+                <div class="checkout-points" style="background:#1a2a1a;border:1px solid #2a4a2a;border-radius:8px;padding:15px;margin-top:15px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <span>🌟 رصيد نقاطك</span>
+                        <span style="color:var(--gold);font-weight:700">{{ current_user.points }} نقطة = {{ current_user.points }} درهم</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid #2a4a2a">
+                        <span>🎁 رصيد هدايا</span>
+                        <span style="color:var(--gold);font-weight:700">{{ current_user.gift_card_balance }} درهم</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid #2a4a2a;color:#8bc34a">
+                        <span>✨ ستكسب مع هذا الطلب</span>
+                        <span>+{{ (total * 0.1)|int }} نقطة ولاء + 10 درهم رصيد</span>
+                    </div>
+                    <div style="margin-top:10px;font-size:12px;color:#666">
+                        <a href="{{ url_for('vip') }}" style="color:var(--gold)">👑 نادي AYA VIP</a> — كل طلب يدخلك السحب الأسبوعي 500 درهم
+                    </div>
+                </div>
+                <div class="checkout-total">
+                    <span>الإجمالي</span>
+                    <span>{{ total }} درهم</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

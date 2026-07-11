@@ -1,0 +1,33 @@
+{% extends 'admin/layout.html' %}
+{% block title %}السحب الأسبوعي{% endblock %}
+{% block content %}
+<div class="admin-toolbar">
+    <h2>🏆 السحب الأسبوعي - 500 درهم</h2>
+    <form method="POST" action="{{ url_for('admin_pick_winner') }}">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-random"></i> اختر الفائز</button>
+    </form>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>المستخدم</th>
+            <th>الطلب</th>
+            <th>الأسبوع</th>
+            <th>فائز؟</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.id }}</td>
+            <td>{{ entry.user.username }}</td>
+            <td>{{ entry.order_id }}</td>
+            <td>{{ entry.week_start.strftime('%Y-%m-%d') }}</td>
+            <td>{% if entry.is_winner %}<span class="badge confirmed">🏆 فائز!</span>{% else %}❌{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

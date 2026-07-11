@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ناطق - Avatar ذكي | Wav2Lip + حركات الجسد</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo','Segoe UI',sans-serif;background:#0a0a1a;color:#e0e0e0;min-height:100vh}
+.container{display:flex;min-height:100vh;max-width:1400px;margin:0 auto}
+.sidebar{width:260px;background:#12122a;padding:25px;border-left:1px solid #1e1e3a;display:flex;flex-direction:column}
+.sidebar .logo{font-size:22px;font-weight:800;color:#e63946;margin-bottom:5px}
+.sidebar .logo span{color:#fff}
+.sidebar p{font-size:12px;color:#666;margin-bottom:25px}
+.main{flex:1;padding:30px;overflow-y:auto}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:15px;border-bottom:1px solid #1e1e3a}
+.header h1{font-size:24px;font-weight:700}
+.header h1 span{color:#e63946}
+.model-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700}
+.model-badge.ready{background:#00c85320;color:#00c853;border:1px solid #00c853}
+.model-badge.pending{background:#ffd60020;color:#ffd600;border:1px solid #ffd600}
+.model-badge.loading{background:#2979ff20;color:#2979ff;border:1px solid #2979ff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#12122a;border-radius:12px;padding:20px;border:1px solid #1e1e3a;transition:all .3s}
+.card:hover{border-color:#2a2a4a}
+.card h3{font-size:15px;font-weight:700;color:#fff;margin-bottom:15px;display:flex;align-items:center;gap:8px}
+.card h3 .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.upload-zone{position:relative;border:2px dashed #1e1e3a;border-radius:10px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:12px}
+.upload-zone:hover{border-color:#e63946;background:#e6394608}
+.upload-zone.dragover{border-color:#e63946;background:#e6394615}
+.upload-zone input[type=file]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.upload-zone .icon{font-size:36px;margin-bottom:8px;display:block}
+.upload-zone .label{font-size:14px;color:#888;font-weight:600}
+.upload-zone .hint{font-size:11px;color:#555;margin-top:4px}
+.preview-box{position:relative;width:100%;aspect-ratio:16/9;background:#0a0a1a;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.preview-box img,.preview-box video{width:100%;height:100%;object-fit:contain}
+.preview-box .placeholder{text-align:center;color:#555;padding:20px}
+.preview-box .placeholder .icon{font-size:48px;display:block;margin-bottom:10px}
+.preview-box .placeholder p{font-size:13px}
+.text-input{width:100%;padding:10px 14px;background:#0a0a1a;border:1px solid #1e1e3a;border-radius:8px;color:#fff;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;transition:.3s}
+.text-input:focus{outline:none;border-color:#e63946}
+.toggle-group{display:flex;gap:8px;margin:12px 0}
+.toggle-btn{flex:1;padding:8px;border:1px solid #1e1e3a;background:transparent;color:#888;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:.3s}
+.toggle-btn.active{background:#e63946;color:#fff;border-color:#e63946}
+.toggle-btn:hover:not(.active){border-color:#2a2a4a;color:#aaa}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:.3s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:#e63946;color:#fff}
+.btn-primary:hover:not(:disabled){background:#c1121f;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:#1e1e3a;color:#888;border:1px solid #2a2a4a}
+.btn-secondary:hover:not(:disabled){background:#2a2a4a;color:#fff}
+.btn-success{background:#00c853;color:#fff}
+.btn-success:hover{background:#00a844;transform:translateY(-1px)}
+.btn-gradio{background:#6c5ce7;color:#fff}
+.btn-gradio:hover:not(:disabled){background:#5a4bd1;transform:translateY(-1px)}
+.progress-bar{width:100%;height:6px;background:#1e1e3a;border-radius:3px;overflow:hidden;margin:10px 0}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#e63946,#ff6b6b);border-radius:3px;width:0%;transition:width .5s}
+.status-text{text-align:center;font-size:13px;color:#888;margin:8px 0;min-height:20px}
+.status-text.done{color:#00c853}
+.status-text.error{color:#e63946}
+.result-actions{display:flex;gap:8px;margin-top:12px}
+.result-actions .btn{flex:1}
+.preview-label{font-size:11px;color:#555;margin-bottom:4px;display:block}
+.file-info{font-size:11px;color:#555;padding:6px 10px;background:#0a0a1a;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.file-info .name{color:#aaa;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-info .remove{color:#e63946;cursor:pointer;font-size:16px;line-height:1}
+.file-info .remove:hover{color:#ff6b6b}
+.hidden{display:none!important}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;max-width:90%;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.toast.error{background:#e63946;color:#fff}
+.toast.success{background:#00c853;color:#fff}
+.toast.info{background:#2979ff;color:#fff}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="sidebar">
+  <div class="logo">ناطق <span>🎬</span></div>
+  <p>توليد فيديو ناطق بالذكاء الاصطناعي<br>Wav2Lip محلياً ☁️ sync.so سحابياً</p>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid #1e1e3a;font-size:11px;color:#555">
+      <p>Wav2Lip Engine v1.0</p>
+      <p id="modelStatusSidebar">🔴 النموذج: قيد التحميل...</p>
+    </div>
+  </div>
+  <div class="main">
+    <div class="header">
+      <h1>صناعة <span>فيديو ناطق</span></h1>
+      <div id="modelBadge" class="model-badge loading">⏳ جار تحميل النموذج...</div>
+    </div>
+
+    <div class="grid">
+      <!-- Left Column: Inputs -->
+      <div>
+        <!-- Image Upload -->
+        <div class="card">
+          <h3><span class="icon" style="background:#e6394620;color:#e63946">🖼️</span> الصورة (الوجه)</h3>
+          <div class="upload-zone" id="imageZone">
+            <input type="file" id="imageInput" accept="image/*">
+            <span class="icon">📁</span>
+            <div class="label">اختر صورة للوجه</div>
+            <div class="hint">PNG, JPG, WebP - يفضل صورة واضحة للوجه</div>
+          </div>
+          <div id="imagePreview" class="hidden">
+            <div class="file-info"><span class="name" id="imageName"></span><span class="remove" onclick="removeImage()">✕</span></div>
+            <div class="preview-box"><img id="imagePreviewImg" src="" alt="معاينة الصورة"></div>
+          </div>
+        </div>
+
+        <!-- Audio Input -->
+        <div class="card">
+          <h3><span class="icon" style="background:#2979ff20;color:#2979ff">🎤</span> الصوت</h3>
+          <div class="toggle-group" id="audioToggle">
+            <button class="toggle-btn active" data-mode="upload">رفع ملف صوتي</button>
+            <button class="toggle-btn" data-mode="text">كتابة نص (TTS)</button>
+          </div>
+
+          <div id="audioUploadMode">
+            <div class="upload-zone" id="audioZone">
+              <input type="file" id="audioInput" accept="audio/*">
+              <span class="icon">🎵</span>
+              <div class="label">اختر ملف صوتي</div>
+              <div class="hint">MP3, WAV, M4A - الصوت الذي سيتحدث به الفيديو</div>
+            </div>
+            <div id="audioPreview" class="hidden">
+              <div class="file-info"><span class="name" id="audioName"></span><span class="remove" onclick="removeAudio()">✕</span></div>
+              <audio id="audioPlayer" controls style="width:100%;border-radius:8px;margin-bottom:8px"></audio>
+            </div>
+          </div>
+
+          <div id="audioTextMode" class="hidden">
+            <textarea class="text-input" id="textInput" placeholder="اكتب النص الذي تريد أن يتحدث به الفيديو..."></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <select id="ttsLang" style="padding:8px 12px;background:#0a0a1a;border:1px solid #1e1e3a;border-radius:8px;color:#fff;font-family:inherit;font-size:12px">
+                <option value="auto">🔄 تلقائي</option>
+                <option value="ar">🇸🇦 العربية</option>
+                <option value="en">🇺🇸 الإنجليزية</option>
+              </select>
+              <span id="charCount" style="font-size:11px;color:#555">0 حرف</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Toggle: Local / Cloud -->
+        <div class="card">
+          <h3><span class="icon" style="background:#6c5ce720;color:#6c5ce7">⚡</span> طريقة التوليد</h3>
+          <div class="toggle-group" id="modeToggle">
+            <button class="toggle-btn active" data-mode="local">🖥️ محلي (Wav2Lip)</button>
+            <button class="toggle-btn" data-mode="cloud">☁️ سحابي (sync.so)</button>
+          </div>
+
+          <!-- Cloud settings (hidden by default) -->
+          <div id="cloudSettings" class="hidden" style="margin-top:12px">
+            <div style="margin-bottom:10px">
+              <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">
+                🔑 API Key من sync.so
+                <a href="https://sync.so/signup" target="_blank" style="color:#2979ff;font-size:11px">(إنشاء حساب)</a>
+              </label>
+              <input type="text" id="apiKeyInput" class="text-input" style="min-height:auto;height:40px" placeholder="أدخل API Key الخاص بك..." autocomplete="off" value="{{ sync_api_key }}">
+              {% if sync_api_key %}
+              <div style="margin-top:6px;padding:4px 10px;background:#00c85315;border:1px solid #00c85340;border-radius:6px;font-size:11px;color:#00c853;display:flex;align-items:center;gap:6px">
+                ✅ تم تكوين API Key تلقائياً من config.json
+              </div>
+              {% endif %}
+            </div>
+            <div style="margin-bottom:10px">
+              <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">📦 الموديل</label>
+              <select id="modelSelect" style="width:100%;padding:10px 14px;background:#0a0a1a;border:1px solid #1e1e3a;border-radius:8px;color:#fff;font-family:inherit;font-size:13px">
+                {% for id, info in models.items() %}
+                <option value="{{ id }}">{{ info.name }} - {{ info.description }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="margin-bottom:6px">
+              <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">🔄 وضع الموديل</label>
+              <select id="modelModeSelect" style="width:100%;padding:10px 14px;background:#0a0a1a;border:1px solid #1e1e3a;border-radius:8px;color:#fff;font-family:inherit;font-size:13px">
+                <option value="">قياسي (standard)</option>
+                <option value="portrait">عمودي (portrait)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generate Button -->
+        <button class="btn btn-primary" id="generateBtn" disabled onclick="startGenerate()">
+          🚀 بدء إنشاء الفيديو
+        </button>
+
+        <div id="modelNotice" style="margin-top:8px;padding:10px 14px;background:#ffd60010;border:1px solid #ffd60040;border-radius:8px;font-size:12px;line-height:1.7;display:none">
+          <strong style="color:#ffd600">⚠️ النموذج المحلي غير موجود</strong><br>
+          لتحميله:<br>
+          1. افتح <a href="https://huggingface.co/Nekochu/Wav2Lip/resolve/main/wav2lip_gan.pth" target="_blank" style="color:#2979ff">هذا الرابط</a> في المتصفح<br>
+          2. سيبدأ التحميل تلقائياً (ملف ~145MB)<br>
+          3. ضع الملف في المجلد: <code style="background:#0a0a1a;padding:1px 4px;border-radius:3px">Wav2Lip/checkpoints/</code><br>
+          4. أعد تحميل الصفحة
+        </div>
+      </div>
+
+      <!-- Right Column: Preview & Results -->
+      <div>
+        <div class="card">
+          <h3><span class="icon" style="background:#00c85320;color:#00c853">🎬</span> معاينة الفيديو</h3>
+          <div class="preview-box" id="resultPreview">
+            <div class="placeholder">
+              <span class="icon">🎥</span>
+              <p>سينتج الفيديو هنا بعد الإنشاء</p>
+              <p style="font-size:11px;color:#444">يمكنك معاينة وتحميل الفيديو النهائي</p>
+            </div>
+          </div>
+          <div id="resultActions" class="hidden">
+            <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+            <div class="status-text" id="statusText">⏳ جاري المعالجة...</div>
+            <div class="result-actions">
+              <button class="btn btn-success" id="downloadBtn" onclick="downloadVideo()">⬇ تحميل الفيديو</button>
+              <button class="btn btn-secondary" onclick="resetAll()">🔄 جديد</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="card" style="font-size:12px;color:#888;line-height:1.8">
+          <h3><span class="icon" style="background:#ffd60020;color:#ffd600">💡</span> كيف يعمل</h3>
+          <ol style="padding-right:20px">
+            <li><strong style="color:#aaa">ارفع صورة</strong> - صورة واضحة للوجه المراد تحريكه</li>
+            <li><strong style="color:#aaa">أضف الصوت</strong> - ارفع ملف صوتي أو اكتب نصاً للتحويل إلى كلام</li>
+            <li><strong style="color:#aaa">اختر الطريقة</strong> - استخدم النموذج المحلي أو API المجاني</li>
+            <li><strong style="color:#aaa">انقر "بدء"</strong> - سيتم إنشاء الفيديو تلقائياً</li>
+          </ol>
+          <div style="margin-top:12px;padding:8px 12px;background:#e6394608;border-radius:6px;font-size:11px;line-height:1.6">
+            <strong>⚡ لتحميل النموذج المحلي:</strong><br>
+            1. افتح الرابط في المتصفح: <a href="https://huggingface.co/Nekochu/Wav2Lip/resolve/main/wav2lip_gan.pth" target="_blank" style="color:#2979ff">huggingface.co/Nekochu/Wav2Lip</a><br>
+            2. حمّل الملف <code style="background:#0a0a1a;padding:1px 6px;border-radius:3px">wav2lip_gan.pth</code><br>
+            3. ضعه في المجلد: <code style="background:#0a0a1a;padding:1px 6px;border-radius:3px">Wav2Lip/checkpoints/</code><br>
+            4. أعد تشغيل البرنامج
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let state = { image: null, audio: null, jobId: null, pollTimer: null };
+const BASE = '';
+
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  clearTimeout(t._hide); t._hide = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// File uploads
+document.getElementById('imageInput').onchange = e => uploadFile(e.target.files[0], 'image');
+document.getElementById('audioInput').onchange = e => uploadFile(e.target.files[0], 'audio');
+
+async function uploadFile(file, type) {
+  if (!file) return;
+  const fd = new FormData(); fd.append('file', file);
+  try {
+    const r = await fetch(`${BASE}/api/upload`, { method: 'POST', body: fd });
+    const d = await r.json();
+    if (d.error) { showToast(d.error, 'error'); return; }
+    if (type === 'image') {
+      state.image = d.path;
+      document.getElementById('imageZone').classList.add('hidden');
+      document.getElementById('imagePreview').classList.remove('hidden');
+      document.getElementById('imageName').textContent = file.name;
+      document.getElementById('imagePreviewImg').src = d.path;
+    } else {
+      state.audio = d.path;
+      document.getElementById('audioZone').classList.add('hidden');
+      document.getElementById('audioPreview').classList.remove('hidden');
+      document.getElementById('audioName').textContent = file.name;
+      document.getElementById('audioPlayer').src = d.path;
+    }
+    updateGenerateBtn();
+  } catch(e) { showToast('خطأ في رفع الملف', 'error'); }
+}
+
+function removeImage() {
+  state.image = null;
+  document.getElementById('imageZone').classList.remove('hidden');
+  document.getElementById('imagePreview').classList.add('hidden');
+  updateGenerateBtn();
+}
+
+function removeAudio() {
+  state.audio = null;
+  document.getElementById('audioZone').classList.remove('hidden');
+  document.getElementById('audioPreview').classList.add('hidden');
+  document.getElementById('audioPlayer').src = '';
+  updateGenerateBtn();
+}
+
+// Audio mode toggle
+document.querySelectorAll('#audioToggle .toggle-btn').forEach(btn => {
+  btn.onclick = function() {
+    document.querySelectorAll('#audioToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const mode = this.dataset.mode;
+    document.getElementById('audioUploadMode').classList.toggle('hidden', mode !== 'upload');
+    document.getElementById('audioTextMode').classList.toggle('hidden', mode !== 'text');
+    if (mode === 'text') removeAudio();
+    updateGenerateBtn();
+  };
+});
+
+// Character count
+document.getElementById('textInput').oninput = function() {
+  const cnt = this.value.length;
+  document.getElementById('charCount').textContent = cnt + ' حرف';
+};
+
+function updateGenerateBtn() {
+  const btn = document.getElementById('generateBtn');
+  const hasImage = state.image !== null;
+  const audioMode = document.querySelector('#audioToggle .toggle-btn.active').dataset.mode;
+  const hasAudio = audioMode === 'upload' ? state.audio !== null : document.getElementById('textInput').value.trim().length > 0;
+  const genMode = document.querySelector('#modeToggle .toggle-btn.active').dataset.mode;
+  const hasApiKey = genMode !== 'cloud' || document.getElementById('apiKeyInput').value.trim().length > 0;
+  btn.disabled = !(hasImage && hasAudio && hasApiKey);
+}
+
+document.getElementById('textInput').oninput = updateGenerateBtn;
+document.getElementById('apiKeyInput').oninput = updateGenerateBtn;
+
+// Mode toggle (local / cloud)
+document.querySelectorAll('#modeToggle .toggle-btn').forEach(btn => {
+  btn.onclick = function() {
+    document.querySelectorAll('#modeToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const mode = this.dataset.mode;
+    document.getElementById('cloudSettings').classList.toggle('hidden', mode !== 'cloud');
+    document.getElementById('modelNotice').classList.toggle('hidden', mode === 'cloud');
+    updateGenerateBtn();
+  };
+});
+
+// Generate
+async function startGenerate() {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> جاري الإنشاء...';
+
+  const audioMode = document.querySelector('#audioToggle .toggle-btn.active').dataset.mode;
+  const genMode = document.querySelector('#modeToggle .toggle-btn.active').dataset.mode;
+
+  const body = {
+    image: state.image,
+    audio: audioMode === 'upload' ? state.audio : null,
+    text: audioMode === 'text' ? document.getElementById('textInput').value : null,
+    mode: genMode,
+    api_key: genMode === 'cloud' ? document.getElementById('apiKeyInput').value.trim() : '',
+    model: genMode === 'cloud' ? document.getElementById('modelSelect').value : '',
+    model_mode: genMode === 'cloud' ? document.getElementById('modelModeSelect').value : ''
+  };
+
+  try {
+    const r = await fetch(`${BASE}/api/generate`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const d = await r.json();
+    if (d.error) { showToast(d.error, 'error'); btn.disabled = false; btn.innerHTML = '🚀 بدء إنشاء الفيديو'; return; }
+    state.jobId = d.job_id;
+    document.getElementById('resultActions').classList.remove('hidden');
+    document.getElementById('downloadBtn').classList.add('hidden');
+    document.getElementById('progressFill').style.width = '10%';
+    document.getElementById('statusText').textContent = '⏳ جاري معالجة الفيديو...';
+    pollJob(d.job_id);
+  } catch(e) { showToast('خطأ في الاتصال', 'error'); btn.disabled = false; btn.innerHTML = '🚀 بدء إنشاء الفيديو'; }
+}
+
+function pollJob(jobId) {
+  state.pollTimer = setInterval(async () => {
+    try {
+      const r = await fetch(`${BASE}/api/job/${jobId}`);
+      const d = await r.json();
+      if (d.error) { clearInterval(state.pollTimer); showToast(d.error, 'error'); resetGenBtn(); return; }
+      if (d.status === 'processing') {
+        document.getElementById('statusText').textContent = '⏳ جاري المعالجة...';
+        document.getElementById('progressFill').style.width = '60%';
+      } else if (d.status === 'done') {
+        clearInterval(state.pollTimer);
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('statusText').textContent = '✅ تم إنشاء الفيديو بنجاح!';
+        document.getElementById('statusText').className = 'status-text done';
+        document.getElementById('downloadBtn').classList.remove('hidden');
+        document.getElementById('downloadBtn').dataset.path = d.output;
+        // Show preview
+        const preview = document.getElementById('resultPreview');
+        preview.innerHTML = `<video id="videoPreview" controls style="width:100%;height:100%;object-fit:contain;background:#000"><source src="${d.output}" type="video/mp4"></video>`;
+        showToast('✅ تم إنشاء الفيديو!', 'success');
+        resetGenBtn();
+      } else if (d.status === 'error') {
+        clearInterval(state.pollTimer);
+        document.getElementById('statusText').textContent = '❌ ' + (d.error || 'حدث خطأ');
+        document.getElementById('statusText').className = 'status-text error';
+        document.getElementById('progressFill').style.width = '0%';
+        showToast(d.error || 'فشل إنشاء الفيديو', 'error');
+        resetGenBtn();
+      }
+    } catch(e) { clearInterval(state.pollTimer); showToast('خطأ في الاتصال', 'error'); resetGenBtn(); }
+  }, 2000);
+}
+
+function resetGenBtn() {
+  const btn = document.getElementById('generateBtn');
+  btn.innerHTML = '🚀 بدء إنشاء الفيديو';
+  btn.disabled = false;
+}
+
+function downloadVideo() {
+  const path = document.getElementById('downloadBtn').dataset.path;
+  if (path) window.open(path, '_blank');
+}
+
+function resetAll() {
+  if (state.pollTimer) clearInterval(state.pollTimer);
+  state = { image: null, audio: null, jobId: null, pollTimer: null };
+  document.getElementById('imageZone').classList.remove('hidden');
+  document.getElementById('imagePreview').classList.add('hidden');
+  document.getElementById('audioZone').classList.remove('hidden');
+  document.getElementById('audioPreview').classList.add('hidden');
+  document.getElementById('resultActions').classList.add('hidden');
+  document.getElementById('resultPreview').innerHTML = '<div class="placeholder"><span class="icon">🎥</span><p>سينتج الفيديو هنا بعد الإنشاء</p><p style="font-size:11px;color:#444">يمكنك معاينة وتحميل الفيديو النهائي</p></div>';
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('textInput').value = '';
+  document.getElementById('charCount').textContent = '0 حرف';
+  updateGenerateBtn();
+}
+
+// Check model status periodically
+async function checkModelStatus() {
+  try {
+    const r = await fetch(`${BASE}/api/status`);
+    const d = await r.json();
+    const badge = document.getElementById('modelBadge');
+    const side = document.getElementById('modelStatusSidebar');
+    const notice = document.getElementById('modelNotice');
+    if (d.model_ready) {
+      badge.className = 'model-badge ready'; badge.textContent = '✅ النموذج جاهز';
+      side.textContent = '🟢 النموذج: جاهز';
+      if (notice) notice.style.display = 'none';
+    } else {
+      badge.className = 'model-badge pending'; badge.textContent = '❌ النموذج غير موجود';
+      side.textContent = '🔴 النموذج: غير موجود';
+      if (notice) notice.style.display = 'block';
+    }
+  } catch(e) {}
+}
+setInterval(checkModelStatus, 5000);
+checkModelStatus();
+</script>
+</body>
+</html>

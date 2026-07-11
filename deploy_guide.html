@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل النشر - VideoForge Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:#0b0b1a;color:#e0e0f0;padding:40px;max-width:900px;margin:0 auto;line-height:1.8}
+h1{font-size:32px;margin-bottom:8px;color:#6c5ce7}
+h2{font-size:22px;margin:30px 0 12px;color:#fff}
+h3{font-size:17px;margin:20px 0 8px;color:#e0e0f0}
+p{color:#8888aa;margin-bottom:12px;font-size:14px}
+code{background:#1a1a3a;padding:2px 8px;border-radius:4px;font-size:13px;color:#f0c040}
+pre{background:#0a0a1a;padding:16px;border-radius:10px;border:1px solid #1e1e44;overflow-x:auto;margin:12px 0;font-size:13px;direction:ltr;text-align:left;color:#ccc}
+.step{background:#13132e;border:1px solid #1e1e44;border-radius:12px;padding:20px;margin-bottom:16px}
+.step .num{display:inline-block;background:#6c5ce7;color:#fff;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;font-weight:800;font-size:14px;margin-left:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.badge.green{background:#00c85320;color:#00c853}
+.badge.red{background:#e6394620;color:#e63946}
+.badge.blue{background:#2979ff20;color:#2979ff}
+hr{border:none;border-top:1px solid #1e1e44;margin:30px 0}
+a{color:#6c5ce7}
+</style>
+</head>
+<body>
+<h1>🚀 دليل نشر VideoForge Pro على الإنترنت</h1>
+<p>اتبع هذه الخطوات لرفع الموقع على الإنترنت والربح من الإعلانات</p>
+
+<hr>
+
+<h2>📋 الخطوات الأساسية</h2>
+
+<div class="step">
+  <span class="num">1</span>
+  <strong>تجهيز المفاتيح والبيانات</strong>
+  <p>افتح ملف <code>.env</code> واملأ البيانات التالية:</p>
+  <pre># مفتاح API لخدمة sync.so (للتوليد السحابي)
+SYNC_API_KEY=your_sync_api_key_here
+
+# مفتاح Google AdSense (للربح من الإعلانات)
+ADSENSE_CLIENT=ca-pub-xxxxxxxxxxxxxx
+ADSENSE_SLOT_TOP=1234567890
+ADSENSE_SLOT_SIDEBAR=1234567890
+ADSENSE_SLOT_IN_ARTICLE=1234567890
+ADSENSE_SLOT_VIDEO=1234567890
+
+# Google Analytics (لتتبع الزوار)
+GA_TRACKING_ID=G-XXXXXXXXXX
+
+# مفتاح سري للتطبيق
+SECRET_KEY=put-a-random-secret-key-here</pre>
+</div>
+
+<div class="step">
+  <span class="num">2</span>
+  <strong>رفع الملفات إلى منصة الاستضافة</strong>
+  <p>اختر إحدى منصات الاستضافة المجانية أو المدفوعة:</p>
+  
+  <h3>🌐 Render (مجاني - موصى به)</h3>
+  <pre>1. ادخل على https://render.com
+2. سجل حساب جديد (GitHub)
+3. اضغط New > Web Service
+4. اربط مستودع GitHub
+5. اختر:
+   - Name: videoforge-pro
+   - Runtime: Python 3
+   - Build Command: pip install -r requirements.txt
+   - Start Command: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2
+6. أضف المتغيرات من .env
+7. اضغط Create Web Service</pre>
+
+  <h3>☁️ Heroku</h3>
+  <pre>1. تأكد من وجود ملفات: Procfile, runtime.txt, requirements.txt
+2. ارفع المشروع إلى GitHub
+3. اربط مع Heroku واختر Python buildpack
+4. أضف config vars من .env
+5. انشر!</pre>
+
+  <h3>🖥️ خادم خاص (VPS)</h3>
+  <pre># تثبيت المتطلبات
+pip install -r requirements.txt
+
+# تشغيل باستخدام gunicorn
+gunicorn app:app --bind 0.0.0.0:8080 --workers 4 --timeout 300
+
+# أو باستخدام PM2 مع عملية خلفية
+npm install -g pm2
+pm2 start "gunicorn app:app --bind 0.0.0.0:8080 --workers 4 --timeout 300" --name videoforge</pre>
+</div>
+
+<div class="step">
+  <span class="num">3</span>
+  <strong>إعداد Google AdSense</strong>
+  <p>للربح من الإعلانات:</p>
+  <pre>1. ادخل https://adsense.google.com
+2. سجل حساب AdSense
+3. أضف موقعك: https://your-domain.com
+4. انتظر الموافقة (قد يستغرق أيام)
+5. بعد الموافقة، أنشئ وحدات إعلانية:
+   - إعلان علوي (Leaderboard) ← ADSENSE_SLOT_TOP
+   - إعلان جانبي (Rectangle) ← ADSENSE_SLOT_SIDEBAR
+   - إعلان داخل المحتوى ← ADSENSE_SLOT_IN_ARTICLE
+   - إعلان سفلي ← ADSENSE_SLOT_VIDEO
+6. انسخ client ID (ca-pub-...) وضعه في .env</pre>
+</div>
+
+<div class="step">
+  <span class="num">4</span>
+  <strong>إعداد النطاق (Domain)</strong>
+  <pre>1. اشترِ نطاقاً مثل videoforge-pro.com
+2. اربطه مع منصة الاستضافة (Render/Heroku/VPS)
+3. فعّل HTTPS (شهادة SSL)
+4. انتظر حتى ينتشر DNS (24-48 ساعة)</pre>
+</div>
+
+<div class="step">
+  <span class="num">5</span>
+  <strong>تحسين محركات البحث (SEO)</strong>
+  <p>الموقع مضمن بالفعل علامات SEO الأساسية. أضف الموقع إلى:</p>
+  <pre>1. Google Search Console - https://search.google.com/search-console
+2. أضف sitemap.xml (سيفة موجودة تلقائياً)
+3. أرسل الموقع للفهرسة
+4. راقب الأداء في Google Analytics</pre>
+</div>
+
+<hr>
+
+<h2>🔧 ملفات المشروع الأساسية</h2>
+<pre>videoforge-pro/
+├── app.py                 # ✅ خادم Flask الرئيسي (جديد)
+├── run.py                 # ✅ مشغل بسيط
+├── requirements.txt       # ✅ المتطلبات
+├── Procfile               # ✅ للنشر على Heroku/Render
+├── runtime.txt            # ✅ إصدار Python
+├── .env                   # ⚠️ املأ المفاتيح هنا
+├── templates/
+│   └── video_creator.html # ✅ صفحة Wav2Lip الرئيسية
+├── static/uploads/        # رفع الملفات
+├── output/                # الفيديوهات المنتجة
+├── avatar_engine.py       # محرك Wav2Lip المحلي
+├── sync_api.py            # API سحابي sync.so
+├── gallery.json           # ✅ سجل الفيديوهات
+└── stats.json             # ✅ إحصائيات</pre>
+
+<hr>
+
+<h2>📊 الربح المتوقع</h2>
+<p>يعتمد الربح على عدد الزوار:</p>
+<pre>• 1,000 زائر/يوم ← $1-5 يومياً (RPM $1-5)
+• 10,000 زائر/يوم ← $10-50 يومياً
+• 100,000 زائر/يوم ← $100-500 يومياً
+
+الإعلانات الأكثر ربحاً: إعلانات الفيديو والتكنولوجيا
+متوسط RPM في العالم العربي: $0.5-3
+متوسط RPM في الدول الغربية: $5-20</pre>
+
+<hr>
+
+<h2>💡 نصائح لزيادة الربح</h2>
+<pre>1. شارك الموقع في مواقع التواصل الاجتماعي
+2. أنشئ محتوى على يوتيوب يشرح الخدمة
+3. أضف روابط الموقع في المنتديات العربية
+4. استهدف كلمات مفتاحية: "Wav2Lip عربي", "توليد فيديو بالذكاء الاصطناعي"
+5. قدم الخدمة مجاناً مع حد استخدام يومي
+6. أضف زر مشاركة لتشجيع الزوار على النشر
+7. استخدم إعلانات Google AdSense + إعلانات مباشرة</pre>
+
+<div style="text-align:center;margin-top:50px;padding:30px;background:linear-gradient(135deg,#13132e,#1a0a2e);border-radius:16px;border:1px solid #6c5ce730">
+  <h2 style="color:#6c5ce7">جاهز للانطلاق! 🚀</h2>
+  <p style="color:#8888aa">بعد تطبيق الخطوات أعلاه، سيكون موقع VideoForge Pro جاهزاً لاستقبال الزوار وتحقيق الأرباح</p>
+  <p style="font-size:12px;color:#555;margin-top:12px">للمساعدة: <a href="mailto:admin@videoforge-pro.com">admin@videoforge-pro.com</a></p>
+</div>
+
+</body>
+</html>

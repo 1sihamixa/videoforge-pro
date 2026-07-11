@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name_ar or product.name }}{% endblock %}
+{% block content %}
+<section class="product-detail section">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">الرئيسية</a> /
+            <a href="{{ url_for('products') }}">المنتجات</a> /
+            <a href="{{ url_for('products', category=product.category_id) }}">{{ product.category.name_ar or product.category.name }}</a> /
+            <span>{{ product.name_ar or product.name }}</span>
+        </div>
+        <div class="product-detail-layout">
+            <div class="product-gallery">
+                <div class="main-image">
+                    <img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt="{{ product.name_ar or product.name }}">
+                    {% if product.compare_price and product.compare_price > product.price %}
+                    <span class="discount-badge large">-{{ ((product.compare_price - product.price) / product.compare_price * 100)|int }}%</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="product-info-detail">
+                <span class="product-category">{{ product.category.name_ar or product.category.name }}</span>
+                <h1>{{ product.name_ar or product.name }}</h1>
+                <div class="product-rating">
+                    {% set avg = product.avg_rating %}
+                    {% set full = avg|int %}
+                    {% set half = 1 if (avg - full) >= 0.5 else 0 %}
+                    {% for i in range(5) %}
+                        {% if i < full %}
+                        <i class="fas fa-star"></i>
+                        {% elif i == full and half %}
+                        <i class="fas fa-star-half-alt"></i>
+                        {% else %}
+                        <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span>({{ product.review_count }} تقييم)</span>
+                </div>
+                <div class="product-price-detail">
+                    <span class="current-price">{{ product.price }} درهم</span>
+                    {% if product.compare_price and product.compare_price > product.price %}
+                    <span class="old-price">{{ product.compare_price }} درهم</span>
+                    <span class="save-amount">وفر {{ product.compare_price - product.price }} درهم</span>
+                    {% endif %}
+                </div>
+                <p class="product-description">{{ product.description_ar or product.description }}</p>
+                <div class="product-specs">
+                    <div class="spec">
+                        <span class="spec-label">الحجم</span>
+                        <span class="spec-value">{{ product.volume }}</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">النوع</span>
+                        <span class="spec-value">{% if product.gender == 'male' %}رجالي{% elif product.gender == 'female' %}نسائي{% else %}للجنسين{% endif %}</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">المخزون</span>
+                        <span class="spec-value {% if product.stock < 10 %}low-stock{% endif %}">{{ product.stock }} زجاجة</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">المبيعات</span>
+                        <span class="spec-value">{{ product.sales_count }} زجاجة</span>
+                    </div>
+                </div>
+                {% if product.stock > 0 %}
+                <div class="flash-sale-timer">
+                    <i class="fas fa-clock"></i>
+                    <span>عرض اليوم ينتهي خلال:</span>
+                    <span id="flash-timer"></span>
+                </div>
+                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="add-to-cart-form">
+                    <div class="quantity-selector">
+                        <button type="button" class="qty-btn minus">-</button>
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                        <button type="button" class="qty-btn plus">+</button>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-shopping-cart"></i> أضف إلى السلة</button>
+                </form>
+                {% else %}
+                <div class="out-of-stock">
+                    <i class="fas fa-times-circle"></i> نفذت الكمية
+                </div>
+                {% endif %}
+                <div class="product-actions-bar">
+                    {% if current_user.is_authenticated %}
+                    <button class="btn btn-outline wishlist-toggle {% if product.id in wishlist_ids %}in-wishlist{% endif %}" data-product-id="{{ product.id }}">
+                        <i class="{% if product.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i> حفظ في قائمة الرغبات
+                    </button>
+                    {% endif %}
+                    <a href="{{ url_for('compare', ids=product.id) }}" class="btn btn-outline"><i class="fas fa-balance-scale"></i> مقارنة</a>
+                </div>
+                <div class="product-share">
+                    <span>مشاركة:</span>
+                    <a href="https://wa.me/{{ whatsapp_number }}?text={{ product.name_ar or product.name }} - {{ product.price }} درهم" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section reviews-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>تقييمات العملاء ({{ product.review_count }})</h2>
+        </div>
+        <div class="reviews-layout">
+            <div class="reviews-summary">
+                <div class="summary-score">{{ product.avg_rating }}</div>
+                <div class="summary-stars">
+                    {% set avg = product.avg_rating %}
+                    {% set full = avg|int %}
+                    {% set half = 1 if (avg - full) >= 0.5 else 0 %}
+                    {% for i in range(5) %}
+                        {% if i < full %}
+                        <i class="fas fa-star"></i>
+                        {% elif i == full and half %}
+                        <i class="fas fa-star-half-alt"></i>
+                        {% else %}
+                        <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="summary-count">{{ product.review_count }} تقييم</div>
+            </div>
+            <div class="reviews-list">
+                {% if reviews %}
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <i class="fas fa-user-circle"></i>
+                            <strong>{{ review.user.username }}</strong>
+                        </div>
+                        <div class="review-stars">
+                            {% for i in range(5) %}
+                                {% if i < review.rating %}
+                                <i class="fas fa-star"></i>
+                                {% else %}
+                                <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if review.comment %}
+                    <p class="review-comment">{{ review.comment }}</p>
+                    {% endif %}
+                    <span class="review-date">{{ review.created_at.strftime('%Y-%m-%d') }}</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="review-empty">
+                    <i class="fas fa-star"></i>
+                    <p>لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% if current_user.is_authenticated %}
+        <div class="review-form-box">
+            <h3>أضف تقييمك</h3>
+            <form action="{{ url_for('add_review', product_id=product.id) }}" method="POST" class="review-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <div class="rating-select">
+                    <span>تقييمك:</span>
+                    <div class="star-input">
+                        {% for i in range(5, 0, -1) %}
+                        <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" {% if i == 5 %}checked{% endif %}>
+                        <label for="star{{ i }}"><i class="fas fa-star"></i></label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <textarea name="comment" rows="3" placeholder="اكتب تعليقاً عن المنتج (اختياري)" style="width:100%;padding:12px;border:2px solid var(--light-gray);border-radius:8px;font-family:var(--font);margin:10px 0"></textarea>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-pen"></i> إرسال التقييم</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="review-login-prompt">
+            <p><a href="{{ url_for('login') }}">سجل الدخول</a> لتقييم هذا المنتج</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% if related %}
+<section class="section related-products">
+    <div class="container">
+        <div class="section-header">
+            <h2>منتجات مشابهة</h2>
+        </div>
+        <div class="products-grid">
+            {% for product in related %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt="{{ product.name_ar or product.name }}">
+                    <div class="product-actions">
+                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-add-cart"><i class="fas fa-shopping-cart"></i> أضف للسلة</button>
+                        </form>
+                        <a href="{{ url_for('product_detail', id=product.id) }}" class="btn-view"><i class="fas fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3><a href="{{ url_for('product_detail', id=product.id) }}">{{ product.name_ar or product.name }}</a></h3>
+                    <div class="product-price">
+                        <span class="current-price">{{ product.price }} درهم</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

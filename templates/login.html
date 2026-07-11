@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}تسجيل الدخول{% endblock %}
+{% block content %}
+<div class="auth-section">
+    <div class="container">
+        <div class="auth-box">
+            <i class="fas fa-spa auth-icon"></i>
+            <h2>تسجيل الدخول</h2>
+            <p>مرحباً بعودتك! أدخل بياناتك للدخول</p>
+<form method="POST">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                    <label><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <input type="text" name="username" required placeholder="أدخل اسم المستخدم">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" name="password" required placeholder="أدخل كلمة المرور">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+            </form>
+            <div class="auth-footer">
+                ليس لديك حساب؟ <a href="{{ url_for('register') }}">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

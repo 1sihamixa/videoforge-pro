@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}طلباتي{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>طلباتي</h1>
+    </div>
+</section>
+
+<section class="orders-section section">
+    <div class="container">
+        {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <span class="order-id">طلب #{{ order.id }}</span>
+                        <span class="order-date">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                    <div class="order-status {{ order.status }}">
+                        {% if order.status == 'pending' %}قيد المراجعة
+                        {% elif order.status == 'confirmed' %}مؤكد
+                        {% elif order.status == 'shipped' %}تم الشحن
+                        {% elif order.status == 'delivered' %}تم التوصيل
+                        {% elif order.status == 'cancelled' %}ملغي
+                        {% else %}{{ order.status }}{% endif %}
+                    </div>
+                </div>
+                <div class="order-body">
+                    <div class="order-items-summary">
+                        {% for item in order.items %}
+                        <div class="order-item-summary">
+                            <span>{{ item.product_name }} × {{ item.quantity }}</span>
+                            <span>{{ item.price * item.quantity }} درهم</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="order-total">
+                        <span>الإجمالي:</span>
+                        <span>{{ order.total }} درهم</span>
+                    </div>
+                </div>
+                <div class="order-footer">
+                    <span class="payment-status {{ order.payment_status }}">
+                        {% if order.payment_status == 'paid' %}مدفوع
+                        {% elif order.payment_status == 'unpaid' %}غير مدفوع
+                        {% else %}{{ order.payment_status }}{% endif %}
+                    </span>
+                    <a href="{{ url_for('order_detail', id=order.id) }}" class="btn btn-sm">تفاصيل الطلب</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-box"></i>
+            <h3>لا توجد طلبات</h3>
+            <p>لم تقم بأي طلب بعد</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary">تسوق الآن</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

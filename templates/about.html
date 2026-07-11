@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}من نحن - AYA PARFUM{% endblock %}
+{% block content %}
+<section class="page-header" style="background:linear-gradient(135deg,#6B1D3A,#1a1a2e)">
+    <div class="container">
+        <h1>🇲🇦 من نحن</h1>
+        <p>قصة AYA PARFUM — عطرك عنوانك</p>
+    </div>
+</section>
+
+<section class="section about-story">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-image-box">
+                <div class="about-image-placeholder">
+                    <i class="fas fa-spa"></i>
+                    <span>AYA PARFUM</span>
+                </div>
+            </div>
+            <div class="about-text">
+                <h2>حكاية AYA PARFUM</h2>
+                <p class="about-lead">من قلب الدار البيضاء، انطلقت AYA PARFUM بحلم بسيط: نقدم عطوراً فاخرة بجودة عالمية وبسعر في متناول الجميع.</p>
+                <p>اسم "آية" مستوحى من الجمال والتميز. كل عطر من مجموعتنا هو تجربة فريدة، مزيج متقن بين العطور الشرقية الأصيلة والنوتات العصرية.</p>
+                <p>نؤمن في AYA أن العطر ليس مجرد رائحة، بل هوية وانطباع وذكرى. لذلك نختار أجود الزيوت من أفضل البيوت العطرية في فرنسا والعالم، لنجمعها بإبداع مع لمساتنا المغربية الأصيلة.</p>
+                <div class="about-numbers">
+                    <div class="about-number">
+                        <span class="num">500+</span>
+                        <span class="label">عميل وثق فينا</span>
+                    </div>
+                    <div class="about-number">
+                        <span class="num">12+</span>
+                        <span class="label">ساعة ثبات</span>
+                    </div>
+                    <div class="about-number">
+                        <span class="num">48</span>
+                        <span class="label">ساعة توصيل</span>
+                    </div>
+                    <div class="about-number">
+                        <span class="num">100%</span>
+                        <span class="label">عطور أصلية</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-mission">
+    <div class="container">
+        <div class="mission-grid">
+            <div class="mission-card">
+                <i class="fas fa-bullseye"></i>
+                <h3>رسالتنا</h3>
+                <p>نقدم عطوراً فاخرة بجودة عالمية بأسعار مناسبة للمغاربة. نصنع لحظات لا تنسى لكل عميل.</p>
+            </div>
+            <div class="mission-card">
+                <i class="fas fa-eye"></i>
+                <h3>رؤيتنا</h3>
+                <p>أن نكون العلامة المغربية الأولى في العطور الفاخرة، وننشر الثقافة العطرية في كل بيت مغربي.</p>
+            </div>
+            <div class="mission-card">
+                <i class="fas fa-handshake"></i>
+                <h3>قيمنا</h3>
+                <p>الجودة، الثقة، الاحترام، والإبداع. نتعامل مع كل عميل كأنه فرد من عائلتنا.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section about-location">
+    <div class="container">
+        <h2>📍 موقعنا</h2>
+        <p>الدار البيضاء، المغرب — نقوم بتوصيل طلباتكم لكل مدن المملكة</p>
+        <div class="location-placeholder">
+            <i class="fas fa-map-marked-alt"></i>
+            <div>
+                <strong>AYA PARFUM</strong>
+                <span>الدار البيضاء، المغرب</span>
+                <span>contact@ayaparfum.ma</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-final">
+    <div class="container">
+        <div class="cta-final-content">
+            <h2>استعد لتجربة عطرية لا تنسى</h2>
+            <p>اطلب الآن واحصل على تغليف هدايا فاخر</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg pulse-btn">ابدأ التسوق الآن</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

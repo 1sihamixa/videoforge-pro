@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}اتصل بنا{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>📞 تواصل معنا</h1>
+        <p>نحن هنا للإجابة عن كل استفساراتك</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info-box">
+                <div class="contact-card">
+                    <i class="fab fa-whatsapp whatsapp-icon"></i>
+                    <h3>واتساب</h3>
+                    <p>أسرع طريقة للتواصل - رد فوري</p>
+                    <a href="https://wa.me/{{ whatsapp_number }}?text=مرحباً%20AYA%20PARFUM!" class="btn btn-primary" target="_blank">
+                        <i class="fab fa-whatsapp"></i> راسلنا على واتساب
+                    </a>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>البريد الإلكتروني</h3>
+                    <a href="mailto:contact@ayaparfum.ma">contact@ayaparfum.ma</a>
+                    <p>نرد خلال 24 ساعة</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>موقعنا</h3>
+                    <p>الدار البيضاء، المغرب</p>
+                    <p>توصيل لجميع مدن المملكة</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>ساعات العمل</h3>
+                    <p>الإثنين - السبت: 9:00 - 21:00</p>
+                    <p>الأحد: 10:00 - 18:00</p>
+                </div>
+            </div>
+            <div class="contact-form-box">
+                <h2>أرسلي لنا رسالة</h2>
+                <form method="POST" action="{{ url_for('contact') }}">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="الاسم الكامل" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="phone" placeholder="رقم الهاتف (اختياري)">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" rows="5" placeholder="رسالتك..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">إرسال الرسالة <i class="fas fa-paper-plane"></i></button>
+                </form>
+                <div class="contact-alternative">
+                    <p>أو تواصل معنا مباشرة</p>
+                    <a href="https://wa.me/{{ whatsapp_number }}?text=مرحباً%20AYA%20PARFUM!" class="btn btn-success" target="_blank">
+                        <i class="fab fa-whatsapp"></i> واتساب
+                    </a>
+                    <a href="https://www.instagram.com/ayaparfum.ma" class="btn btn-instagram" target="_blank">
+                        <i class="fab fa-instagram"></i> إنستغرام
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

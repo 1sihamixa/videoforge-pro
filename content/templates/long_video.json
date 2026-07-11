@@ -1,0 +1,27 @@
+{
+  "name": "long_video",
+  "label_ar": "فيديو طويل (5-10 دقائق)",
+  "duration_target_seconds": 420,
+  "max_duration_seconds": 600,
+  "resolution": [1920, 1080],
+  "aspect_ratio": "16:9",
+  "fps": 30,
+  "orientation": "landscape",
+  "max_title_length": 100,
+  "max_description_length": 5000,
+  "max_tags": 15,
+  "platforms": ["youtube"],
+  "tts_rate": "+0%",
+  "sections": {
+    "hook": {"duration_seconds": 5, "required": true},
+    "intro": {"duration_seconds": 15, "required": true},
+    "body_sections": {"count": 5, "duration_seconds_each": 60, "required": true},
+    "outro": {"duration_seconds": 20, "required": true}
+  },
+  "style": {
+    "subtitle_font_size": 24,
+    "subtitle_position": "bottom",
+    "subtitle_color": "white",
+    "subtitle_outline": "black"
+  }
+}

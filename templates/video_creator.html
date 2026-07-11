@@ -481,16 +481,8 @@ footer .social-links a:hover { background: var(--accent); color: #fff; }
 
         <div class="creator-card">
           <h3><span class="icon" style="background:rgba(240,192,64,0.15);color:var(--gold)">⚡</span> {{ t("creator_method_label") }}</h3>
-          <div class="toggle-group" id="modeToggle">
-            <button class="toggle-btn active" data-mode="local">{{ t("creator_local") }}</button>
-            <button class="toggle-btn" data-mode="cloud">{{ t("creator_cloud") }}</button>
-          </div>
-          <div id="cloudSettings" class="hidden" style="margin-top:12px">
-            <input type="text" id="apiKeyInput" class="text-input" style="min-height:auto;height:42px" placeholder="{{ t('creator_api_key') }}" autocomplete="off">
-            <div style="font-size:11px;color:var(--text2);margin-top:4px">{{ t("creator_api_hint") }} <a href="https://sync.so" target="_blank" style="color:var(--accent)">sync.so</a></div>
-          </div>
-          <div id="modelNotice" style="margin-top:8px;padding:8px 12px;background:rgba(255,214,0,0.05);border:1px solid rgba(255,214,0,0.2);border-radius:8px;font-size:12px;display:none">
-            ⚠️ {{ t("creator_model_notice") }} <a href="https://huggingface.co/Nekochu/Wav2Lip/resolve/main/wav2lip_gan.pth" target="_blank" style="color:var(--accent)">{{ t("creator_download_model") }}</a>
+          <div style="padding:8px 12px;background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;font-size:13px;color:var(--text)">
+            ☁️ {{ t("creator_cloud") }} — {{ t("creator_cloud_only") }}
           </div>
         </div>
 
@@ -744,16 +736,14 @@ $('textInput').oninput = function() {
   $('charCount').textContent = this.value.length + suffix;
   updateGenerateBtn();
 };
-$('apiKeyInput').oninput = updateGenerateBtn;
+  updateGenerateBtn();
 
 function updateGenerateBtn() {
   const btn = $('generateBtn');
   const hasImage = state.image !== null;
   const audioMode = document.querySelector('#audioToggle .toggle-btn.active').dataset.mode;
   const hasAudio = audioMode === 'upload' ? state.audio !== null : $('textInput').value.trim().length > 0;
-  const genMode = document.querySelector('#modeToggle .toggle-btn.active').dataset.mode;
-  const hasApiKey = genMode !== 'cloud' || $('apiKeyInput').value.trim().length > 0;
-  btn.disabled = !(hasImage && hasAudio && hasApiKey);
+  btn.disabled = !(hasImage && hasAudio);
 }
 
 // ─── Generate ───
@@ -762,14 +752,13 @@ async function startGenerate() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> ' + __('btn_generating');
 
   const audioMode = document.querySelector('#audioToggle .toggle-btn.active').dataset.mode;
-  const genMode = document.querySelector('#modeToggle .toggle-btn.active').dataset.mode;
 
   const body = {
     image: state.image,
     audio: audioMode === 'upload' ? state.audio : null,
     text: audioMode === 'text' ? $('textInput').value : null,
-    mode: genMode,
-    api_key: genMode === 'cloud' ? $('apiKeyInput').value.trim() : '',
+    mode: 'cloud',
+    api_key: '',
   };
 
   try {
@@ -898,21 +887,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 });
-
-// ─── Check Model Status ───
-async function checkModelStatus() {
-  try {
-    const r = await fetch(`${BASE}/api/status`);
-    const d = await r.json();
-    const notice = $('modelNotice');
-    if (notice) {
-      notice.style.display = d.model_ready ? 'none' : 'block';
-    }
-    $('statModel').textContent = d.model_ready ? __('stat_model_ready') : __('stat_model_missing');
-  } catch(e) {}
-}
-setInterval(checkModelStatus, 10000);
-checkModelStatus();
 
 // ─── Init ───
 loadGallery();

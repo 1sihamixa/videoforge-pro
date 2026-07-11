@@ -1,0 +1,53 @@
+{% extends 'admin/layout.html' %}
+{% block title %}إدارة الطلبات{% endblock %}
+{% block content %}
+<h2>الطلبات</h2>
+<div class="filter-tabs">
+    <a href="{{ url_for('admin_orders') }}" class="filter-tab {% if not active_status %}active{% endif %}">الكل</a>
+    <a href="{{ url_for('admin_orders', status='pending') }}" class="filter-tab {% if active_status == 'pending' %}active{% endif %}">قيد المراجعة</a>
+    <a href="{{ url_for('admin_orders', status='confirmed') }}" class="filter-tab {% if active_status == 'confirmed' %}active{% endif %}">مؤكد</a>
+    <a href="{{ url_for('admin_orders', status='shipped') }}" class="filter-tab {% if active_status == 'shipped' %}active{% endif %}">تم الشحن</a>
+    <a href="{{ url_for('admin_orders', status='delivered') }}" class="filter-tab {% if active_status == 'delivered' %}active{% endif %}">تم التوصيل</a>
+    <a href="{{ url_for('admin_orders', status='cancelled') }}" class="filter-tab {% if active_status == 'cancelled' %}active{% endif %}">ملغي</a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>المستخدم</th>
+            <th>المنتجات</th>
+            <th>الإجمالي</th>
+            <th>الدفع</th>
+            <th>الحالة</th>
+            <th>التاريخ</th>
+            <th>تحديث</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.user.username }}</td>
+            <td>{{ order.items|length }} منتج</td>
+            <td>{{ order.total }} درهم</td>
+            <td><span class="badge {{ order.payment_status }}">{% if order.payment_status == 'paid' %}مدفوع{% else %}غير مدفوع{% endif %}</span></td>
+            <td><span class="badge {{ order.status }}">{% if order.status == 'pending' %}قيد المراجعة{% elif order.status == 'confirmed' %}مؤكد{% elif order.status == 'shipped' %}تم الشحن{% elif order.status == 'delivered' %}تم التوصيل{% elif order.status == 'cancelled' %}ملغي{% endif %}</span></td>
+            <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_order', id=order.id) }}" class="inline-form">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <select name="status">
+                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>قيد المراجعة</option>
+                        <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>مؤكد</option>
+                        <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>تم الشحن</option>
+                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>تم التوصيل</option>
+                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>ملغي</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm"><i class="fas fa-check"></i></button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

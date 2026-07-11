@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoSystem Dashboard</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --accent: #58a6ff;
+            --accent2: #3fb950;
+            --text: #c9d1d9;
+            --text2: #8b949e;
+            --danger: #f85149;
+            --warn: #d29922;
+            --success: #3fb950;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); }
+        .container { max-width:1100px; margin:0 auto; padding:16px; }
+
+        /* Header */
+        .header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:var(--card); border-radius:12px; margin-bottom:16px; border:1px solid var(--border); }
+        .header h1 { font-size:20px; color:var(--accent); }
+        .lang-toggle { display:flex; gap:0; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+        .lang-btn { padding:6px 14px; background:var(--card); color:var(--text2); border:none; cursor:pointer; font-size:13px; font-weight:600; }
+        .lang-btn.active { background:var(--accent); color:#fff; }
+
+        /* Stats */
+        .stats { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-bottom:16px; }
+        .stat { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 10px; text-align:center; }
+        .stat .num { font-size:26px; font-weight:700; color:var(--accent); }
+        .stat .lbl { font-size:11px; color:var(--text2); margin-top:4px; }
+
+        /* Nav */
+        .nav { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+        .nav-link { padding:8px 18px; background:var(--card); color:var(--accent); border:1px solid var(--border); border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; transition:all .15s; }
+        .nav-link:hover, .nav-link.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+        .nav-spacer { flex:1; }
+        .btn-big { padding:10px 24px; background:linear-gradient(135deg,#f0883e,#d29922); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; }
+        .btn-big:hover { opacity:0.9; }
+
+        /* Section */
+        .section { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+        .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+        .section-header h2 { font-size:16px; color:var(--text); }
+
+        /* Table */
+        table { width:100%; border-collapse:collapse; }
+        th { text-align:right; padding:10px 14px; font-size:12px; color:var(--text2); font-weight:600; border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:0.5px; }
+        td { padding:10px 14px; border-bottom:1px solid var(--border); font-size:13px; }
+        tr:last-child td { border-bottom:none; }
+        tr:hover { background:rgba(88,166,255,0.04); }
+
+        /* Badges */
+        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+        .b-green { background:rgba(63,185,80,0.15); color:var(--success); }
+        .b-blue { background:rgba(88,166,255,0.15); color:var(--accent); }
+        .b-yellow { background:rgba(210,153,34,0.15); color:var(--warn); }
+        .b-red { background:rgba(248,81,73,0.15); color:var(--danger); }
+        .b-gray { background:rgba(139,148,158,0.15); color:var(--text2); }
+
+        /* Buttons */
+        .btn { padding:5px 12px; border:none; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; }
+        .btn-g { background:var(--success); color:#fff; }
+        .btn-r { background:var(--danger); color:#fff; }
+        .btn-b { background:var(--accent); color:#fff; }
+        .btn:hover { opacity:0.85; }
+
+        /* Form */
+        .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; align-items:end; }
+        .form-group { display:flex; flex-direction:column; gap:4px; }
+        .form-group label { font-size:11px; color:var(--text2); font-weight:600; }
+        .form-group input, .form-group select { padding:8px 12px; border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:6px; font-size:13px; }
+        .form-group input:focus, .form-group select:focus { outline:none; border-color:var(--accent); }
+
+        /* Empty state */
+        .empty { text-align:center; padding:40px 20px; color:var(--text2); }
+        .empty-icon { font-size:36px; margin-bottom:8px; }
+
+        /* Responsive */
+        @media (max-width:768px) {
+            .stats { grid-template-columns:repeat(3,1fr); }
+            .form-grid { grid-template-columns:1fr; }
+        }
+
+        /* Direction classes */
+        [dir="ltr"] th { text-align:left; }
+        [dir="ltr"] .header { flex-direction:row-reverse; }
+        [dir="ltr"] .section-header { flex-direction:row-reverse; }
+
+        /* Video Modal */
+        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center; }
+        .modal-overlay.active { display:flex; }
+        .modal-content { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; max-width:600px; width:90%; position:relative; }
+        .modal-content video { width:100%; border-radius:8px; }
+        .modal-close { position:absolute; top:8px; left:12px; background:var(--danger); color:#fff; border:none; border-radius:50%; width:32px; height:32px; font-size:18px; cursor:pointer; z-index:10; }
+        [dir="rtl"] .modal-close { left:auto; right:12px; }
+        .modal-title { margin:12px 0 4px; font-size:14px; color:var(--text); }
+        .play-btn { padding:5px 10px; background:var(--accent); color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; display:inline-flex; align-items:center; gap:4px; }
+        .play-btn:hover { background:#79c0ff; }
+        .play-btn::before { content:'▶'; font-size:10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1 data-ar="AutoSystem" data-en="AutoSystem">AutoSystem</h1>
+        <div style="display:flex;align-items:center;gap:16px">
+            <span class="badge {{ 'b-green' if auto_publish else 'b-yellow' }}" data-ar="{{ 'نشر تلقائي ON' if auto_publish else 'مراجعة يدوية OFF' }}" data-en="{{ 'Auto-Publish ON' if auto_publish else 'Manual Review OFF' }}">{{ 'نشر تلقائي ON' if auto_publish else 'مراجعة يدوية OFF' }}</span>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat"><div class="num">{{ stats.total_channels }}</div><div class="lbl" data-ar="القنوات" data-en="Channels">القنوات</div></div>
+        <div class="stat"><div class="num">{{ stats.total_topics }}</div><div class="lbl" data-ar="المواضيع" data-en="Topics">المواضيع</div></div>
+        <div class="stat"><div class="num">{{ stats.approved_topics }}</div><div class="lbl" data-ar="موافق عليها" data-en="Approved">موافق عليها</div></div>
+        <div class="stat"><div class="num">{{ stats.total_videos }}</div><div class="lbl" data-ar="الفيديوهات" data-en="Videos">الفيديوهات</div></div>
+        <div class="stat"><div class="num">{{ stats.published_videos }}</div><div class="lbl" data-ar="منشورة" data-en="Published">منشورة</div></div>
+        <div class="stat"><div class="num">{{ stats.scheduled_videos }}</div><div class="lbl" data-ar="مجدولة" data-en="Scheduled">مجدولة</div></div>
+    </div>
+
+    <!-- Nav -->
+    <div class="nav">
+        <a href="/" class="nav-link {{ 'active' if not view }}" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+        <a href="/channels" class="nav-link {{ 'active' if view=='channels' }}" data-ar="القنوات" data-en="Channels">القنوات</a>
+        <a href="/topics" class="nav-link {{ 'active' if view=='topics' }}" data-ar="المواضيع" data-en="Topics">المواضيع</a>
+        <a href="/videos" class="nav-link {{ 'active' if view=='videos' }}" data-ar="الفيديوهات" data-en="Videos">الفيديوهات</a>
+        <div class="nav-spacer"></div>
+        <form action="/pipeline/run" method="post" style="display:inline">
+            <button type="submit" class="btn-big" data-ar="تشغيل دورة جديدة" data-en="Run Pipeline">تشغيل دورة جديدة</button>
+        </form>
+    </div>
+
+    <!-- ==================== HOME VIEW ==================== -->
+    {% if not view %}
+
+    <!-- Recent Videos -->
+    <div class="section">
+        <div class="section-header">
+            <h2 data-ar="أحدث الفيديوهات" data-en="Recent Videos">أحدث الفيديوهات</h2>
+        </div>
+        {% if videos %}
+        <table>
+            <thead><tr>
+                <th data-ar="العنوان" data-en="Title">العنوان</th>
+                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                <th data-ar="التاريخ" data-en="Date">التاريخ</th>
+                <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
+            </tr></thead>
+            <tbody>
+            {% for v in videos %}
+            <tr>
+                <td>{{ v.title[:50] if v.title else '-' }}</td>
+                <td>
+                    {% if v.status == 'published' %}<span class="badge b-green" data-ar="منشور" data-en="Published">منشور</span>
+                    {% elif v.status == 'scheduled' %}<span class="badge b-blue" data-ar="مجدول" data-en="Scheduled">مجدول</span>
+                    {% elif v.status == 'reviewing' %}<span class="badge b-yellow" data-ar="قيد المراجعة" data-en="Reviewing">قيد المراجعة</span>
+                    {% elif v.status == 'reviewed' %}<span class="badge b-blue" data-ar="تمت المراجعة" data-en="Reviewed">تمت المراجعة</span>
+                    {% elif v.status == 'failed' %}<span class="badge b-red" data-ar="فشل" data-en="Failed">فشل</span>
+                    {% else %}<span class="badge b-gray">{{ v.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ v.created_at.strftime('%Y-%m-%d %H:%M') if v.created_at else '-' }}</td>
+                <td>
+                    {% if v.file_path %}
+                    <button class="play-btn" onclick="playVideo({{ v.id }}, '{{ v.title | e }}')" data-ar="تشغيل" data-en="Play">تشغيل</button>
+                    {% endif %}
+                    {% if v.status == 'reviewing' and not auto_publish %}
+                    <form action="/videos/{{v.id}}/approve" method="post" style="display:inline"><button class="btn btn-g" data-ar="موافقة" data-en="Approve">موافقة</button></form>
+                    <form action="/videos/{{v.id}}/reject" method="post" style="display:inline"><button class="btn btn-r" data-ar="رفض" data-en="Reject">رفض</button></form>
+                    {% endif %}
+                    {% if v.status == 'reviewed' %}
+                    <form action="/videos/{{v.id}}/publish" method="post" style="display:inline"><button class="btn btn-b" data-ar="نشر" data-en="Publish">نشر</button></form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon">🎬</div>
+            <p data-ar="لا توجد فيديوهات بعد. اضغط 'تشغيل دورة جديدة' للبدء." data-en="No videos yet. Click 'Run Pipeline' to start.">لا توجد فيديوهات بعد. اضغط 'تشغيل دورة جديدة' للبدء.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Top Topics -->
+    <div class="section">
+        <div class="section-header">
+            <h2 data-ar="أعلى المواضيع" data-en="Top Topics">أعلى المواضيع</h2>
+        </div>
+        {% if topics %}
+        <table>
+            <thead><tr>
+                <th data-ar="الكلمة المفتاحية" data-en="Keyword">الكلمة المفتاحية</th>
+                <th data-ar="النيتش" data-en="Niche">النيتش</th>
+                <th data-ar="المنافسة" data-en="Competition">المنافسة</th>
+                <th data-ar="CPM" data-en="CPM">CPM</th>
+                <th data-ar="النتيجة" data-en="Score">النتيجة</th>
+                <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
+            </tr></thead>
+            <tbody>
+            {% for t in topics[:10] %}
+            <tr>
+                <td><strong>{{ t.keyword }}</strong></td>
+                <td>{{ t.niche }}</td>
+                <td>{{ '%.0f'|format(t.competition_score * 100) }}%</td>
+                <td>${{ '%.2f'|format(t.estimated_cpm) }}</td>
+                <td><strong style="color:var(--accent)">{{ '%.1f'|format(t.final_score) }}</strong></td>
+                <td>
+                    {% if t.status == 'discovered' %}
+                    <form action="/topics/{{t.id}}/approve" method="post" style="display:inline"><button class="btn btn-g" data-ar="موافقة" data-en="Approve">موافقة</button></form>
+                    <form action="/topics/{{t.id}}/reject" method="post" style="display:inline"><button class="btn btn-r" data-ar="رفض" data-en="Reject">رفض</button></form>
+                    {% else %}
+                    <span class="badge b-gray">{{ t.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon">🔍</div>
+            <p data-ar="لا توجد مواضيع بعد. ستُكتشف تلقائيًا عند تشغيل الدورة." data-en="No topics yet. They'll be discovered when you run the pipeline.">لا توجد مواضيع بعد. ستُكتشف تلقائيًا عند تشغيل الدورة.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% endif %}
+
+    <!-- ==================== CHANNELS VIEW ==================== -->
+    {% if view == 'channels' %}
+
+    <div class="section">
+        <div class="section-header">
+            <h2 data-ar="إضافة قناة جديدة" data-en="Add New Channel">إضافة قناة جديدة</h2>
+        </div>
+        <form action="/channels/add" method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label data-ar="معرف القناة (Channel ID)" data-en="Channel ID">معرف القناة (Channel ID)</label>
+                    <input name="channel_id" placeholder="UC..." required>
+                </div>
+                <div class="form-group">
+                    <label data-ar="اسم القناة" data-en="Channel Name">اسم القناة</label>
+                    <input name="name" placeholder="My Channel" required>
+                </div>
+                <div class="form-group">
+                    <label data-ar="نمط المحتوى" data-en="Content Style">نمط المحتوى</label>
+                    <select name="content_style">
+                        <option value="faceless" data-ar="بدون وجه (Faceless)" data-en="Faceless">بدون وجه (Faceless)</option>
+                        <option value="avatar_talking" data-ar="شخصية متحركة (Avatar)" data-en="Avatar Talking">شخصية متحركة (Avatar)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-ar="المجال" data-en="Niche">المجال</label>
+                    <select name="niche">
+                        <option value="finance_invest" data-ar="المالية والاستثمار" data-en="Finance & Investing">المالية والاستثمار</option>
+                        <option value="tech_software_biz" data-ar="التكنولوجيا والأعمال" data-en="Tech & Business">التكنولوجيا والأعمال</option>
+                        <option value="insurance_law_consulting" data-ar="التأمين والقانون" data-en="Insurance & Law">التأمين والقانون</option>
+                        <option value="health_wellness" data-ar="الصحة والعافية" data-en="Health & Wellness">الصحة والعافية</option>
+                        <option value="education_skills" data-ar="التعليم وتطوير المهارات" data-en="Education & Skills">التعليم وتطوير المهارات</option>
+                        <option value="home_garden_diy" data-ar="المنزل والحديقة" data-en="Home & Garden">المنزل والحديقة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-g" style="padding:8px 20px" data-ar="إضافة" data-en="Add">إضافة</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2 data-ar="القنوات الحالية" data-en="Current Channels">القنوات الحالية</h2>
+        </div>
+        {% if channels %}
+        <table>
+            <thead><tr>
+                <th data-ar="الاسم" data-en="Name">الاسم</th>
+                <th data-ar="المعرف" data-en="ID">المعرف</th>
+                <th data-ar="النمط" data-en="Style">النمط</th>
+                <th data-ar="المجال" data-en="Niche">المجال</th>
+                <th data-ar="نشط" data-en="Active">نشط</th>
+            </tr></thead>
+            <tbody>
+            {% for ch in channels %}
+            <tr>
+                <td><strong>{{ ch.name }}</strong></td>
+                <td style="font-family:monospace;font-size:12px">{{ ch.channel_id }}</td>
+                <td><span class="badge b-blue">{{ ch.content_style }}</span></td>
+                <td>{{ ch.niche }}</td>
+                <td>{% if ch.is_active %}<span class="badge b-green" data-ar="نعم" data-en="Yes">نعم</span>{% else %}<span class="badge b-red" data-ar="لا" data-en="No">لا</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon">📺</div>
+            <p data-ar="لا توجد قنوات بعد. أضف قناتك أعلاه." data-en="No channels yet. Add your channel above.">لا توجد قنوات بعد. أضف قناتك أعلاه.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% endif %}
+
+    <!-- ==================== TOPICS VIEW ==================== -->
+    {% if view == 'topics' %}
+
+    <div class="section">
+        <div class="section-header">
+            <h2 data-ar="جميع المواضيع" data-en="All Topics">جميع المواضيع</h2>
+        </div>
+        {% if topics %}
+        <table>
+            <thead><tr>
+                <th data-ar="الكلمة المفتاحية" data-en="Keyword">الكلمة المفتاحية</th>
+                <th data-ar="المجال" data-en="Niche">المجال</th>
+                <th data-ar="الحجم" data-en="Volume">الحجم</th>
+                <th data-ar="المنافسة" data-en="Competition">المنافسة</th>
+                <th data-ar="CPM" data-en="CPM">CPM</th>
+                <th data-ar="النتيجة" data-en="Score">النتيجة</th>
+                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
+            </tr></thead>
+            <tbody>
+            {% for t in topics %}
+            <tr>
+                <td><strong>{{ t.keyword }}</strong></td>
+                <td>{{ t.niche }}</td>
+                <td>{{ t.search_volume }}</td>
+                <td>{{ '%.0f'|format(t.competition_score * 100) }}%</td>
+                <td>${{ '%.2f'|format(t.estimated_cpm) }}</td>
+                <td><strong style="color:var(--accent)">{{ '%.1f'|format(t.final_score) }}</strong></td>
+                <td>
+                    {% if t.status == 'discovered' %}<span class="badge b-gray" data-ar="مكتشف" data-en="Discovered">مكتشف</span>
+                    {% elif t.status == 'approved' %}<span class="badge b-green" data-ar="موافق" data-en="Approved">موافق</span>
+                    {% elif t.status == 'rejected' %}<span class="badge b-red" data-ar="مرفوض" data-en="Rejected">مرفوض</span>
+                    {% else %}<span class="badge b-blue">{{ t.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if t.status == 'discovered' %}
+                    <form action="/topics/{{t.id}}/approve" method="post" style="display:inline"><button class="btn btn-g" data-ar="موافقة" data-en="Approve">موافقة</button></form>
+                    <form action="/topics/{{t.id}}/reject" method="post" style="display:inline"><button class="btn btn-r" data-ar="رفض" data-en="Reject">رفض</button></form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon">🔍</div>
+            <p data-ar="لا توجد مواضيع بعد." data-en="No topics found.">لا توجد مواضيع بعد.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% endif %}
+
+    <!-- ==================== VIDEOS VIEW ==================== -->
+    {% if view == 'videos' %}
+
+    <div class="section">
+        <div class="section-header">
+            <h2 data-ar="جميع الفيديوهات" data-en="All Videos">جميع الفيديوهات</h2>
+        </div>
+        {% if videos %}
+        <table>
+            <thead><tr>
+                <th data-ar="العنوان" data-en="Title">العنوان</th>
+                <th data-ar="النمط" data-en="Style">النمط</th>
+                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                <th>YouTube ID</th>
+                <th data-ar="التاريخ" data-en="Date">التاريخ</th>
+                <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
+            </tr></thead>
+            <tbody>
+            {% for v in videos %}
+            <tr>
+                <td><strong>{{ v.title[:60] if v.title else '-' }}</strong></td>
+                <td><span class="badge b-blue">{{ v.style }}</span></td>
+                <td>
+                    {% if v.status == 'published' %}<span class="badge b-green" data-ar="منشور" data-en="Published">منشور</span>
+                    {% elif v.status == 'scheduled' %}<span class="badge b-blue" data-ar="مجدول" data-en="Scheduled">مجدول</span>
+                    {% elif v.status == 'reviewing' %}<span class="badge b-yellow" data-ar="قيد المراجعة" data-en="Reviewing">قيد المراجعة</span>
+                    {% elif v.status == 'reviewed' %}<span class="badge b-blue" data-ar="تمت المراجعة" data-en="Reviewed">تمت المراجعة</span>
+                    {% elif v.status == 'failed' %}<span class="badge b-red" data-ar="فشل" data-en="Failed">فشل</span>
+                    {% else %}<span class="badge b-gray">{{ v.status }}</span>
+                    {% endif %}
+                </td>
+                <td style="font-family:monospace;font-size:12px">{{ v.youtube_video_id or '-' }}</td>
+                <td>{{ v.created_at.strftime('%Y-%m-%d') if v.created_at else '-' }}</td>
+                <td>
+                    {% if v.file_path %}
+                    <button class="play-btn" onclick="playVideo({{ v.id }}, '{{ v.title | e }}')" data-ar="تشغيل" data-en="Play">تشغيل</button>
+                    {% endif %}
+                    {% if v.status == 'reviewing' and not auto_publish %}
+                    <form action="/videos/{{v.id}}/approve" method="post" style="display:inline"><button class="btn btn-g" data-ar="موافقة" data-en="Approve">موافقة</button></form>
+                    <form action="/videos/{{v.id}}/reject" method="post" style="display:inline"><button class="btn btn-r" data-ar="رفض" data-en="Reject">رفض</button></form>
+                    {% endif %}
+                    {% if v.status == 'reviewed' %}
+                    <form action="/videos/{{v.id}}/publish" method="post" style="display:inline"><button class="btn btn-b" data-ar="نشر" data-en="Publish">نشر</button></form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon">🎬</div>
+            <p data-ar="لا توجد فيديوهات بعد." data-en="No videos yet.">لا توجد فيديوهات بعد.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- Video Player Modal -->
+<div class="modal-overlay" id="videoModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <video id="modalVideo" controls autoplay></video>
+        <div class="modal-title" id="modalTitle"></div>
+    </div>
+</div>
+
+<!-- Language Switcher Script -->
+<script>
+function playVideo(id, title) {
+    var modal = document.getElementById('videoModal');
+    var video = document.getElementById('modalVideo');
+    var titleEl = document.getElementById('modalTitle');
+    video.src = '/videos/' + id + '/stream';
+    titleEl.textContent = title;
+    modal.classList.add('active');
+    video.play();
+}
+function closeModal() {
+    var modal = document.getElementById('videoModal');
+    var video = document.getElementById('modalVideo');
+    video.pause();
+    video.src = '';
+    modal.classList.remove('active');
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+function setLang(lang) {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+    // Update toggle buttons
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Update all bilingual elements
+    document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+        el.textContent = lang === 'ar' ? el.dataset.ar : el.dataset.en;
+    });
+
+    // Save preference
+    localStorage.setItem('autosystem_lang', lang);
+}
+
+// Load saved language on page load
+(function() {
+    var saved = localStorage.getItem('autosystem_lang');
+    if (saved === 'en') {
+        document.documentElement.lang = 'en';
+        document.documentElement.dir = 'ltr';
+        document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+            el.textContent = el.dataset.en;
+        });
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.lang-btn')[1].classList.add('active');
+    }
+})();
+</script>
+</body>
+</html>

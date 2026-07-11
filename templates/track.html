@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}تتبع الطلب{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>📦 تتبع طلبي</h1>
+        <p>أدخل رقم الطلب لمعرفة حالته</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="track-form-box">
+            <form method="POST" class="track-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <i class="fas fa-search"></i>
+                <input type="text" name="order_id" placeholder="أدخل رقم الطلب (مثال: 1)" required>
+                <button type="submit" class="btn btn-primary">بحث</button>
+            </form>
+        </div>
+
+        {% if order %}
+        <div class="track-result">
+            <h2>طلب #{{ order.id }}</h2>
+            <div class="track-timeline">
+                <div class="track-step {% if order.created_at %}active{% endif %}">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <div class="step-info">
+                        <h4>تم تقديم الطلب</h4>
+                        <span>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                </div>
+                <div class="track-step {% if order.status in ['confirmed','shipped','delivered'] %}active{% endif %}">
+                    <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="step-info">
+                        <h4>تم تأكيد الطلب</h4>
+                    </div>
+                </div>
+                <div class="track-step {% if order.status in ['shipped','delivered'] %}active{% endif %}">
+                    <div class="step-icon"><i class="fas fa-truck"></i></div>
+                    <div class="step-info">
+                        <h4>تم الشحن</h4>
+                    </div>
+                </div>
+                <div class="track-step {% if order.status == 'delivered' %}active{% endif %}">
+                    <div class="step-icon"><i class="fas fa-home"></i></div>
+                    <div class="step-info">
+                        <h4>تم التوصيل</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="track-details">
+                <p><strong>الحالة:</strong> 
+                    <span class="order-status {{ order.status }}">
+                    {% if order.status == 'pending' %}قيد المراجعة
+                    {% elif order.status == 'confirmed' %}مؤكد
+                    {% elif order.status == 'shipped' %}تم الشحن
+                    {% elif order.status == 'delivered' %}تم التوصيل
+                    {% elif order.status == 'cancelled' %}ملغي
+                    {% endif %}
+                    </span>
+                </p>
+                <p><strong>الإجمالي:</strong> {{ order.total }} درهم</p>
+                <p><strong>عنوان الشحن:</strong> {{ order.shipping_address }}</p>
+            </div>
+            {% if order.status == 'cancelled' %}
+            <div class="track-cancelled">
+                <i class="fas fa-times-circle"></i> هذا الطلب ملغي. للاستفسار تواصل معنا على واتساب.
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="track-help">
+            <i class="fas fa-headset"></i>
+            <p>لم تجد طلبك؟ تواصل معنا على واتساب وسنساعدك فوراً</p>
+            <a href="https://wa.me/{{ whatsapp_number }}" class="btn btn-primary"><i class="fab fa-whatsapp"></i> واتساب</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

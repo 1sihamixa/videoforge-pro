@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}قائمة الرغبات - AYA PARFUM{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>❤️ قائمة الرغبات</h1>
+        <p>العطور التي أعجبتك — احفظيها لوقت لاحق</p>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        {% if items %}
+        <div class="products-grid">
+            {% for item in items %}
+            <div class="product-card wishlist-item">
+                <div class="product-image">
+                    <img src="{{ url_for('static', filename='img/products/' + item.product.image) }}" alt="{{ item.product.name_ar or item.product.name }}">
+                    {% if item.product.compare_price and item.product.compare_price > item.product.price %}
+                    <span class="discount-badge">-{{ ((item.product.compare_price - item.product.price) / item.product.compare_price * 100)|int }}%</span>
+                    {% endif %}
+                    <div class="product-actions">
+                        <form action="{{ url_for('add_to_cart', product_id=item.product.id) }}" method="POST" class="add-to-cart-form">
+                            <button type="submit" class="btn-add-cart"><i class="fas fa-shopping-cart"></i> أضف للسلة</button>
+                        </form>
+                        <a href="{{ url_for('product_detail', id=item.product.id) }}" class="btn-view"><i class="fas fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">{{ item.product.category.name_ar or item.product.category.name }}</span>
+                    <h3><a href="{{ url_for('product_detail', id=item.product.id) }}">{{ item.product.name_ar or item.product.name }}</a></h3>
+                    <div class="product-price">
+                        <span class="current-price">{{ item.product.price }} درهم</span>
+                        {% if item.product.compare_price and item.product.compare_price > item.product.price %}
+                        <span class="old-price">{{ item.product.compare_price }} درهم</span>
+                        {% endif %}
+                    </div>
+                    <form action="{{ url_for('remove_from_wishlist', product_id=item.product.id) }}" method="POST" style="margin-top:10px">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-danger btn-sm btn-block"><i class="fas fa-heart-broken"></i> إزالة</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-heart" style="font-size:64px;color:var(--gold);margin-bottom:15px"></i>
+            <h2>قائمة الرغبات فارغة</h2>
+            <p style="color:var(--gray);margin-bottom:20px">لم تقم بإضافة أي عطر إلى قائمة الرغبات بعد</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary">تصفح العطور</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

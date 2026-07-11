@@ -1,0 +1,36 @@
+# Wav2Lip Lip-Sync Pipeline Configuration
+output_resolution: [1920, 1080]   # width, height
+output_fps: 25
+output_dir: "static/videos"
+temp_dir: "temp"
+checkpoint_dir: "checkpoints"
+
+# Model
+model:
+  name: "wav2lip_gan"
+  checkpoint: "wav2lip_gan.pth"
+  source: "https://github.com/Rudrabha/Wav2Lip/releases/download/v1.0.0/wav2lip_gan.pth"
+
+# Face detection
+face_detection:
+  method: "wav2lip"        # wav2lip | opencv
+  pads: [20, 10, 10, 10]  # top, bottom, left, right
+
+# Enhancement (optional)
+enhancement:
+  enabled: false
+  method: "gfpgan"         # gfpgan | codeformer
+  checkpoint: "GFPGANv1.4.pth"
+  upscale: 1
+
+# Video encoding
+encoding:
+  codec: "libx264"
+  preset: "medium"
+  crf: 18
+  pixel_format: "yuv420p"
+
+# Logging
+logging:
+  level: "INFO"       # DEBUG | INFO | WARNING | ERROR
+  file: "lipsync.log"

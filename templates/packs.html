@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}العروض والباقات - AYA PARFUM{% endblock %}
+{% block content %}
+<section class="page-header" style="background:linear-gradient(135deg,#6B1D3A,#1a1a2e)">
+    <div class="container">
+        <h1>🎁 العروض والباقات</h1>
+        <p>باقات حصرية بسعر خاص - وفر أكثر مع عروض AYA</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if packs %}
+        
+        {% if family %}
+        <div class="pack-section-divider">
+            <span>👨‍👩‍👧‍👦 عروض عائلية</span>
+        </div>
+        <div class="packs-grid">
+            {% for pack in family %}
+            <div class="pack-card">
+                <div class="pack-badge">وفر {{ (pack.compare_price - pack.price)|int if pack.compare_price else 0 }} درهم</div>
+                <div class="pack-image">
+                    <img src="{{ url_for('static', filename='img/products/' + pack.image) }}" alt="{{ pack.name_ar }}">
+                </div>
+                <div class="pack-info">
+                    <span class="pack-tag">{{ pack.volume }}</span>
+                    <h3>{{ pack.name_ar or pack.name }}</h3>
+                    <p>{{ pack.description_ar or pack.description }}</p>
+                    <div class="pack-price">
+                        <span class="current-price">{{ pack.price|int }} درهم</span>
+                        {% if pack.compare_price %}
+                        <span class="old-price">{{ pack.compare_price|int }} درهم</span>
+                        <span class="save-tag">وفر {{ (pack.compare_price - pack.price)|int }} درهم</span>
+                        {% endif %}
+                    </div>
+                    <form action="{{ url_for('add_to_cart', product_id=pack.id) }}" method="POST" class="add-to-cart-form">
+                        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-gift"></i> أضف الباقة</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if others %}
+        <div class="pack-section-divider">
+            <span>🎯 عروض أخرى</span>
+        </div>
+        <div class="packs-grid">
+            {% for pack in others %}
+            <div class="pack-card">
+                <div class="pack-badge">وفر {{ (pack.compare_price - pack.price)|int if pack.compare_price else 0 }} درهم</div>
+                <div class="pack-image">
+                    <img src="{{ url_for('static', filename='img/products/' + pack.image) }}" alt="{{ pack.name_ar }}">
+                </div>
+                <div class="pack-info">
+                    <span class="pack-tag">{{ pack.volume }}</span>
+                    <h3>{{ pack.name_ar or pack.name }}</h3>
+                    <p>{{ pack.description_ar or pack.description }}</p>
+                    <div class="pack-price">
+                        <span class="current-price">{{ pack.price|int }} درهم</span>
+                        {% if pack.compare_price %}
+                        <span class="old-price">{{ pack.compare_price|int }} درهم</span>
+                        <span class="save-tag">وفر {{ (pack.compare_price - pack.price)|int }} درهم</span>
+                        {% endif %}
+                    </div>
+                    <form action="{{ url_for('add_to_cart', product_id=pack.id) }}" method="POST" class="add-to-cart-form">
+                        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-gift"></i> أضف الباقة</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-gift"></i>
+            <h3>عروض قريباً</h3>
+            <p>باقات وعروض حصرية في الطريق إليك</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary">تصفح المنتجات</a>
+        </div>
+        {% endif %}
+
+        <div class="pack-cta">
+            <h2>🔥 عروض حصرية</h2>
+            <div class="pack-benefits">
+                <div class="pack-benefit">
+                    <i class="fas fa-tag"></i>
+                    <span>وفر حتى 40% مع الباقات</span>
+                </div>
+                <div class="pack-benefit">
+                    <i class="fas fa-gift"></i>
+                    <span>تغليف هدايا فاخر مجاني</span>
+                </div>
+                <div class="pack-benefit">
+                    <i class="fas fa-truck"></i>
+                    <span>توصيل مجاني للطلبات فوق 200 درهم</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

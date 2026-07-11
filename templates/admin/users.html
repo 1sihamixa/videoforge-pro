@@ -1,0 +1,31 @@
+{% extends 'admin/layout.html' %}
+{% block title %}إدارة المستخدمين{% endblock %}
+{% block content %}
+<h2>المستخدمين</h2>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>اسم المستخدم</th>
+            <th>البريد</th>
+            <th>الجوال</th>
+            <th>مسؤول</th>
+            <th>تاريخ التسجيل</th>
+            <th>الطلبات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone or '-' }}</td>
+            <td>{% if user.is_admin %}<i class="fas fa-check" style="color:var(--gold)"></i>{% else %}<a href="{{ url_for('admin_make_admin', id=user.id) }}" class="btn btn-sm" onclick="return confirm('ترقية هذا المستخدم إلى مدير؟')">ترقية</a>{% endif %}</td>
+            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+            <td>{{ user.orders|length }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

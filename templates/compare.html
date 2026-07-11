@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}مقارنة العطور - AYA PARFUM{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>🔍 مقارنة العطور</h1>
+        <p>قارني بين العطور واختاري المثالي لك</p>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        {% if products and products|length >= 2 %}
+        <div class="compare-table-wrapper">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>المواصفات</th>
+                        {% for p in products %}
+                        <th>
+                            <img src="{{ url_for('static', filename='img/products/' + p.image) }}" alt="{{ p.name_ar }}" style="width:120px;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px">
+                            <h3>{{ p.name_ar or p.name }}</h3>
+                            <div class="compare-price">{{ p.price }} درهم</div>
+                            {% if p.compare_price and p.compare_price > p.price %}
+                            <div class="compare-old-price">{{ p.compare_price }} درهم</div>
+                            {% endif %}
+                            <form action="{{ url_for('add_to_cart', product_id=p.id) }}" method="POST" class="add-to-cart-form" style="margin-top:10px">
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-shopping-cart"></i> أضف للسلة</button>
+                            </form>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>السعر</td>
+                        {% for p in products %}
+                        <td><strong>{{ p.price }} درهم</strong></td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>السعر الأصلي</td>
+                        {% for p in products %}
+                        <td>{% if p.compare_price and p.compare_price > p.price %}{{ p.compare_price }} درهم{% else %}—{% endif %}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>الحجم</td>
+                        {% for p in products %}
+                        <td>{{ p.volume or '—' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>الجنس</td>
+                        {% for p in products %}
+                        <td>{% if p.gender == 'male' %}رجالي{% elif p.gender == 'female' %}نسائي{% else %}للجنسين{% endif %}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>التقييم</td>
+                        {% for p in products %}
+                        <td>{% if p.avg_rating %}{{ p.avg_rating }} ⭐{% else %}—{% endif %}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>عدد التقييمات</td>
+                        {% for p in products %}
+                        <td>{{ p.review_count }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>عدد المشترين</td>
+                        {% for p in products %}
+                        <td>{{ p.sales_count }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>التصنيف</td>
+                        {% for p in products %}
+                        <td>{{ p.category.name_ar or p.category.name }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>الوصف</td>
+                        {% for p in products %}
+                        <td>{{ p.description_ar or p.description }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state" style="text-align:center;padding:60px 20px">
+            <i class="fas fa-balance-scale" style="font-size:64px;color:var(--gold);margin-bottom:15px"></i>
+            <h2>اختر عطرين للمقارنة</h2>
+            <p style="color:var(--gray);margin:15px 0">اذهب إلى صفحة المنتجات واختر عطرين للمقارنة بينهما</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary">تصفح العطور</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}إنشاء حساب{% endblock %}
+{% block content %}
+<div class="auth-section">
+    <div class="container">
+        <div class="auth-box">
+            <i class="fas fa-spa auth-icon"></i>
+            <h2>إنشاء حساب جديد</h2>
+            <p>انضم إلينا واستمتع بتجربة تسوق فريدة</p>
+<form method="POST">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                    <label><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <input type="text" name="username" required placeholder="اختر اسم مستخدم">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                    <input type="email" name="email" required placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> رقم الجوال</label>
+                    <input type="text" name="phone" placeholder="05xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" name="password" required placeholder="أدخل كلمة المرور">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">إنشاء حساب</button>
+            </form>
+            <div class="auth-footer">
+                لديك حساب بالفعل؟ <a href="{{ url_for('login') }}">تسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

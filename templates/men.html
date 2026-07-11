@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}إكسير الرجولة - عطور رجالية - AYA PARFUM{% endblock %}
+{% block content %}
+<div class="page-header men-header">
+    <div class="container">
+        <h1>👔 إكسير الرجولة</h1>
+        <p>عطور رجالية فاخرة — لكل مناسبة ولكل شخصية</p>
+    </div>
+</div>
+
+<div class="section">
+    <div class="container">
+        <div class="occasion-tabs">
+            <a href="{{ url_for('men_section') }}" class="occasion-tab {% if not active_occasion %}active{% endif %}">الكل</a>
+            <a href="{{ url_for('men_section', occasion='work') }}" class="occasion-tab {% if active_occasion == 'work' %}active{% endif %}">💼 للعمل</a>
+            <a href="{{ url_for('men_section', occasion='evening') }}" class="occasion-tab {% if active_occasion == 'evening' %}active{% endif %}">🌆 للسهرة</a>
+            <a href="{{ url_for('men_section', occasion='sport') }}" class="occasion-tab {% if active_occasion == 'sport' %}active{% endif %}">🏃 للرياضة</a>
+        </div>
+
+        <div class="men-featured">
+            <div class="men-banner">
+                <div class="men-banner-content">
+                    <span class="men-banner-tag">🔥 الأكثر مبيعاً</span>
+                    <h2>عطور العود والعنبر</h2>
+                    <p>تشكيلة العود الفاخر والعنبر الملكي — ثبات 12+ ساعة</p>
+                    <a href="{{ url_for('products', category='3') }}" class="btn btn-primary">اكتشف المجموعة</a>
+                </div>
+                <div class="men-banner-visual">
+                    <i class="fas fa-crown"></i>
+                </div>
+            </div>
+        </div>
+
+        {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt="{{ product.name_ar or product.name }}">
+                    {% if product.compare_price and product.compare_price > product.price %}
+                    <span class="discount-badge">-{{ ((product.compare_price - product.price) / product.compare_price * 100)|int }}%</span>
+                    {% endif %}
+                    <div class="product-actions">
+                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="add-to-cart-form">
+                            <button type="submit" class="btn-add-cart"><i class="fas fa-shopping-cart"></i> أضف للسلة</button>
+                        </form>
+                        <a href="{{ url_for('product_detail', id=product.id) }}" class="btn-view"><i class="fas fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">{{ product.category.name_ar or product.category.name }}</span>
+                    <h3><a href="{{ url_for('product_detail', id=product.id) }}">{{ product.name_ar or product.name }}</a></h3>
+                    <div class="product-price">
+                        <span class="current-price">{{ product.price }} درهم</span>
+                        {% if product.compare_price and product.compare_price > product.price %}
+                        <span class="old-price">{{ product.compare_price }} درهم</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-sold">
+                        <span><i class="fas fa-fire"></i> {{ product.sales_count }} اشتروه مؤخراً</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state" style="text-align:center;padding:60px 20px">
+            <i class="fas fa-mask" style="font-size:64px;color:var(--gold);margin-bottom:15px"></i>
+            <h2>قريباً...</h2>
+            <p style="color:var(--gray);margin:15px 0">عطور رجالية جديدة في الطريق</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

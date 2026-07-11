@@ -66,12 +66,8 @@ TRANSLATIONS = {
     "creator_english": {"ar": "🇺🇸 الإنجليزية", "en": "🇺🇸 English"},
     "creator_chars": {"ar": "حرف", "en": "chars"},
     "creator_method_label": {"ar": "طريقة التوليد", "en": "Generation Method"},
-    "creator_local": {"ar": "🖥️ محلي (Wav2Lip)", "en": "🖥️ Local (Wav2Lip)"},
     "creator_cloud": {"ar": "☁️ سحابي (sync.so)", "en": "☁️ Cloud (sync.so)"},
-    "creator_api_key": {"ar": "🔑 API Key من sync.so", "en": "🔑 sync.so API Key"},
-    "creator_api_hint": {"ar": "يمكنك الحصول على API Key من", "en": "Get your API Key from"},
-    "creator_model_notice": {"ar": "⚠️ النموذج المحلي غير موجود. استخدم الوضع السحابي أو", "en": "⚠️ Local model not found. Use cloud mode or"},
-    "creator_download_model": {"ar": "حمّل النموذج", "en": "download model"},
+    "creator_cloud_only": {"ar": "التوليد عبر السحابة — جودة عالية وسرعة فائقة", "en": "Cloud generation — high quality, fast speed"},
     "creator_btn_generate": {"ar": "🚀 بدء إنشاء الفيديو", "en": "🚀 Generate Video"},
     "creator_generating": {"ar": "جاري الإنشاء...", "en": "Generating..."},
 
@@ -90,7 +86,12 @@ TRANSLATIONS = {
     "tips_1": {"ar": "صورة واضحة: استخدم صورة عالية الجودة مع وجه واضح ومضاء جيداً", "en": "Clear photo: Use a high-quality, well-lit face photo"},
     "tips_2": {"ar": "الصوت المناسب: يفضل صوت واضح بدون ضوضاء خلفية", "en": "Good audio: Use clear audio without background noise"},
     "tips_3": {"ar": "مدة قصيرة: أفضل النتائج مع فيديوهات 15-30 ثانية", "en": "Short duration: Best results with 15-30 second videos"},
-    "tips_4": {"ar": "الوضع السحابي: يعطي جودة أعلى من المحلي", "en": "Cloud mode: Provides higher quality than local"},
+    "tips_4": {"ar": "الوضع السحابي: يعطي جودة أفضل", "en": "Cloud mode: Provides better quality"},
+
+    # Creator
+    "creator_method_label": {"ar": "طريقة التوليد", "en": "Generation Method"},
+    "creator_cloud": {"ar": "سحابي (sync.so)", "en": "Cloud (sync.so)"},
+    "creator_cloud_only": {"ar": "التوليد عبر السحابة — جودة عالية وسرعة فائقة", "en": "Cloud generation — high quality, fast speed"},
 
     # Gallery
     "gallery_title": {"ar": "الفيديوهات المنشأة", "en": "Generated Videos"},

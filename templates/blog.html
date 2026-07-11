@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}مجلة العطر - AYA PARFUM{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>مجلة العطر</h1>
+        <p>كل ما تريدين معرفته عن عالم العطور</p>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        {% if posts.items %}
+        <div class="blog-grid">
+            {% for post in posts.items %}
+            <article class="blog-card">
+                <div class="blog-image">
+                    <img src="{{ url_for('static', filename='img/products/' + post.image) }}" alt="{{ post.title_ar or post.title }}">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-date"><i class="far fa-calendar-alt"></i> {{ post.created_at.strftime('%Y/%m/%d') }}</div>
+                    <h3><a href="{{ url_for('blog_post', slug=post.slug) }}">{{ post.title_ar or post.title }}</a></h3>
+                    <p>{{ post.excerpt_ar or post.excerpt }}</p>
+                    <a href="{{ url_for('blog_post', slug=post.slug) }}" class="btn btn-outline btn-sm">اقرأ المزيد ←</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {% if posts.has_prev %}
+            <a href="{{ url_for('blog', page=posts.prev_num) }}" class="btn btn-outline">← السابق</a>
+            {% endif %}
+            <span class="pagination-info">صفحة {{ posts.page }} من {{ posts.pages }}</span>
+            {% if posts.has_next %}
+            <a href="{{ url_for('blog', page=posts.next_num) }}" class="btn btn-outline">التالي →</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-state" style="text-align:center;padding:60px 20px">
+            <i class="fas fa-newspaper" style="font-size:64px;color:var(--gold);margin-bottom:15px"></i>
+            <h2>قريباً...</h2>
+            <p style="color:var(--gray);margin:15px 0">قريباً سننشر أول مقالات مجلة العطر</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.165:5000
+Press CTRL+C to quit
+127.0.0.1 - - [25/Jun/2026 18:04:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:05] "GET /api/config HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:05] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:05] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:05] "GET /api/channels HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:06] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:06] "GET /api/channel/tech_channel/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:04:06] "GET /api/channel/finance_channel/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:22:51] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [25/Jun/2026 18:22:51] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:22:52] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:22:52] "GET /api/channels HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:22:52] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:23:23] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:33:42] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:35:40] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:35:41] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:36:17] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:17] "GET /api/config HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:17] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:18] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:18] "GET /api/channels HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:18] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:18] "GET /api/youtube/status HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 18:36:24] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:36:26] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:36:28] "POST /api/research HTTP/1.1" 500 -
+127.0.0.1 - - [25/Jun/2026 18:36:32] "POST /api/research HTTP/1.1" 500 -
