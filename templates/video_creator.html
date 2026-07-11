@@ -356,7 +356,7 @@ footer .social-links a:hover { background: var(--accent); color: #fff; }
 </nav>
 
 <!-- ═══ AD BANNER ═══ -->
-<div class="ad-banner">
+<div class="ad-banner" style="margin-top:0">
   {% if adsense_slot_top %}
   <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_top }}" data-ad-format="auto" data-full-width-responsive="true"></ins>
   <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
@@ -373,56 +373,9 @@ footer .social-links a:hover { background: var(--accent); color: #fff; }
     <p>{{ t("hero_subtitle") }}</p>
     <div class="hero-buttons">
       <a href="#creator" class="btn btn-primary btn-lg">{{ t("hero_btn_start") }}</a>
-      <a href="#how" class="btn btn-secondary btn-lg">{{ t("hero_btn_how") }}</a>
     </div>
   </div>
 </section>
-
-<!-- ═══ HOW IT WORKS ═══ -->
-<section class="section" id="how">
-  <div class="container">
-    <div class="section-header">
-      <h2>💡 <span>{{ t("how_title") }}</span></h2>
-      <p>{{ t("how_subtitle") }}</p>
-    </div>
-    <div class="how-grid">
-      <div class="how-step"><span class="num">1</span><span class="icon">🖼️</span><h4>{{ t("how_step1_title") }}</h4><p>{{ t("how_step1_desc") }}</p></div>
-      <div class="how-step"><span class="num">2</span><span class="icon">🎤</span><h4>{{ t("how_step2_title") }}</h4><p>{{ t("how_step2_desc") }}</p></div>
-      <div class="how-step"><span class="num">3</span><span class="icon">⚡</span><h4>{{ t("how_step3_title") }}</h4><p>{{ t("how_step3_desc") }}</p></div>
-      <div class="how-step"><span class="num">4</span><span class="icon">🎬</span><h4>{{ t("how_step4_title") }}</h4><p>{{ t("how_step4_desc") }}</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ FEATURES ═══ -->
-<section class="section" style="background:var(--bg2)">
-  <div class="container">
-    <div class="section-header">
-      <h2>⚡ <span>{{ t("features_title") }}</span></h2>
-      <p>{{ t("features_subtitle") }}</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card"><span class="feature-icon">🎭</span><h4>{{ t("feature1_title") }}</h4><p>{{ t("feature1_desc") }}</p></div>
-      <div class="feature-card"><span class="feature-icon">🎤</span><h4>{{ t("feature2_title") }}</h4><p>{{ t("feature2_desc") }}</p></div>
-      <div class="feature-card"><span class="feature-icon">⚡</span><h4>{{ t("feature3_title") }}</h4><p>{{ t("feature3_desc") }}</p></div>
-      <div class="feature-card"><span class="feature-icon">🖼️</span><h4>{{ t("feature4_title") }}</h4><p>{{ t("feature4_desc") }}</p></div>
-      <div class="feature-card"><span class="feature-icon">📱</span><h4>{{ t("feature5_title") }}</h4><p>{{ t("feature5_desc") }}</p></div>
-      <div class="feature-card"><span class="feature-icon">🔊</span><h4>{{ t("feature6_title") }}</h4><p>{{ t("feature6_desc") }}</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ AD IN-ARTICLE ═══ -->
-<div class="container">
-  <div class="ad-in-article">
-    {% if adsense_slot_in_article %}
-    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_in_article }}" data-ad-format="auto"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-    {% elif not adsense_client %}
-    <div class="ad-placeholder">{{ t("ad_in_article") }}</div>
-    {% endif %}
-  </div>
-</div>
 
 <!-- ═══ CREATOR ═══ -->
 <section class="creator-section section" id="creator">
@@ -535,6 +488,54 @@ footer .social-links a:hover { background: var(--accent); color: #fff; }
     </div>
   </div>
 </section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-header">
+      <h2>💡 <span>{{ t("how_title") }}</span></h2>
+      <p>{{ t("how_subtitle") }}</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span><span class="icon">🖼️</span><h4>{{ t("how_step1_title") }}</h4><p>{{ t("how_step1_desc") }}</p></div>
+      <div class="how-step"><span class="num">2</span><span class="icon">🎤</span><h4>{{ t("how_step2_title") }}</h4><p>{{ t("how_step2_desc") }}</p></div>
+      <div class="how-step"><span class="num">3</span><span class="icon">⚡</span><h4>{{ t("how_step3_title") }}</h4><p>{{ t("how_step3_desc") }}</p></div>
+      <div class="how-step"><span class="num">4</span><span class="icon">🎬</span><h4>{{ t("how_step4_title") }}</h4><p>{{ t("how_step4_desc") }}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="section" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header">
+      <h2>⚡ <span>{{ t("features_title") }}</span></h2>
+      <p>{{ t("features_subtitle") }}</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card"><span class="feature-icon">🎭</span><h4>{{ t("feature1_title") }}</h4><p>{{ t("feature1_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">🎤</span><h4>{{ t("feature2_title") }}</h4><p>{{ t("feature2_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">⚡</span><h4>{{ t("feature3_title") }}</h4><p>{{ t("feature3_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">🖼️</span><h4>{{ t("feature4_title") }}</h4><p>{{ t("feature4_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">📱</span><h4>{{ t("feature5_title") }}</h4><p>{{ t("feature5_desc") }}</p></div>
+      <div class="feature-card"><span class="feature-icon">🔊</span><h4>{{ t("feature6_title") }}</h4><p>{{ t("feature6_desc") }}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AD IN-ARTICLE ═══ -->
+<div class="container">
+  <div class="ad-in-article">
+    {% if adsense_slot_in_article %}
+    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ adsense_slot_in_article }}" data-ad-format="auto"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    {% elif not adsense_client %}
+    <div class="ad-placeholder">{{ t("ad_in_article") }}</div>
+    {% endif %}
+  </div>
+</div>
 
 <!-- ═══ AD BANNER ═══ -->
 <div class="container">
