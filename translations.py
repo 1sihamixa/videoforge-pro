@@ -184,6 +184,9 @@ TRANSLATIONS = {
     # Cloud settings
     "cloud_model": {"ar": "📦 الموديل", "en": "📦 Model"},
     "cloud_model_desc": {"ar": "اختر الموديل المناسب", "en": "Choose the appropriate model"},
+
+    # Model selector
+    "model_label": {"ar": "اختيار النموذج", "en": "AI Model"},
 }
 
 def get_language():

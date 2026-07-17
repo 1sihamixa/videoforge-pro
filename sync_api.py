@@ -1,4 +1,4 @@
-import os, time, tempfile, subprocess, mimetypes, socket, json as _json
+import os, time, tempfile, subprocess, mimetypes, socket, json as _json, shutil
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -66,6 +66,12 @@ def _request(method, url, **kwargs):
                 continue
         raise
 
+def _content_type_to_asset_type(ct):
+    if ct.startswith("audio/"): return "AUDIO"
+    if ct.startswith("video/"): return "VIDEO"
+    if ct.startswith("image/"): return "IMAGE"
+    return "VIDEO"
+
 def _upload_asset(api_key, file_path, content_type):
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
@@ -83,8 +89,9 @@ def _upload_asset(api_key, file_path, content_type):
         put_resp = _SESSION.put(upload_url, data=f, timeout=180)
     if put_resp.status_code not in (200, 201):
         return None, f"فشل رفع الملف: HTTP {put_resp.status_code}"
+    asset_type = _content_type_to_asset_type(content_type)
     reg_resp = _request("POST", f"{BASE_URL}/assets", headers=headers,
-                         json={"url": asset_url, "contentType": content_type}, timeout=30)
+                         json={"url": asset_url, "type": asset_type, "name": file_name}, timeout=30)
     if reg_resp.status_code not in (200, 201):
         return None, f"فشل تسجيل الملف: {reg_resp.text}"
     asset_id = reg_resp.json()["id"]
@@ -109,6 +116,8 @@ def generate_video(image_path, audio_path, output_path, api_key, model="lipsync-
             vid_path = image_path
             vid_ct = "image/" + ("png" if image_path.endswith(".png") else "jpeg")
         else:
+            if shutil.which("ffmpeg") is None:
+                return None, "ffmpeg غير مثبت على الخادم. يُرجى استخدام نموذج 'sync-3' الذي يدعم الصور مباشرة."
             vid_path = os.path.join(temp_dir, "input.mp4")
             subprocess.run([
                 "ffmpeg", "-y", "-loop", "1", "-i", image_path,

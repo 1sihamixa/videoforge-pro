@@ -11,10 +11,11 @@ from flask import Flask, render_template, request, jsonify, send_file, redirect,
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
 
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
-OUTPUT_FOLDER = os.path.join(BASE_DIR, "output")
-GALLERY_FILE  = os.path.join(BASE_DIR, "gallery.json")
-STATS_FILE    = os.path.join(BASE_DIR, "stats.json")
+DATA_DIR = os.environ.get("DATA_DIR", os.path.join(BASE_DIR, "data"))
+UPLOAD_FOLDER = os.path.join(DATA_DIR, "uploads")
+OUTPUT_FOLDER = os.path.join(DATA_DIR, "output")
+GALLERY_FILE  = os.path.join(DATA_DIR, "gallery.json")
+STATS_FILE    = os.path.join(DATA_DIR, "stats.json")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -117,10 +118,10 @@ def add_to_gallery(video_path, title=""):
 
 # ─── Sync.so Models ───
 SYNC_MODELS = {
-    "sync-3":       {"free": True,  "max_sec": 15, "image": True,  "desc": "أفضل جودة, يدعم الصور مباشرة"},
-    "lipsync-2":    {"free": True,  "max_sec": 20, "image": False, "desc": "سريع وجودة جيدة"},
-    "lipsync-2-pro":{"free": True,  "max_sec": 20, "image": False, "desc": "جودة عالية"},
-    "react-1":      {"free": False, "max_sec": 15, "image": False, "desc": "تعابير وجه + حركات رأس"},
+    "sync-3":       {"free": True,  "max_sec": 15, "image": True,  "desc_ar": "أفضل جودة - يدعم الصور مباشرة", "desc_en": "Best Quality - Direct Image"},
+    "lipsync-2":    {"free": True,  "max_sec": 20, "image": False, "desc_ar": "سريع وجودة جيدة", "desc_en": "Fast & Good Quality"},
+    "lipsync-2-pro":{"free": True,  "max_sec": 20, "image": False, "desc_ar": "جودة عالية", "desc_en": "High Quality"},
+    "react-1":      {"free": False, "max_sec": 15, "image": False, "desc_ar": "تعابير وجه + حركات رأس", "desc_en": "Face Expressions + Head Moves"},
 }
 
 # ─── Wav2Lip Generators ───
@@ -218,7 +219,7 @@ def upload_file():
     img_exts = {"jpg","jpeg","png","webp","gif"}
     ftype = "image" if ext in img_exts else "audio"
     return jsonify({
-        "path": f"/static/uploads/{fname}",
+        "path": f"/uploads/{fname}",
         "type": ftype,
         "name": file.filename
     })
@@ -232,19 +233,25 @@ def start_generate():
     text = data.get("text", "")
     mode = data.get("mode", "local")
     api_key = data.get("api_key", "")
-    model = data.get("model", "lipsync-2")
+    model = data.get("model", "sync-3")
     model_mode = data.get("model_mode", "")
 
     if not image:
         return jsonify({"error": "يرجى رفع صورة للوجه"}), 400
 
-    image_path = os.path.join(BASE_DIR, image.lstrip("/"))
+    if image.startswith("/uploads/"):
+        image_path = os.path.join(DATA_DIR, "uploads", os.path.basename(image))
+    else:
+        image_path = os.path.join(BASE_DIR, image.lstrip("/"))
     if not os.path.exists(image_path):
         return jsonify({"error": "ملف الصورة غير موجود"}), 400
 
     audio_path = None
     if audio:
-        audio_path = os.path.join(BASE_DIR, audio.lstrip("/"))
+        if audio.startswith("/uploads/"):
+            audio_path = os.path.join(DATA_DIR, "uploads", os.path.basename(audio))
+        else:
+            audio_path = os.path.join(BASE_DIR, audio.lstrip("/"))
         if not os.path.exists(audio_path):
             return jsonify({"error": "ملف الصوت غير موجود"}), 400
     elif text:
@@ -307,6 +314,13 @@ def get_stats():
     return jsonify(load_stats())
 
 # ─── Serve Output Files ───
+@app.route("/uploads/<path:filename>")
+def serve_upload(filename):
+    full_path = os.path.join(DATA_DIR, "uploads", filename)
+    if os.path.exists(full_path):
+        return send_file(full_path, as_attachment=False)
+    return jsonify({"error": "File not found"}), 404
+
 @app.route("/output/<path:filename>")
 def serve_output(filename):
     full_path = os.path.join(OUTPUT_FOLDER, filename)

@@ -432,11 +432,14 @@ footer .social-links a:hover { background: var(--accent); color: #fff; }
           </div>
         </div>
 
-        <div class="creator-card">
-          <h3><span class="icon" style="background:rgba(240,192,64,0.15);color:var(--gold)">⚡</span> {{ t("creator_method_label") }}</h3>
-          <div style="padding:8px 12px;background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;font-size:13px;color:var(--text)">
-            ☁️ {{ t("creator_cloud") }} — {{ t("creator_cloud_only") }}
-          </div>
+        <!-- Model Selector -->
+        <div class="form-group" style="margin:10px 0">
+          <label style="font-size:13px;font-weight:600">{{ t("model_label") }}</label>
+          <select id="modelSelect" class="text-input" style="width:100%">
+            {% for key, m in models.items() %}
+            <option value="{{ key }}" {% if key == 'sync-3' %}selected{% endif %}>{{ m.desc_ar if lang == 'ar' else m.desc_en }}</option>
+            {% endfor %}
+          </select>
         </div>
 
         <button class="btn btn-primary btn-lg" style="width:100%;margin-top:8px" id="generateBtn" disabled onclick="startGenerate()">
@@ -473,17 +476,6 @@ footer .social-links a:hover { background: var(--accent); color: #fff; }
           </div>
         </div>
 
-        <div class="creator-card">
-          <h3><span class="icon" style="background:rgba(240,192,64,0.15);color:var(--gold)">💡</span> {{ t("tips_title") }}</h3>
-          <div style="font-size:13px;color:var(--text2);line-height:2">
-            <ul style="padding-{{ 'right' if dir=='rtl' else 'left' }}:20px">
-              <li><strong style="color:var(--text)">{{ t("tips_1") }}</strong></li>
-              <li><strong style="color:var(--text)">{{ t("tips_2") }}</strong></li>
-              <li><strong style="color:var(--text)">{{ t("tips_3") }}</strong></li>
-              <li><strong style="color:var(--text)">{{ t("tips_4") }}</strong></li>
-            </ul>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -637,6 +629,7 @@ const TRANS = {
   "preview_done": { "ar": "✅ تم إنشاء الفيديو بنجاح!", "en": "✅ Video created successfully!" },
   "preview_download": { "ar": "⬇ تحميل الفيديو", "en": "⬇ Download Video" },
   "preview_reset": { "ar": "🔄 جديد", "en": "🔄 Reset" },
+  "model_label": { "ar": "اختيار النموذج", "en": "AI Model" },
   "btn_generate": { "ar": "🚀 بدء إنشاء الفيديو", "en": "🚀 Generate Video" },
   "btn_generating": { "ar": "جاري الإنشاء...", "en": "Generating..." },
   "toast_created": { "ar": "✅ تم إنشاء الفيديو!", "en": "✅ Video created!" },
@@ -760,6 +753,7 @@ async function startGenerate() {
     text: audioMode === 'text' ? $('textInput').value : null,
     mode: 'cloud',
     api_key: '',
+    model: $('modelSelect').value,
   };
 
   try {
